@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: "00-01: Tasks 1-2 complete, blocked on Task 3 (founder self-check)"
-last_updated: "2026-04-09T22:54:05.647Z"
+stopped_at: Phase 0 plan 00-01 complete
+last_updated: "2026-04-09T23:14:50.100Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 1
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -62,6 +62,9 @@ Recent decisions affecting current work:
 - [Roadmap]: Data ingestion clock starts end of Phase 2; 8-week gate is a hard dependency for Phase 10
 - [Roadmap]: IP lawyer must be engaged in Phase 8 (6-8 week lead time); sign-off is Phase 10 hard gate
 - [Roadmap]: No parallel platform tracks; iOS (Ph 5-6) before Android (Ph 7); backend solid before mobile starts
+- [Phase 00-name-lock]: Founder assertion posture: light informal self-check only; no formal trademark database search; attorney engagement reactive-only on receipt of C&D or formal notice
+- [Phase 00-name-lock]: Phase 8 IP lawyer (LEGL-05) scoped to disclaimers/privacy/ToS/listings only — not trademark clearance; boundary documented in clearance memo
+- [Phase 00-name-lock]: Task 3 delegation: founder delegated memo fill-in to orchestrator; honesty preserved by documenting no-search-results posture rather than fabricating data
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-09T22:54:05.645Z
-Stopped at: 00-01: Tasks 1-2 complete, blocked on Task 3 (founder self-check)
-Resume file: None
+Last session: 2026-04-09T23:13:02.589Z
+Stopped at: Phase 0 plan 00-01 complete
+Resume file: .planning/phases/00-name-lock/00-01-SUMMARY.md

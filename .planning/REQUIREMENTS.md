@@ -9,7 +9,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Legal & Trademark
 
-- [ ] **LEGL-01**: Trademark clearance search on "WonderWaltz" (USPTO TESS + EUIPO eSearch) returns clear before any public commitment (domain, social, public repo, App Store listing)
+- [x] **LEGL-01**: Trademark clearance search on "WonderWaltz" (USPTO TESS + EUIPO eSearch) returns clear before any public commitment (domain, social, public repo, App Store listing)
 - [ ] **LEGL-02**: Every API response, web page, and mobile screen carries the "unofficial fan app" disclaimer: *"WonderWaltz is an independent, unofficial planning app. Not affiliated with, endorsed by, or sponsored by The Walt Disney Company."*
 - [ ] **LEGL-03**: No Disney trademarked imagery anywhere in the product (no logos, Mickey silhouettes, castle imagery, character art, ride photography) unless CC-licensed or user-provided
 - [ ] **LEGL-04**: App Store and Play Store metadata strategy excludes trademarked terms ("Disney", "Magic Kingdom", "Epcot", "Hollywood Studios", "Animal Kingdom", "WDW") from the 100-character keyword field (Apple Guideline 2.3.7)
@@ -243,7 +243,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LEGL-01 | Phase 0 | Pending |
+| LEGL-01 | Phase 0 | Complete |
 | LEGL-02 | Phase 1 | Pending |
 | LEGL-03 | Phase 1 | Pending |
 | LEGL-04 | Phase 8 | Pending |

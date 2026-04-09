@@ -10,7 +10,7 @@ WonderWaltz v1 is built in eleven sequential phases — zero parallel platform t
 - Integer phases (0–10): Planned milestone work
 - Decimal phases (e.g., 2.1): Urgent insertions — created via `/gsd:insert-phase` if needed
 
-- [ ] **Phase 0: Name Lock** - Trademark search on "WonderWaltz" before any public commitment
+- [x] **Phase 0: Name Lock** - Trademark search on "WonderWaltz" before any public commitment (completed 2026-04-09)
 - [ ] **Phase 1: Foundation** - Monorepo scaffolding, DB schema, design system, disclaimer architecture
 - [ ] **Phase 2: Data Pipeline** - Ingestion workers live in production; 8-week data accumulation clock starts
 - [ ] **Phase 3: Engine** - Solver + LLM narrative layer + async plan generation API
@@ -162,7 +162,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Name Lock | 0/1 | Planned    |  |
+| 0. Name Lock | 1/1 | Complete   | 2026-04-09 |
 | 1. Foundation | 0/TBD | Not started | - |
 | 2. Data Pipeline | 0/TBD | Not started | - |
 | 3. Engine | 0/TBD | Not started | - |
