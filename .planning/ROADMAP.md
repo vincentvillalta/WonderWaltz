@@ -32,7 +32,10 @@ WonderWaltz v1 is built in eleven sequential phases — zero parallel platform t
   1. USPTO TESS search on "WonderWaltz" returns no blocking marks in Class 9 (software) or Class 41 (entertainment services)
   2. EUIPO eSearch returns no blocking marks for "WonderWaltz"
   3. A written clearance summary is saved in `docs/legal/trademark-search-2026.md` before any domain, social, or repo is made public
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 00-01-PLAN.md — Scaffold docs/legal/, write memo template, founder self-check, validate, and commit trademark clearance memo
 
 ### Phase 1: Foundation
 **Goal**: Every developer tool, service account, design token, and database schema is in place so that Phase 2 can start writing data without friction. The monorepo compiles, CI is green, brand direction is locked, and the disclaimer is wired into every API response layer from day one.
