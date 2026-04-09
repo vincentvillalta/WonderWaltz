@@ -162,7 +162,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Name Lock | 0/TBD | Not started | - |
+| 0. Name Lock | 0/1 | Planned    |  |
 | 1. Foundation | 0/TBD | Not started | - |
 | 2. Data Pipeline | 0/TBD | Not started | - |
 | 3. Engine | 0/TBD | Not started | - |
