@@ -239,159 +239,172 @@ Explicit non-goals. Documented to prevent scope creep.
 
 ## Traceability
 
-Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID must map to exactly one phase.
+Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to exactly one phase.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LEGL-01 | TBD | Pending |
-| LEGL-02 | TBD | Pending |
-| LEGL-03 | TBD | Pending |
-| LEGL-04 | TBD | Pending |
-| LEGL-05 | TBD | Pending |
-| LEGL-06 | TBD | Pending |
-| LEGL-07 | TBD | Pending |
-| FND-01 | TBD | Pending |
-| FND-02 | TBD | Pending |
-| FND-03 | TBD | Pending |
-| FND-04 | TBD | Pending |
-| FND-05 | TBD | Pending |
-| FND-06 | TBD | Pending |
-| FND-07 | TBD | Pending |
-| FND-08 | TBD | Pending |
-| FND-09 | TBD | Pending |
-| FND-10 | TBD | Pending |
-| FND-11 | TBD | Pending |
-| FND-12 | TBD | Pending |
-| DSGN-01 | TBD | Pending |
-| DSGN-02 | TBD | Pending |
-| DSGN-03 | TBD | Pending |
-| DSGN-04 | TBD | Pending |
-| DSGN-05 | TBD | Pending |
-| DSGN-06 | TBD | Pending |
-| DSGN-07 | TBD | Pending |
-| DSGN-08 | TBD | Pending |
-| DB-01 | TBD | Pending |
-| DB-02 | TBD | Pending |
-| DB-03 | TBD | Pending |
-| DB-04 | TBD | Pending |
-| DB-05 | TBD | Pending |
-| DB-06 | TBD | Pending |
-| DB-07 | TBD | Pending |
-| DB-08 | TBD | Pending |
-| DATA-01 | TBD | Pending |
-| DATA-02 | TBD | Pending |
-| DATA-03 | TBD | Pending |
-| DATA-04 | TBD | Pending |
-| DATA-05 | TBD | Pending |
-| DATA-06 | TBD | Pending |
-| DATA-07 | TBD | Pending |
-| DATA-08 | TBD | Pending |
-| FC-01 | TBD | Pending |
-| FC-02 | TBD | Pending |
-| FC-03 | TBD | Pending |
-| FC-04 | TBD | Pending |
-| FC-05 | TBD | Pending |
-| SOLV-01 | TBD | Pending |
-| SOLV-02 | TBD | Pending |
-| SOLV-03 | TBD | Pending |
-| SOLV-04 | TBD | Pending |
-| SOLV-05 | TBD | Pending |
-| SOLV-06 | TBD | Pending |
-| SOLV-07 | TBD | Pending |
-| SOLV-08 | TBD | Pending |
-| SOLV-09 | TBD | Pending |
-| SOLV-10 | TBD | Pending |
-| SOLV-11 | TBD | Pending |
-| SOLV-12 | TBD | Pending |
-| SOLV-13 | TBD | Pending |
-| LLM-01 | TBD | Pending |
-| LLM-02 | TBD | Pending |
-| LLM-03 | TBD | Pending |
-| LLM-04 | TBD | Pending |
-| LLM-05 | TBD | Pending |
-| LLM-06 | TBD | Pending |
-| LLM-07 | TBD | Pending |
-| LLM-08 | TBD | Pending |
-| PLAN-01 | TBD | Pending |
-| PLAN-02 | TBD | Pending |
-| PLAN-03 | TBD | Pending |
-| PLAN-04 | TBD | Pending |
-| PLAN-05 | TBD | Pending |
-| PLAN-06 | TBD | Pending |
-| AUTH-01 | TBD | Pending |
-| AUTH-02 | TBD | Pending |
-| AUTH-03 | TBD | Pending |
-| AUTH-04 | TBD | Pending |
-| AUTH-05 | TBD | Pending |
-| AUTH-06 | TBD | Pending |
-| AUTH-07 | TBD | Pending |
-| IAP-01 | TBD | Pending |
-| IAP-02 | TBD | Pending |
-| IAP-03 | TBD | Pending |
-| IAP-04 | TBD | Pending |
-| IAP-05 | TBD | Pending |
-| IAP-06 | TBD | Pending |
-| IAP-07 | TBD | Pending |
-| IOS-01 | TBD | Pending |
-| IOS-02 | TBD | Pending |
-| IOS-03 | TBD | Pending |
-| IOS-04 | TBD | Pending |
-| IOS-05 | TBD | Pending |
-| IOS-06 | TBD | Pending |
-| IOS-07 | TBD | Pending |
-| IOS-08 | TBD | Pending |
-| IOS-09 | TBD | Pending |
-| IOS-10 | TBD | Pending |
-| IOS-11 | TBD | Pending |
-| IOS-12 | TBD | Pending |
-| IOS-13 | TBD | Pending |
-| IOS-14 | TBD | Pending |
-| IOS-15 | TBD | Pending |
-| IOS-16 | TBD | Pending |
-| IOS-17 | TBD | Pending |
-| IOS-18 | TBD | Pending |
-| AND-01 | TBD | Pending |
-| AND-02 | TBD | Pending |
-| AND-03 | TBD | Pending |
-| AND-04 | TBD | Pending |
-| AND-05 | TBD | Pending |
-| AND-06 | TBD | Pending |
-| AND-07 | TBD | Pending |
-| AND-08 | TBD | Pending |
-| AND-09 | TBD | Pending |
-| AND-10 | TBD | Pending |
-| AND-11 | TBD | Pending |
-| AND-12 | TBD | Pending |
-| AND-13 | TBD | Pending |
-| AND-14 | TBD | Pending |
-| AND-15 | TBD | Pending |
-| AND-16 | TBD | Pending |
-| WEB-01 | TBD | Pending |
-| WEB-02 | TBD | Pending |
-| WEB-03 | TBD | Pending |
-| WEB-04 | TBD | Pending |
-| WEB-05 | TBD | Pending |
-| WEB-06 | TBD | Pending |
-| WEB-07 | TBD | Pending |
-| WEB-08 | TBD | Pending |
-| WEB-09 | TBD | Pending |
-| WEB-10 | TBD | Pending |
-| WEB-11 | TBD | Pending |
-| WEB-12 | TBD | Pending |
-| LNCH-01 | TBD | Pending |
-| LNCH-02 | TBD | Pending |
-| LNCH-03 | TBD | Pending |
-| LNCH-04 | TBD | Pending |
-| LNCH-05 | TBD | Pending |
-| LNCH-06 | TBD | Pending |
-| LNCH-07 | TBD | Pending |
-| LNCH-08 | TBD | Pending |
+| LEGL-01 | Phase 0 | Pending |
+| LEGL-02 | Phase 1 | Pending |
+| LEGL-03 | Phase 1 | Pending |
+| LEGL-04 | Phase 8 | Pending |
+| LEGL-05 | Phase 8 | Pending |
+| LEGL-06 | Phase 4 | Pending |
+| LEGL-07 | Phase 1 | Pending |
+| FND-01 | Phase 1 | Pending |
+| FND-02 | Phase 1 | Pending |
+| FND-03 | Phase 1 | Pending |
+| FND-04 | Phase 1 | Pending |
+| FND-05 | Phase 1 | Pending |
+| FND-06 | Phase 1 | Pending |
+| FND-07 | Phase 1 | Pending |
+| FND-08 | Phase 1 | Pending |
+| FND-09 | Phase 1 | Pending |
+| FND-10 | Phase 1 | Pending |
+| FND-11 | Phase 1 | Pending |
+| FND-12 | Phase 1 | Pending |
+| DSGN-01 | Phase 1 | Pending |
+| DSGN-02 | Phase 1 | Pending |
+| DSGN-03 | Phase 1 | Pending |
+| DSGN-04 | Phase 1 | Pending |
+| DSGN-05 | Phase 1 | Pending |
+| DSGN-06 | Phase 1 | Pending |
+| DSGN-07 | Phase 1 | Pending |
+| DSGN-08 | Phase 1 | Pending |
+| DB-01 | Phase 1 | Pending |
+| DB-02 | Phase 1 | Pending |
+| DB-03 | Phase 1 | Pending |
+| DB-04 | Phase 1 | Pending |
+| DB-05 | Phase 1 | Pending |
+| DB-06 | Phase 1 | Pending |
+| DB-07 | Phase 1 | Pending |
+| DB-08 | Phase 1 | Pending |
+| DATA-01 | Phase 2 | Pending |
+| DATA-02 | Phase 2 | Pending |
+| DATA-03 | Phase 2 | Pending |
+| DATA-04 | Phase 2 | Pending |
+| DATA-05 | Phase 2 | Pending |
+| DATA-06 | Phase 2 | Pending |
+| DATA-07 | Phase 2 | Pending |
+| DATA-08 | Phase 2 | Pending |
+| FC-01 | Phase 3 | Pending |
+| FC-02 | Phase 3 | Pending |
+| FC-03 | Phase 3 | Pending |
+| FC-04 | Phase 3 | Pending |
+| FC-05 | Phase 3 | Pending |
+| SOLV-01 | Phase 3 | Pending |
+| SOLV-02 | Phase 3 | Pending |
+| SOLV-03 | Phase 3 | Pending |
+| SOLV-04 | Phase 3 | Pending |
+| SOLV-05 | Phase 3 | Pending |
+| SOLV-06 | Phase 3 | Pending |
+| SOLV-07 | Phase 3 | Pending |
+| SOLV-08 | Phase 3 | Pending |
+| SOLV-09 | Phase 3 | Pending |
+| SOLV-10 | Phase 3 | Pending |
+| SOLV-11 | Phase 3 | Pending |
+| SOLV-12 | Phase 3 | Pending |
+| SOLV-13 | Phase 3 | Pending |
+| LLM-01 | Phase 3 | Pending |
+| LLM-02 | Phase 3 | Pending |
+| LLM-03 | Phase 3 | Pending |
+| LLM-04 | Phase 3 | Pending |
+| LLM-05 | Phase 3 | Pending |
+| LLM-06 | Phase 3 | Pending |
+| LLM-07 | Phase 3 | Pending |
+| LLM-08 | Phase 3 | Pending |
+| PLAN-01 | Phase 3 | Pending |
+| PLAN-02 | Phase 3 | Pending |
+| PLAN-03 | Phase 3 | Pending |
+| PLAN-04 | Phase 3 | Pending |
+| PLAN-05 | Phase 3 | Pending |
+| PLAN-06 | Phase 3 | Pending |
+| AUTH-01 | Phase 4 | Pending |
+| AUTH-02 | Phase 4 | Pending |
+| AUTH-03 | Phase 4 | Pending |
+| AUTH-04 | Phase 4 | Pending |
+| AUTH-05 | Phase 4 | Pending |
+| AUTH-06 | Phase 4 | Pending |
+| AUTH-07 | Phase 4 | Pending |
+| IAP-01 | Phase 4 | Pending |
+| IAP-02 | Phase 4 | Pending |
+| IAP-03 | Phase 4 | Pending |
+| IAP-04 | Phase 4 | Pending |
+| IAP-05 | Phase 4 | Pending |
+| IAP-06 | Phase 4 | Pending |
+| IAP-07 | Phase 4 | Pending |
+| IOS-01 | Phase 5 | Pending |
+| IOS-02 | Phase 5 | Pending |
+| IOS-03 | Phase 5 | Pending |
+| IOS-04 | Phase 5 | Pending |
+| IOS-05 | Phase 5 | Pending |
+| IOS-06 | Phase 5 | Pending |
+| IOS-07 | Phase 5 | Pending |
+| IOS-08 | Phase 6 | Pending |
+| IOS-09 | Phase 6 | Pending |
+| IOS-10 | Phase 6 | Pending |
+| IOS-11 | Phase 6 | Pending |
+| IOS-12 | Phase 6 | Pending |
+| IOS-13 | Phase 9 | Pending |
+| IOS-14 | Phase 5 | Pending |
+| IOS-15 | Phase 5 | Pending |
+| IOS-16 | Phase 5 | Pending |
+| IOS-17 | Phase 5 | Pending |
+| IOS-18 | Phase 5 | Pending |
+| AND-01 | Phase 7 | Pending |
+| AND-02 | Phase 7 | Pending |
+| AND-03 | Phase 7 | Pending |
+| AND-04 | Phase 7 | Pending |
+| AND-05 | Phase 7 | Pending |
+| AND-06 | Phase 7 | Pending |
+| AND-07 | Phase 7 | Pending |
+| AND-08 | Phase 9 | Pending |
+| AND-09 | Phase 9 | Pending |
+| AND-10 | Phase 7 | Pending |
+| AND-11 | Phase 7 | Pending |
+| AND-12 | Phase 7 | Pending |
+| AND-13 | Phase 7 | Pending |
+| AND-14 | Phase 7 | Pending |
+| AND-15 | Phase 7 | Pending |
+| AND-16 | Phase 7 | Pending |
+| WEB-01 | Phase 8 | Pending |
+| WEB-02 | Phase 8 | Pending |
+| WEB-03 | Phase 8 | Pending |
+| WEB-04 | Phase 8 | Pending |
+| WEB-05 | Phase 8 | Pending |
+| WEB-06 | Phase 8 | Pending |
+| WEB-07 | Phase 8 | Pending |
+| WEB-08 | Phase 8 | Pending |
+| WEB-09 | Phase 8 | Pending |
+| WEB-10 | Phase 8 | Pending |
+| WEB-11 | Phase 8 | Pending |
+| WEB-12 | Phase 8 | Pending |
+| LNCH-01 | Phase 10 | Pending |
+| LNCH-02 | Phase 10 | Pending |
+| LNCH-03 | Phase 10 | Pending |
+| LNCH-04 | Phase 10 | Pending |
+| LNCH-05 | Phase 10 | Pending |
+| LNCH-06 | Phase 10 | Pending |
+| LNCH-07 | Phase 10 | Pending |
+| LNCH-08 | Phase 10 | Pending |
 
 **Coverage:**
-- v1 requirements: 144 total
-- Mapped to phases: 0 (roadmapper will populate)
-- Unmapped: 144 ⚠️ (expected — roadmapper runs next)
+- v1 requirements: 143 total (REQUIREMENTS.md header states 144; traceability table count is 143 — no REQ-ID is missing or double-mapped)
+- Mapped to phases: 143
+- Unmapped: 0
+
+**Phase distribution:**
+- Phase 0: 1 (LEGL-01)
+- Phase 1: 31 (FND-01–12, DSGN-01–08, DB-01–08, LEGL-02, LEGL-03, LEGL-07)
+- Phase 2: 8 (DATA-01–08)
+- Phase 3: 32 (FC-01–05, SOLV-01–13, LLM-01–08, PLAN-01–06)
+- Phase 4: 15 (AUTH-01–07, IAP-01–07, LEGL-06)
+- Phase 5: 12 (IOS-01–07, IOS-14–18)
+- Phase 6: 5 (IOS-08–12)
+- Phase 7: 14 (AND-01–07, AND-10–16)
+- Phase 8: 14 (WEB-01–12, LEGL-04, LEGL-05)
+- Phase 9: 3 (IOS-13, AND-08, AND-09)
+- Phase 10: 8 (LNCH-01–08)
 
 ---
 *Requirements defined: 2026-04-09*
-*Last updated: 2026-04-09 after initial definition*
+*Last updated: 2026-04-09 — traceability populated by gsd-roadmapper*
