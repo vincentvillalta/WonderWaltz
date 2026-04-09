@@ -162,7 +162,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Name Lock | 1/1 | Complete   | 2026-04-09 |
+| 0. Name Lock | 1/1 | Complete    | 2026-04-09 |
 | 1. Foundation | 0/TBD | Not started | - |
 | 2. Data Pipeline | 0/TBD | Not started | - |
 | 3. Engine | 0/TBD | Not started | - |
