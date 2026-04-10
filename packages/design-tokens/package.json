@@ -1,0 +1,19 @@
+{
+  "name": "@wonderwaltz/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node style-dictionary.config.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'No lint for design-tokens'",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "style-dictionary": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "6.0.2",
+    "vitest": "4.1.3"
+  }
+}
