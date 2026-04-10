@@ -15,14 +15,14 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **LEGL-04**: App Store and Play Store metadata strategy excludes trademarked terms ("Disney", "Magic Kingdom", "Epcot", "Hollywood Studios", "Animal Kingdom", "WDW") from the 100-character keyword field (Apple Guideline 2.3.7)
 - [ ] **LEGL-05**: IP lawyer engaged by Phase 8 and reviews trademark posture, disclaimers, privacy policy, ToS, and store listings before v1 launch (hard gate)
 - [ ] **LEGL-06**: User can delete their account; deletion cascade-removes all trips, guests, plans, entitlements, push tokens, and analytics data (GDPR + CCPA + COPPA deletion right)
-- [ ] **LEGL-07**: Guest age data is stored as age brackets (`0-2`, `3-6`, `7-9`, `10-13`, `14-17`, `18+`), not birthdates, to minimize COPPA scope; never included in PostHog event properties
+- [x] **LEGL-07**: Guest age data is stored as age brackets (`0-2`, `3-6`, `7-9`, `10-13`, `14-17`, `18+`), not birthdates, to minimize COPPA scope; never included in PostHog event properties
 
 ### Foundations & Infrastructure
 
 - [x] **FND-01**: Monorepo scaffolded with pnpm workspaces containing `apps/api`, `apps/web`, `apps/ios`, `apps/android`, `packages/shared-openapi`, `packages/design-tokens`, `packages/solver`, `packages/db`, `packages/content/wdw`
 - [x] **FND-02**: Node 22 LTS pinned in `.nvmrc`, `.node-version`, Railway config, and `package.json#engines`
 - [x] **FND-03**: TypeScript 6.0.2 configured across all TS packages with shared tsconfig
-- [ ] **FND-04**: GitHub Actions CI runs lint, typecheck, test, and build for every app on every PR; Android + iOS CI wired from day 1 (not deferred)
+- [x] **FND-04**: GitHub Actions CI runs lint, typecheck, test, and build for every app on every PR; Android + iOS CI wired from day 1 (not deferred)
 - [ ] **FND-05**: Supabase project provisioned with Postgres + Auth + Storage + TimescaleDB extension + PostGIS extension
 - [x] **FND-06**: Railway project provisioned with two services from the same codebase: `api` (NestJS HTTP) and `worker` (BullMQ processors)
 - [ ] **FND-07**: Upstash Redis instance provisioned for BullMQ + live wait cache
@@ -45,14 +45,14 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Database Schema
 
-- [ ] **DB-01**: Drizzle schema for `users`, `trips`, `guests`, `trip_park_days`, `trip_preferences` with soft-delete where appropriate
-- [ ] **DB-02**: Drizzle schema for `parks`, `attractions` (with PostGIS `location_point`), `dining`, `shows`, `parades`, `fireworks`, `resorts`, `walking_graph`
-- [ ] **DB-03**: TimescaleDB hypertable `wait_times_history(ride_id, ts, minutes, is_open, source)` created via raw SQL migration (not Drizzle-emitted)
-- [ ] **DB-04**: Continuous aggregate `wait_times_1h` rolled up hourly via Timescale DDL
-- [ ] **DB-05**: Drizzle schema for `plans`, `plan_days`, `plan_items` with versioning and polymorphic `ref_id` into catalog
-- [ ] **DB-06**: Drizzle schema for `entitlements`, `iap_events`, `llm_costs`, `push_tokens`, `affiliate_items`, `packing_list_items`
+- [x] **DB-01**: Drizzle schema for `users`, `trips`, `guests`, `trip_park_days`, `trip_preferences` with soft-delete where appropriate
+- [x] **DB-02**: Drizzle schema for `parks`, `attractions` (with PostGIS `location_point`), `dining`, `shows`, `parades`, `fireworks`, `resorts`, `walking_graph`
+- [x] **DB-03**: TimescaleDB hypertable `wait_times_history(ride_id, ts, minutes, is_open, source)` created via raw SQL migration (not Drizzle-emitted)
+- [x] **DB-04**: Continuous aggregate `wait_times_1h` rolled up hourly via Timescale DDL
+- [x] **DB-05**: Drizzle schema for `plans`, `plan_days`, `plan_items` with versioning and polymorphic `ref_id` into catalog
+- [x] **DB-06**: Drizzle schema for `entitlements`, `iap_events`, `llm_costs`, `push_tokens`, `affiliate_items`, `packing_list_items`
 - [ ] **DB-07**: Seed script idempotently loads WDW catalog (parks, attractions, dining, shows, resorts, walking_graph) from versioned YAML/JSON in `packages/content/wdw/`
-- [ ] **DB-08**: Row-level security (RLS) policies on `trips`, `guests`, `plans`, `plan_days`, `plan_items` limit reads/writes to the owning `user_id`; admin bypass via service role key only
+- [x] **DB-08**: Row-level security (RLS) policies on `trips`, `guests`, `plans`, `plan_days`, `plan_items` limit reads/writes to the owning `user_id`; admin bypass via service role key only
 
 ### Data Ingestion
 
@@ -249,11 +249,11 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | LEGL-04 | Phase 8 | Pending |
 | LEGL-05 | Phase 8 | Pending |
 | LEGL-06 | Phase 4 | Pending |
-| LEGL-07 | Phase 1 | Pending |
+| LEGL-07 | Phase 1 | Complete |
 | FND-01 | Phase 1 | Complete |
 | FND-02 | Phase 1 | Complete |
 | FND-03 | Phase 1 | Complete |
-| FND-04 | Phase 1 | Pending |
+| FND-04 | Phase 1 | Complete |
 | FND-05 | Phase 1 | Pending |
 | FND-06 | Phase 1 | Complete |
 | FND-07 | Phase 1 | Pending |
@@ -270,14 +270,14 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | DSGN-06 | Phase 1 | Pending |
 | DSGN-07 | Phase 1 | Pending |
 | DSGN-08 | Phase 1 | Pending |
-| DB-01 | Phase 1 | Pending |
-| DB-02 | Phase 1 | Pending |
-| DB-03 | Phase 1 | Pending |
-| DB-04 | Phase 1 | Pending |
-| DB-05 | Phase 1 | Pending |
-| DB-06 | Phase 1 | Pending |
+| DB-01 | Phase 1 | Complete |
+| DB-02 | Phase 1 | Complete |
+| DB-03 | Phase 1 | Complete |
+| DB-04 | Phase 1 | Complete |
+| DB-05 | Phase 1 | Complete |
+| DB-06 | Phase 1 | Complete |
 | DB-07 | Phase 1 | Pending |
-| DB-08 | Phase 1 | Pending |
+| DB-08 | Phase 1 | Complete |
 | DATA-01 | Phase 2 | Pending |
 | DATA-02 | Phase 2 | Pending |
 | DATA-03 | Phase 2 | Pending |
