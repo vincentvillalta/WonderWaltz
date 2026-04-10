@@ -1,0 +1,41 @@
+# supabase/config.toml
+# Local Supabase configuration. Start with: supabase start
+# Apply migrations:
+#   DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres \
+#   pnpm --filter @wonderwaltz/db exec drizzle-kit migrate
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://localhost:3000"]
+jwt_expiry = 3600
+enable_anonymous_sign_ins = true
+
+[auth.external.google]
+enabled = false
+
+[auth.external.apple]
+enabled = false
