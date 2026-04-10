@@ -26,7 +26,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **FND-05**: Supabase project provisioned with Postgres + Auth + Storage + TimescaleDB extension + PostGIS extension
 - [x] **FND-06**: Railway project provisioned with two services from the same codebase: `api` (NestJS HTTP) and `worker` (BullMQ processors)
 - [ ] **FND-07**: Upstash Redis instance provisioned for BullMQ + live wait cache
-- [ ] **FND-08**: Vercel project provisioned for `apps/web` with production + preview deploys
+- [x] **FND-08**: Vercel project provisioned for `apps/web` with production + preview deploys
 - [ ] **FND-09**: RevenueCat account provisioned with iOS + Android app configurations and webhook endpoint wired to backend
 - [ ] **FND-10**: Sentry projects provisioned for NestJS, Next.js, iOS, Android with DSNs in environment config
 - [ ] **FND-11**: PostHog project provisioned with event schema audit rule blocking any property containing guest age data
@@ -257,7 +257,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | FND-05 | Phase 1 | Pending |
 | FND-06 | Phase 1 | Complete |
 | FND-07 | Phase 1 | Pending |
-| FND-08 | Phase 1 | Pending |
+| FND-08 | Phase 1 | Complete |
 | FND-09 | Phase 1 | Pending |
 | FND-10 | Phase 1 | Pending |
 | FND-11 | Phase 1 | Pending |

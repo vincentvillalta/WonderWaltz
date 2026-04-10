@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-foundation 01-02-PLAN.md
-last_updated: "2026-04-10T20:47:01.753Z"
+stopped_at: Completed 01-foundation 01-03-PLAN.md
+last_updated: "2026-04-10T20:51:47.069Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
   completed_phases: 1
   total_plans: 12
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -52,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 01-foundation P01 | 355 | 3 tasks | 23 files |
 | Phase 01-foundation P02 | 7 | 3 tasks | 34 files |
+| Phase 01-foundation P03 | 15 | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: NestJS module system set to Node16 (not Node10/CommonJS) — Node10 deprecated in TypeScript 6
 - [Phase 01-foundation]: @nestjs/swagger upgraded to v11, @nestjs/config to v4 for NestJS 11 peer compatibility
 - [Phase 01-foundation]: vitest.config renamed to .mts for ESM compat in CommonJS packages
+- [Phase 01-foundation]: globals.css tokens.css @import path is 4 levels up from src/app/ (../../../../packages/design-tokens/generated/tokens.css)
+- [Phase 01-foundation]: Tailwind v4 uses CSS-native @import tailwindcss + @theme directive — no tailwind.config.js
+- [Phase 01-foundation]: DISCLAIMER text inline in layout.tsx for Phase 1; will import from @wonderwaltz/content in Phase 8
 
 ### Pending Todos
 
@@ -87,6 +91,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-10T20:47:01.751Z
-Stopped at: Completed 01-foundation 01-02-PLAN.md
+Last session: 2026-04-10T20:51:47.066Z
+Stopped at: Completed 01-foundation 01-03-PLAN.md
 Resume file: None
