@@ -24,7 +24,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **FND-03**: TypeScript 6.0.2 configured across all TS packages with shared tsconfig
 - [ ] **FND-04**: GitHub Actions CI runs lint, typecheck, test, and build for every app on every PR; Android + iOS CI wired from day 1 (not deferred)
 - [ ] **FND-05**: Supabase project provisioned with Postgres + Auth + Storage + TimescaleDB extension + PostGIS extension
-- [ ] **FND-06**: Railway project provisioned with two services from the same codebase: `api` (NestJS HTTP) and `worker` (BullMQ processors)
+- [x] **FND-06**: Railway project provisioned with two services from the same codebase: `api` (NestJS HTTP) and `worker` (BullMQ processors)
 - [ ] **FND-07**: Upstash Redis instance provisioned for BullMQ + live wait cache
 - [ ] **FND-08**: Vercel project provisioned for `apps/web` with production + preview deploys
 - [ ] **FND-09**: RevenueCat account provisioned with iOS + Android app configurations and webhook endpoint wired to backend
@@ -255,7 +255,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | FND-03 | Phase 1 | Complete |
 | FND-04 | Phase 1 | Pending |
 | FND-05 | Phase 1 | Pending |
-| FND-06 | Phase 1 | Pending |
+| FND-06 | Phase 1 | Complete |
 | FND-07 | Phase 1 | Pending |
 | FND-08 | Phase 1 | Pending |
 | FND-09 | Phase 1 | Pending |
