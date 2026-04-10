@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-foundation 01-06-PLAN.md
-last_updated: "2026-04-10T21:12:53.750Z"
+stopped_at: "Checkpoint 01-07 Task 2: awaiting human provisioning of 7 external services"
+last_updated: "2026-04-10T21:15:20.922Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
   completed_phases: 1
   total_plans: 12
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -88,6 +88,7 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: Gradle cache-read-only on PR branches to prevent cache poisoning from forks
 - [Phase 01-foundation]: ageBracketEnum stores age as bracket string (0-2 to 18+) — no birthdate field anywhere (LEGL-07 COPPA compliance)
 - [Phase 01-foundation]: RLS posture: enable on all 17 tables, no policy on catalog tables = blocked by default, all reads via NestJS service role
+- [Phase Phase 01-foundation]: SERVICES.md is the canonical provisioning checklist for all 7 external services; founder executes each step in order
 
 ### Pending Todos
 
@@ -102,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-10T21:12:53.746Z
-Stopped at: Completed 01-foundation 01-06-PLAN.md
+Last session: 2026-04-10T21:15:16.219Z
+Stopped at: Checkpoint 01-07 Task 2: awaiting human provisioning of 7 external services
 Resume file: None
