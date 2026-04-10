@@ -19,9 +19,9 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Foundations & Infrastructure
 
-- [ ] **FND-01**: Monorepo scaffolded with pnpm workspaces containing `apps/api`, `apps/web`, `apps/ios`, `apps/android`, `packages/shared-openapi`, `packages/design-tokens`, `packages/solver`, `packages/db`, `packages/content/wdw`
-- [ ] **FND-02**: Node 22 LTS pinned in `.nvmrc`, `.node-version`, Railway config, and `package.json#engines`
-- [ ] **FND-03**: TypeScript 6.0.2 configured across all TS packages with shared tsconfig
+- [x] **FND-01**: Monorepo scaffolded with pnpm workspaces containing `apps/api`, `apps/web`, `apps/ios`, `apps/android`, `packages/shared-openapi`, `packages/design-tokens`, `packages/solver`, `packages/db`, `packages/content/wdw`
+- [x] **FND-02**: Node 22 LTS pinned in `.nvmrc`, `.node-version`, Railway config, and `package.json#engines`
+- [x] **FND-03**: TypeScript 6.0.2 configured across all TS packages with shared tsconfig
 - [ ] **FND-04**: GitHub Actions CI runs lint, typecheck, test, and build for every app on every PR; Android + iOS CI wired from day 1 (not deferred)
 - [ ] **FND-05**: Supabase project provisioned with Postgres + Auth + Storage + TimescaleDB extension + PostGIS extension
 - [ ] **FND-06**: Railway project provisioned with two services from the same codebase: `api` (NestJS HTTP) and `worker` (BullMQ processors)
@@ -30,7 +30,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **FND-09**: RevenueCat account provisioned with iOS + Android app configurations and webhook endpoint wired to backend
 - [ ] **FND-10**: Sentry projects provisioned for NestJS, Next.js, iOS, Android with DSNs in environment config
 - [ ] **FND-11**: PostHog project provisioned with event schema audit rule blocking any property containing guest age data
-- [ ] **FND-12**: Secrets managed via Railway + Vercel env vars; local via `.env.local`; no secrets in git
+- [x] **FND-12**: Secrets managed via Railway + Vercel env vars; local via `.env.local`; no secrets in git
 
 ### Design System
 
@@ -250,9 +250,9 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | LEGL-05 | Phase 8 | Pending |
 | LEGL-06 | Phase 4 | Pending |
 | LEGL-07 | Phase 1 | Pending |
-| FND-01 | Phase 1 | Pending |
-| FND-02 | Phase 1 | Pending |
-| FND-03 | Phase 1 | Pending |
+| FND-01 | Phase 1 | Complete |
+| FND-02 | Phase 1 | Complete |
+| FND-03 | Phase 1 | Complete |
 | FND-04 | Phase 1 | Pending |
 | FND-05 | Phase 1 | Pending |
 | FND-06 | Phase 1 | Pending |
@@ -261,7 +261,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | FND-09 | Phase 1 | Pending |
 | FND-10 | Phase 1 | Pending |
 | FND-11 | Phase 1 | Pending |
-| FND-12 | Phase 1 | Pending |
+| FND-12 | Phase 1 | Complete |
 | DSGN-01 | Phase 1 | Pending |
 | DSGN-02 | Phase 1 | Pending |
 | DSGN-03 | Phase 1 | Pending |

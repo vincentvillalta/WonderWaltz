@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-04-10T07:21:02.104Z"
+stopped_at: Completed 01-foundation 01-01-PLAN.md
+last_updated: "2026-04-10T20:36:25.119Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
   completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
+  total_plans: 12
+  completed_plans: 2
   percent: 0
 ---
 
@@ -50,6 +50,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: N/A
 
 *Updated after each plan completion*
+| Phase 01-foundation P01 | 355 | 3 tasks | 23 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,9 @@ Recent decisions affecting current work:
 - [Phase 00-name-lock]: Founder assertion posture: light informal self-check only; no formal trademark database search; attorney engagement reactive-only on receipt of C&D or formal notice
 - [Phase 00-name-lock]: Phase 8 IP lawyer (LEGL-05) scoped to disclaimers/privacy/ToS/listings only — not trademark clearance; boundary documented in clearance memo
 - [Phase 00-name-lock]: Task 3 delegation: founder delegated memo fill-in to orchestrator; honesty preserved by documenting no-search-results posture rather than fabricating data
+- [Phase 01-foundation]: Node 22 installed via nvm; pnpm enabled on both Node 20 and Node 22 via corepack for git hook PATH compatibility
+- [Phase 01-foundation]: Root tsconfig.json added to satisfy ESLint projectService for vitest.config.ts; per-package tsconfig.json added to db, design-tokens, api packages
+- [Phase 01-foundation]: @eslint/js pinned to v9 series to match eslint@9 peer requirement
 
 ### Pending Todos
 
@@ -79,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-10T07:21:02.101Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-foundation/01-CONTEXT.md
+Last session: 2026-04-10T20:36:25.117Z
+Stopped at: Completed 01-foundation 01-01-PLAN.md
+Resume file: None
