@@ -1,0 +1,47 @@
+{
+  "name": "@wonderwaltz/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "start": "node dist/main.js",
+    "start:dev": "ts-node --esm src/main.ts"
+  },
+  "dependencies": {
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/platform-fastify": "^11.0.0",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/swagger": "^11.0.0",
+    "@nestjs/bullmq": "^11.0.0",
+    "bullmq": "5.73.1",
+    "ioredis": "^5.0.0",
+    "drizzle-orm": "0.45.2",
+    "postgres": "^3.4.0",
+    "zod": "4.3.6",
+    "nestjs-zod": "^3.0.0",
+    "@supabase/supabase-js": "2.102.1",
+    "posthog-node": "5.29.1",
+    "@sentry/nestjs": "10.47.0",
+    "uuidv7": "^0.6.0",
+    "@fastify/helmet": "^12.0.0",
+    "@fastify/rate-limit": "^10.0.0",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.8.0",
+    "@wonderwaltz/db": "workspace:*",
+    "@wonderwaltz/solver": "workspace:*",
+    "@wonderwaltz/content": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "6.0.2",
+    "vitest": "4.1.3",
+    "@vitest/coverage-v8": "4.1.3",
+    "supertest": "^7.0.0",
+    "@types/supertest": "^6.0.0"
+  }
+}
