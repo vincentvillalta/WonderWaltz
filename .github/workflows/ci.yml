@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  # Turborepo remote cache — set these secrets in GitHub repo settings:
+  # Settings → Secrets and variables → Actions → New repository secret
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+jobs:
+  ci:
+    name: Build, Lint, Typecheck, Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Needed for turbo --filter diff detection
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+        # turbo run build — builds all packages respecting ^build dependencies
+        # design-tokens generates swift/kotlin/css/ts outputs
+        # packages/db, solver, shared-openapi, content compile to dist/
+
+      - name: Lint
+        run: pnpm run lint
+        # turbo run lint — ESLint across all TS packages in parallel
+
+      - name: Typecheck
+        run: pnpm run typecheck
+        # turbo run typecheck — tsc --noEmit across all packages
+
+      - name: Test
+        run: pnpm run test
+        # turbo run test — vitest run across all packages
+        # NOTE: RLS integration tests (vitest --project rls-integration)
+        # are NOT run in CI — they require a local Supabase instance.
+        # Run locally with: supabase start && vitest run packages/db/tests/
+
+      # iOS CI: handled by Xcode Cloud (NOT GitHub Actions)
+      # Xcode Cloud reports status checks via the GitHub App.
+      # See: .planning/phases/01-foundation/01-RESEARCH.md §5
+      # Setup: Install github.com/apps/xcode-cloud on this repo,
+      # then configure workflow in Xcode: Product → Xcode Cloud → Create Workflow
+      # Required GitHub secret for branch protection: Xcode Cloud check name
