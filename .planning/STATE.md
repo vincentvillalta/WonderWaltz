@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-foundation 01-04-PLAN.md
-last_updated: "2026-04-10T21:03:00.510Z"
+stopped_at: Completed 01-foundation 01-05-PLAN.md
+last_updated: "2026-04-10T21:06:22.896Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
   completed_phases: 1
   total_plans: 12
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -54,6 +54,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P02 | 7 | 3 tasks | 34 files |
 | Phase 01-foundation P03 | 15 | 2 tasks | 11 files |
 | Phase 01-foundation P04 | 35 | 2 tasks | 25 files |
+| Phase 01-foundation P05 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: Xcode project.pbxproj created manually (not via Xcode GUI) so it can be bootstrapped headlessly in CI
 - [Phase 01-foundation]: kotlinOptions DSL replaced with kotlin { compilerOptions {} } — kotlinOptions is a compile error in Kotlin 2.3.x
 - [Phase 01-foundation]: KSP plugin 2.3.20-1.0.32 not yet published; commented out in root build.gradle.kts, wired in Phase 7
+- [Phase 01-foundation]: Xcode Cloud handles iOS CI — no macOS GHA runner. Locked in 01-CONTEXT.md.
+- [Phase 01-foundation]: Android CI path-filtered to apps/android/** to avoid spurious runs on TS changes
+- [Phase 01-foundation]: Gradle cache-read-only on PR branches to prevent cache poisoning from forks
 
 ### Pending Todos
 
@@ -95,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-10T21:03:00.508Z
-Stopped at: Completed 01-foundation 01-04-PLAN.md
+Last session: 2026-04-10T21:06:18.011Z
+Stopped at: Completed 01-foundation 01-05-PLAN.md
 Resume file: None
