@@ -1,0 +1,7 @@
+{
+  "buildCommand": "turbo run build --filter=@wonderwaltz/web...",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "ignoreCommand": "git diff HEAD^ HEAD --quiet -- apps/web packages/design-tokens packages/content"
+}
