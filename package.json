@@ -1,0 +1,29 @@
+{
+  "name": "wonderwaltz",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "build":     "turbo run build",
+    "lint":      "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test":      "turbo run test",
+    "dev":       "turbo run dev --parallel",
+    "format":    "prettier --write ."
+  },
+  "devDependencies": {
+    "turbo":                "latest",
+    "@commitlint/cli":      "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "husky":                "^9.0.0",
+    "lint-staged":          "^15.0.0",
+    "prettier":             "^3.0.0",
+    "eslint":               "^9.0.0",
+    "typescript":           "6.0.2",
+    "vitest":               "4.1.3",
+    "@vitest/coverage-v8":  "4.1.3"
+  }
+}
