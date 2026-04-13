@@ -20,21 +20,27 @@ const sd = new StyleDictionary({
   platforms: {
     swift: {
       // Override UIColorSwift with ColorSwiftUI — required for SwiftUI (Pitfall 5)
+      // Note: size/swift/remToCGFloat intentionally omitted — it multiplies px values by 16
+      // (designed for rem-to-pt conversion, not px-to-CGFloat passthrough)
       transforms: [
         'attribute/cti',
         'name/camel',
         'color/ColorSwiftUI',
         'content/swift/literal',
         'asset/swift/literal',
-        'size/swift/remToCGFloat',
       ],
       buildPath: 'generated/',
       files: [
         {
           destination: 'WWDesignTokens.swift',
           format: 'ios-swift/class.swift',
-          className: 'WWDesignTokens',
-          options: { outputReferences: false },
+          options: {
+            // import must be explicit in options — the format helper defaults to UIKit
+            // when no transformGroup is set (Pitfall 5 fix: use SwiftUI instead)
+            import: ['SwiftUI'],
+            className: 'WWDesignTokens',
+            outputReferences: false,
+          },
         },
       ],
     },
@@ -45,8 +51,11 @@ const sd = new StyleDictionary({
         {
           destination: 'WWTheme.kt',
           format: 'compose/object',
-          className: 'WWThemeTokens',
-          packageName: 'com.wonderwaltz.design',
+          options: {
+            // className and packageName must be inside options in Style Dictionary 4
+            className: 'WWThemeTokens',
+            packageName: 'com.wonderwaltz.design',
+          },
         },
       ],
     },
