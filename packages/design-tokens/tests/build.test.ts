@@ -1,30 +1,111 @@
-import { describe, it, expect } from 'vitest';
+/**
+ * Design token build verification.
+ * Run: pnpm --filter @wonderwaltz/design-tokens build && vitest run packages/design-tokens/tests/
+ *
+ * SC-4a: pnpm --filter @wonderwaltz/design-tokens build && test -f packages/design-tokens/generated/WWDesignTokens.swift
+ * SC-4b: test -f packages/design-tokens/generated/WWTheme.kt
+ * SC-4c: test -f packages/design-tokens/generated/tokens.css && grep -c "@theme"
+ */
+import { describe, it, expect, beforeAll } from 'vitest';
 import { existsSync, readFileSync } from 'fs';
+import { execSync } from 'child_process';
 import { resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-const GENERATED = resolve(import.meta.dirname, '../generated');
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const PACKAGE_ROOT = resolve(__dirname, '..');
+const GENERATED = resolve(PACKAGE_ROOT, 'generated');
 
-describe('Design token build outputs', () => {
-  it('generates WWDesignTokens.swift', () => {
-    expect(existsSync(`${GENERATED}/WWDesignTokens.swift`)).toBe(true);
+beforeAll(() => {
+  // Run the build before testing outputs
+  execSync('node style-dictionary.config.mjs', {
+    cwd: PACKAGE_ROOT,
+    stdio: 'pipe',
+  });
+});
+
+describe('Design token build — all four platform outputs', () => {
+  it('generates WWDesignTokens.swift (Swift/iOS)', () => {
+    const file = `${GENERATED}/WWDesignTokens.swift`;
+    expect(existsSync(file)).toBe(true);
+    const content = readFileSync(file, 'utf8');
+    expect(content.length).toBeGreaterThan(100);
   });
 
-  it('generates WWTheme.kt', () => {
-    expect(existsSync(`${GENERATED}/WWTheme.kt`)).toBe(true);
+  it('WWDesignTokens.swift uses SwiftUI Color, NOT UIKit UIColor (Pitfall 5)', () => {
+    const content = readFileSync(`${GENERATED}/WWDesignTokens.swift`, 'utf8');
+    expect(content).not.toContain('UIColor');
+    // Should contain SwiftUI Color
+    expect(content).toContain('Color(');
   });
 
-  it('generates tokens.css with @theme block', () => {
-    expect(existsSync(`${GENERATED}/tokens.css`)).toBe(true);
-    const css = readFileSync(`${GENERATED}/tokens.css`, 'utf8');
-    expect(css).toContain('@theme');
+  it('generates WWTheme.kt (Compose/Android)', () => {
+    const file = `${GENERATED}/WWTheme.kt`;
+    expect(existsSync(file)).toBe(true);
+    const content = readFileSync(file, 'utf8');
+    expect(content.length).toBeGreaterThan(100);
+    expect(content).toContain('object'); // compose/object format
   });
 
-  it('generates tokens.ts', () => {
-    expect(existsSync(`${GENERATED}/tokens.ts`)).toBe(true);
+  it('generates tokens.css with @theme block for Tailwind v4 (Pitfall 6)', () => {
+    const file = `${GENERATED}/tokens.css`;
+    expect(existsSync(file)).toBe(true);
+    const content = readFileSync(file, 'utf8');
+    expect(content).toContain('@theme');
+    // Tailwind v4 uses @theme, NOT :root — verify correct format
+    expect(content).not.toMatch(/^:root\s*\{/m);
   });
 
-  it('Swift output contains Color (SwiftUI), not UIColor (UIKit)', () => {
-    const swift = readFileSync(`${GENERATED}/WWDesignTokens.swift`, 'utf8');
-    expect(swift).not.toContain('UIColor');
+  it('generates tokens.ts (TypeScript)', () => {
+    const file = `${GENERATED}/tokens.ts`;
+    expect(existsSync(file)).toBe(true);
+    const content = readFileSync(file, 'utf8');
+    expect(content.length).toBeGreaterThan(50);
+  });
+});
+
+interface TokenValue {
+  value: string;
+  type: string;
+}
+interface TokensJson {
+  color: {
+    primitive: Record<string, unknown>;
+    semantic: {
+      surface: {
+        app: { light: TokenValue; dark: TokenValue };
+      };
+    };
+  };
+  iconography: {
+    library: TokenValue;
+  };
+}
+
+describe('tokens.json structural validation', () => {
+  it('has two-tier color structure (primitive + semantic)', () => {
+    const tokens = JSON.parse(
+      readFileSync(resolve(PACKAGE_ROOT, 'tokens.json'), 'utf8'),
+    ) as TokensJson;
+    expect(tokens.color.primitive).toBeDefined();
+    expect(tokens.color.semantic).toBeDefined();
+  });
+
+  it('has dark mode variants in semantic tokens', () => {
+    const tokens = JSON.parse(
+      readFileSync(resolve(PACKAGE_ROOT, 'tokens.json'), 'utf8'),
+    ) as TokensJson;
+    expect(tokens.color.semantic.surface.app.light).toBeDefined();
+    expect(tokens.color.semantic.surface.app.dark).toBeDefined();
+  });
+
+  it('iconography library is specified (DSGN-07)', () => {
+    const tokens = JSON.parse(
+      readFileSync(resolve(PACKAGE_ROOT, 'tokens.json'), 'utf8'),
+    ) as TokensJson;
+    expect(tokens.iconography).toBeDefined();
+    // Phosphor or Lucide — both are acceptable
+    const lib = tokens.iconography.library.value;
+    expect(['phosphor', 'lucide']).toContain(lib);
   });
 });
