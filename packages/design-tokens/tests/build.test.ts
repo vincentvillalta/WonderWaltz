@@ -68,17 +68,27 @@ interface TokenValue {
   value: string;
   type: string;
 }
+interface IconographyPlatform {
+  library: TokenValue;
+  version?: TokenValue;
+  defaultWeight?: TokenValue;
+}
 interface TokensJson {
   color: {
     primitive: Record<string, unknown>;
+    park: Record<string, TokenValue>;
     semantic: {
-      surface: {
-        app: { light: TokenValue; dark: TokenValue };
-      };
+      light: { background: TokenValue };
+      dark: { background: TokenValue };
     };
   };
+  font: {
+    family: { display: TokenValue; ui: TokenValue };
+  };
   iconography: {
-    library: TokenValue;
+    web: IconographyPlatform;
+    native: IconographyPlatform;
+    minTapTarget: TokenValue;
   };
 }
 
@@ -95,8 +105,11 @@ describe('tokens.json structural validation', () => {
     const tokens = JSON.parse(
       readFileSync(resolve(PACKAGE_ROOT, 'tokens.json'), 'utf8'),
     ) as TokensJson;
-    expect(tokens.color.semantic.surface.app.light).toBeDefined();
-    expect(tokens.color.semantic.surface.app.dark).toBeDefined();
+    // New brand structure: color.semantic.light / color.semantic.dark (Plan 01-09)
+    expect(tokens.color.semantic.light).toBeDefined();
+    expect(tokens.color.semantic.dark).toBeDefined();
+    expect(tokens.color.semantic.light.background).toBeDefined();
+    expect(tokens.color.semantic.dark.background).toBeDefined();
   });
 
   it('iconography library is specified (DSGN-07)', () => {
@@ -104,8 +117,10 @@ describe('tokens.json structural validation', () => {
       readFileSync(resolve(PACKAGE_ROOT, 'tokens.json'), 'utf8'),
     ) as TokensJson;
     expect(tokens.iconography).toBeDefined();
-    // Phosphor or Lucide — both are acceptable
-    const lib = tokens.iconography.library.value;
-    expect(['phosphor', 'lucide']).toContain(lib);
+    // Plan 01-09: web uses Lucide, native uses Phosphor — both are acceptable
+    const webLib = tokens.iconography.web.library.value;
+    const nativeLib = tokens.iconography.native.library.value;
+    expect(['lucide-react', 'lucide']).toContain(webLib);
+    expect(['phosphor']).toContain(nativeLib);
   });
 });
