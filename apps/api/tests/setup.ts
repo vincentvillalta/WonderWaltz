@@ -6,9 +6,14 @@ import { vi } from 'vitest';
  * Registered via vitest.config.mts setupFiles.
  */
 
-// Mock ioredis globally so tests never require a live Redis connection
+// Mock ioredis globally so tests never require a live Redis connection.
+// Uses a regular function (not arrow) in mockImplementation so vi.fn() can
+// also be called as a constructor (new Redis(config)) in NestJS module factories.
 vi.mock('ioredis', () => {
-  const mockRedis = vi.fn().mockImplementation(() => makeRedisClient());
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockRedis = vi.fn().mockImplementation(function (this: any) {
+    return makeRedisClient();
+  });
   return { default: mockRedis };
 });
 

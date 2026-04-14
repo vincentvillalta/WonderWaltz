@@ -1,6 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
-import type { Redis } from 'ioredis';
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import Redis from 'ioredis';
 import * as Sentry from '@sentry/nestjs';
+
+/** Injection token for the shared ioredis client */
+export const REDIS_CLIENT_TOKEN = 'REDIS_CLIENT';
 
 /**
  * SlackAlerterService
@@ -16,7 +19,7 @@ import * as Sentry from '@sentry/nestjs';
 export class SlackAlerterService {
   private readonly logger = new Logger(SlackAlerterService.name);
 
-  constructor(private readonly redis: Redis) {}
+  constructor(@Inject(REDIS_CLIENT_TOKEN) private readonly redis: Redis) {}
 
   /**
    * Called when a job is dead-lettered (all retry attempts exhausted).

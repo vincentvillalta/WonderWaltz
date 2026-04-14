@@ -1,21 +1,56 @@
 import { describe, it, expect, vi } from 'vitest';
 
-// Mock ioredis before any imports to prevent real Redis connections
-vi.mock('ioredis', () => {
-  const mockRedis = vi.fn().mockImplementation(() => ({
-    get: vi.fn().mockResolvedValue(null),
-    set: vi.fn().mockResolvedValue('OK'),
-    expire: vi.fn().mockResolvedValue(1),
-    incr: vi.fn().mockResolvedValue(1),
-    del: vi.fn().mockResolvedValue(1),
-    quit: vi.fn().mockResolvedValue('OK'),
-    disconnect: vi.fn(),
-    status: 'ready',
+// Mock @nestjs/bullmq to prevent real BullMQ queue connections during bootstrap test.
+// This avoids onModuleInit upsertJobScheduler calls hanging on Redis connection.
+vi.mock('@nestjs/bullmq', async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const original = await importOriginal<typeof import('@nestjs/bullmq')>();
+  const mockQueue = {
+    upsertJobScheduler: vi.fn().mockResolvedValue(undefined),
+    add: vi.fn().mockResolvedValue({ id: '1' }),
+    close: vi.fn().mockResolvedValue(undefined),
     on: vi.fn(),
-    once: vi.fn(),
-    removeAllListeners: vi.fn(),
-    ping: vi.fn().mockResolvedValue('PONG'),
-  }));
+  };
+  const queueToken = original.getQueueToken('wait-times');
+  return {
+    ...original,
+    BullModule: {
+      forRoot: vi.fn().mockReturnValue({
+        module: class BullRootModule {},
+        providers: [],
+        exports: [],
+        global: true,
+      }),
+      registerQueue: vi.fn().mockReturnValue({
+        module: class BullQueueModule {},
+        providers: [{ provide: queueToken, useValue: mockQueue }],
+        exports: [queueToken],
+      }),
+    },
+  };
+});
+
+// Mock ioredis before any imports to prevent real Redis connections.
+// Uses a regular function (not arrow) so vi.fn() can be called as a constructor
+// (new Redis(config)) when NestJS module providers instantiate it.
+vi.mock('ioredis', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockRedis = vi.fn().mockImplementation(function (this: any) {
+    return {
+      get: vi.fn().mockResolvedValue(null),
+      set: vi.fn().mockResolvedValue('OK'),
+      expire: vi.fn().mockResolvedValue(1),
+      incr: vi.fn().mockResolvedValue(1),
+      del: vi.fn().mockResolvedValue(1),
+      quit: vi.fn().mockResolvedValue('OK'),
+      disconnect: vi.fn(),
+      status: 'ready',
+      on: vi.fn(),
+      once: vi.fn(),
+      removeAllListeners: vi.fn(),
+      ping: vi.fn().mockResolvedValue('PONG'),
+    };
+  });
   return { default: mockRedis };
 });
 

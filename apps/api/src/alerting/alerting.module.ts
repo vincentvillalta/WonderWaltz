@@ -11,8 +11,8 @@ import { LagAlertService } from './lag-alert.service.js';
  * Wave 2 feature modules (e.g., QueueTimesModule) import AlertingModule
  * to access SlackAlerterService and LagAlertService without circular deps.
  *
- * Note: Consumers must also provide DB_TOKEN (Drizzle instance) in their
- * module scope, as LagAlertService injects it via @Inject(DB_TOKEN).
+ * Note: Consumers must also provide REDIS_CLIENT (SlackAlerterService) and
+ * DB (LagAlertService) tokens in their module scope.
  */
 @Module({
   providers: [SlackAlerterService, LagAlertService],

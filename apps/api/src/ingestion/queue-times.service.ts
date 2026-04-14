@@ -1,6 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
-import type { Redis } from 'ioredis';
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import Redis from 'ioredis';
 import { sql } from 'drizzle-orm';
+import { REDIS_CLIENT_TOKEN } from '../alerting/slack-alerter.service.js';
+
+/** Injection token for the Drizzle DB instance */
+export const DB_TOKEN = 'DB';
 
 /**
  * WDW Park IDs on queue-times.com.
@@ -42,7 +46,7 @@ interface QueueTimesResponse {
 // (see 02-02 SUMMARY key-decisions; same pattern as LagAlertService)
 // ---------------------------------------------------------------------------
 
-interface AttractionRow {
+interface AttractionRow extends Record<string, unknown> {
   id: string;
   queue_times_id: number;
 }
@@ -67,8 +71,8 @@ export class QueueTimesService {
   private attractionIdCache: Map<number, string> | null = null;
 
   constructor(
-    private readonly db: DrizzleDb,
-    private readonly redis: Redis,
+    @Inject(DB_TOKEN) private readonly db: DrizzleDb,
+    @Inject(REDIS_CLIENT_TOKEN) private readonly redis: Redis,
   ) {}
 
   /**
