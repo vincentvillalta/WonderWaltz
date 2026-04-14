@@ -18,9 +18,10 @@ PostGIS for attraction geolocation, and Supabase Auth for user accounts.
    - Region: US East (closest to WDW servers)
 
 2. Enable extensions (Database → Extensions):
-   - `timescaledb` → Enable (required for wait_times_history hypertable)
    - `postgis` → Enable (required for attraction location_point)
    - `uuid-ossp` → Enable (for UUID generation, usually pre-enabled)
+   - `pg_cron` → Enable (hourly refresh of wait_times_1h materialized view + daily 2-year retention purge)
+   - **Do NOT enable `timescaledb`** — not available on Supabase Cloud; migrations 0001/0002 use a standard materialized view + pg_cron instead
 
 3. Enable anonymous sign-ins (Authentication → Providers → Anonymous → Enable)
 
