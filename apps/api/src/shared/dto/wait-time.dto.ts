@@ -16,23 +16,30 @@ export class WaitTimeDto {
   name!: string;
 
   @ApiProperty({
-    description: 'Current posted wait time in minutes',
+    description:
+      'Current posted wait time in minutes. Null when no data is available (attraction not yet polled or no history).',
     example: 35,
+    nullable: true,
+    type: Number,
   })
-  minutes!: number;
+  minutes!: number | null;
 
   @ApiProperty({
-    description: 'ISO 8601 timestamp when this wait time was last fetched from the source',
+    description:
+      'ISO 8601 timestamp when this wait time was last fetched from the source. Null when no data is available.',
     example: '2026-04-14T15:30:00.000Z',
+    nullable: true,
+    type: String,
   })
-  fetched_at!: string;
+  fetched_at!: string | null;
 
   @ApiProperty({
-    description: 'Data source identifier',
+    description: 'Data source identifier. Null when no data is available.',
     enum: ['queue-times', 'themeparks-wiki'],
     example: 'queue-times',
+    nullable: true,
   })
-  source!: WaitTimeSource;
+  source!: WaitTimeSource | null;
 
   @ApiProperty({
     description:
