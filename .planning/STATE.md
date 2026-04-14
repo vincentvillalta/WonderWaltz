@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-data-pipeline 02-08-PLAN.md
-last_updated: "2026-04-14T22:06:53.342Z"
+stopped_at: Completed 02-data-pipeline 02-09-PLAN.md
+last_updated: "2026-04-14T22:35:12.093Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
   completed_phases: 2
   total_plans: 24
-  completed_plans: 20
+  completed_plans: 21
   percent: 0
 ---
 
@@ -68,6 +68,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-data-pipeline P06 | 4 | 1 tasks | 4 files |
 | Phase 02-data-pipeline P07 | 38 | 2 tasks | 6 files |
 | Phase 02-data-pipeline P08 | 27 | 1 tasks | 4 files |
+| Phase 02-data-pipeline P09 | 15 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -127,6 +128,8 @@ Recent decisions affecting current work:
 - [Phase 02-data-pipeline]: CrowdIndexModule exports CrowdIndexService for future GET /v1/crowd-index API endpoint without re-querying DB
 - [Phase 02-data-pipeline]: WeatherService uses UTC-based date comparison in isWithinHorizon — avoids local-timezone skew in non-UTC environments
 - [Phase 02-data-pipeline]: WeatherModule + SharedInfraModule added to AppModule (HTTP side) for plan 02-09 weather endpoint injection
+- [Phase 02-data-pipeline]: WaitTimeDto nullable fields (minutes/fetched_at/source) support no-data case when Redis miss + no history
+- [Phase 02-data-pipeline]: ParksService reads crowd_index Redis keys directly — avoids importing CrowdIndexModule (BullMQ) into HTTP process
 
 ### Pending Todos
 
@@ -142,6 +145,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-14T22:06:53.339Z
-Stopped at: Completed 02-data-pipeline 02-08-PLAN.md
+Last session: 2026-04-14T22:35:12.091Z
+Stopped at: Completed 02-data-pipeline 02-09-PLAN.md
 Resume file: None
