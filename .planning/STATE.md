@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-11-PLAN.md
+stopped_at: Phase 01 paused — 01-09 deferred pending Figma MCP connection
 last_updated: "2026-04-14T10:29:25.460Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
@@ -100,10 +100,11 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- [restructure-01-09-figma-mcp](.planning/todos/pending/restructure-01-09-figma-mcp.md) — rewrite Plan 01-09 to pull brand tokens from Figma via MCP instead of ui-designer agent; unblocks Phase 01 completion
 
 ### Blockers/Concerns
 
+- **Phase 01 paused (2026-04-14):** 10/11 plans complete. 01-09 deferred — brand direction will come from Figma via MCP, not ui-designer agent. Requires Figma MCP connection + plan restructure before resume. Phase 02 cannot start until 01 verified complete.
 - **Open question (Phase 0/10):** Should per-trip IAP be consumable or non-consumable in App Store Connect? Decide before Phase 6 starts. (See SUMMARY.md Open Questions)
 - **Open question (Phase 2):** TouringPlans historical data commercial use terms need verification before seeding to bootstrap cold start.
 - **Open question (Phase 3):** DAS return window operational details need current WDW documentation verification before solver encoding.
@@ -111,6 +112,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-14T10:29:25.457Z
-Stopped at: Completed 01-11-PLAN.md
-Resume file: None
+Last session: 2026-04-14
+Stopped at: Phase 01 paused after 01-11; 01-09 deferred for Figma MCP rework
+Resume file: .planning/todos/pending/restructure-01-09-figma-mcp.md
