@@ -2,15 +2,31 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ApiEnvelopedResponse } from '../common/decorators/api-enveloped-response.decorator.js';
 import { WaitTimeDto } from '../shared/dto/wait-time.dto.js';
+import { ParksService, ParkDto } from './parks.service.js';
 
 @ApiTags('parks')
 @Controller('parks')
 export class ParksController {
+  constructor(private readonly parksService: ParksService) {}
+
+  /**
+   * GET /v1/parks
+   * Returns the list of WDW parks from the catalog.
+   */
+  @Get()
+  @ApiOperation({
+    summary: 'List all WDW parks',
+    description: 'Returns the catalog list of Walt Disney World parks.',
+  })
+  @ApiEnvelopedResponse(WaitTimeDto)
+  async getParks(): Promise<ParkDto[]> {
+    return this.parksService.getParks();
+  }
+
   /**
    * GET /v1/parks/:parkId/waits
    * Returns current posted wait times for all rides in the specified park.
-   * Live implementation delivered in plan 02-09 (QueueTimesModule).
-   * Returns empty array as stub — real Redis/DB reads in 02-09.
+   * Reads from Redis with is_stale computation; falls back to DB last row.
    */
   @Get(':parkId/waits')
   @ApiOperation({
@@ -27,8 +43,7 @@ export class ParksController {
     example: 'magic-kingdom',
   })
   @ApiEnvelopedResponse(WaitTimeDto)
-  getWaitTimes(@Param('parkId') _parkId: string): WaitTimeDto[] {
-    // Real implementation: QueueTimesModule reads from Redis in plan 02-09
-    return [];
+  async getWaitTimes(@Param('parkId') parkId: string): Promise<WaitTimeDto[]> {
+    return this.parksService.getWaitTimes(parkId);
   }
 }
