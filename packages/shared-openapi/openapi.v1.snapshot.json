@@ -1,0 +1,977 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/v1/parks/{parkId}/waits": {
+      "get": {
+        "description": "Returns posted wait times for all tracked attractions in the park. is_stale=true when fetched_at is more than 5 minutes ago. Source is \"queue-times\" (primary, 5-min refresh) or \"themeparks-wiki\" (secondary).",
+        "operationId": "ParksController_getWaitTimes",
+        "parameters": [
+          {
+            "name": "parkId",
+            "required": true,
+            "in": "path",
+            "description": "Park identifier slug (e.g., \"magic-kingdom\", \"epcot\", \"hollywood-studios\", \"animal-kingdom\")",
+            "schema": {
+              "example": "magic-kingdom",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/WaitTimeDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": ["data", "meta"]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get current wait times for a park",
+        "tags": ["parks"]
+      }
+    },
+    "/v1/crowd-index": {
+      "get": {
+        "description": "Returns crowd index values for all four WDW parks plus a global aggregate. Values are 0–100 percentile scores against the trailing-90-day distribution. confidence=\"bootstrap\" during the first 30 days; \"percentile\" thereafter.",
+        "operationId": "CrowdIndexController_getCrowdIndex",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CrowdIndexResponseDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": ["data", "meta"]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get current crowd index (global + per-park)",
+        "tags": ["parks"]
+      }
+    },
+    "/v1/weather": {
+      "get": {
+        "description": "Returns a weather forecast for the given date. Returns null if the date is beyond OpenWeather's 8-day forecast horizon. Responses are cached in Redis for 6 hours.",
+        "operationId": "WeatherController_getWeather",
+        "parameters": [
+          {
+            "name": "date",
+            "required": false,
+            "in": "query",
+            "description": "Date to fetch forecast for, in YYYY-MM-DD format. Only available within OpenWeather's 8-day forecast horizon. Dates beyond that window return null.",
+            "schema": {
+              "example": "2026-05-01",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/WeatherDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": ["data", "meta"]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get Orlando weather forecast for a date",
+        "tags": ["parks"]
+      }
+    },
+    "/v1/trips": {
+      "post": {
+        "description": "Creates a new trip with guest list and preferences. Returns 501 until Phase 3 solver implementation.",
+        "operationId": "TripsController_createTrip",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTripDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/TripDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": ["data", "meta"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented until Phase 3"
+          }
+        },
+        "summary": "Create a trip (Phase 3)",
+        "tags": ["trips"]
+      }
+    },
+    "/v1/trips/{id}": {
+      "get": {
+        "description": "Returns the trip object including guests and preferences. Returns 501 until Phase 3.",
+        "operationId": "TripsController_getTrip",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Trip UUID",
+            "schema": {
+              "example": "trip-uuid-here",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/TripDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": ["data", "meta"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented until Phase 3"
+          }
+        },
+        "summary": "Get a trip by ID (Phase 3)",
+        "tags": ["trips"]
+      }
+    },
+    "/v1/trips/{id}/generate-plan": {
+      "post": {
+        "description": "Enqueues a plan generation job for the trip. Returns a job_id to poll GET /v1/plans/:id for status. Returns 501 until Phase 3.",
+        "operationId": "TripsController_generatePlan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Trip UUID",
+            "schema": {
+              "example": "trip-uuid-here",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/GeneratePlanResponseDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": ["data", "meta"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented until Phase 3"
+          }
+        },
+        "summary": "Generate an itinerary plan (Phase 3)",
+        "tags": ["trips"]
+      }
+    },
+    "/v1/trips/{id}/rethink-today": {
+      "post": {
+        "description": "Enqueues a re-planning job for the remaining items today. Returns a job_id to poll GET /v1/plans/:id for status. Returns 501 until Phase 3.",
+        "operationId": "TripsController_rethinkToday",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Trip UUID",
+            "schema": {
+              "example": "trip-uuid-here",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RethinkTodayDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/GeneratePlanResponseDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": ["data", "meta"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented until Phase 3"
+          }
+        },
+        "summary": "Rethink today's remaining itinerary (Phase 3)",
+        "tags": ["trips"]
+      }
+    },
+    "/v1/plans/{id}": {
+      "get": {
+        "description": "Returns the plan with day_plans. Poll this endpoint after POST /v1/trips/:id/generate-plan or rethink-today. status=\"generating\" while the job is in progress, \"ready\" when complete. Returns 501 until Phase 3.",
+        "operationId": "PlansController_getPlan",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Plan UUID",
+            "schema": {
+              "example": "plan-uuid-here",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/PlanDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": ["data", "meta"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented until Phase 3"
+          }
+        },
+        "summary": "Get a plan by ID (Phase 3)",
+        "tags": ["plans"]
+      }
+    },
+    "/v1/auth/anonymous": {
+      "post": {
+        "description": "Creates an anonymous user account and returns a JWT access token. Anonymous users can create and view trips but cannot purchase entitlements. Returns 501 until Phase 4 auth implementation.",
+        "operationId": "AuthController_anonymousAuth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AnonymousAuthResponseDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": ["data", "meta"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented until Phase 4"
+          }
+        },
+        "summary": "Create anonymous user session (Phase 4)",
+        "tags": ["auth"]
+      }
+    },
+    "/v1/users/me": {
+      "get": {
+        "description": "Returns the profile for the authenticated user. Requires a valid JWT bearer token from POST /v1/auth/anonymous or a registered login. Returns 501 until Phase 4 auth implementation.",
+        "operationId": "UsersController_getMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/UserMeDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": ["data", "meta"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented until Phase 4"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user profile (Phase 4)",
+        "tags": ["users"]
+      }
+    }
+  },
+  "info": {
+    "title": "WonderWaltz API",
+    "description": "WonderWaltz trip planning backend. v1 surface: ingestion reads (live), trip/plan stubs (501 until Phase 3), auth stubs (501 until Phase 4).",
+    "version": "1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "/v1",
+      "description": "WonderWaltz API v1"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "ApiMetaDto": {
+        "type": "object",
+        "properties": {
+          "disclaimer": {
+            "type": "string",
+            "description": "Disclaimer text — all WonderWaltz API responses include this.",
+            "example": "WonderWaltz is an independent, unofficial planning app. Not affiliated with, endorsed by, or sponsored by The Walt Disney Company."
+          }
+        },
+        "required": ["disclaimer"]
+      },
+      "WaitTimeDto": {
+        "type": "object",
+        "properties": {
+          "attractionId": {
+            "type": "string",
+            "description": "Internal attraction UUID",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "name": {
+            "type": "string",
+            "description": "Attraction display name",
+            "example": "Jungle Cruise"
+          },
+          "minutes": {
+            "type": "number",
+            "description": "Current posted wait time in minutes",
+            "example": 35
+          },
+          "fetched_at": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when this wait time was last fetched from the source",
+            "example": "2026-04-14T15:30:00.000Z"
+          },
+          "source": {
+            "type": "string",
+            "description": "Data source identifier",
+            "enum": ["queue-times", "themeparks-wiki"],
+            "example": "queue-times"
+          },
+          "is_stale": {
+            "type": "boolean",
+            "description": "True when fetched_at is more than 5 minutes ago — indicates potentially stale data. Clients should render staleness indicators.",
+            "example": false
+          }
+        },
+        "required": ["attractionId", "name", "minutes", "fetched_at", "source", "is_stale"]
+      },
+      "CrowdIndexValueDto": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "description": "Crowd index score from 0 to 100 (percentile of trailing-90-day distribution). Null during very early bootstrap period before any history exists.",
+            "example": 62,
+            "nullable": true
+          },
+          "confidence": {
+            "type": "string",
+            "description": "\"bootstrap\" during first 30 days (formula: min(100, avg_wait × 1.2)); \"percentile\" once ≥30 days of history exist. Clients can label early-life values honestly.",
+            "enum": ["bootstrap", "percentile"],
+            "example": "percentile"
+          },
+          "sample_size_days": {
+            "type": "number",
+            "description": "Number of days of wait-time history available for the percentile calculation. Used to communicate confidence to the user.",
+            "example": 42
+          }
+        },
+        "required": ["value", "confidence", "sample_size_days"]
+      },
+      "CrowdIndexParksDto": {
+        "type": "object",
+        "properties": {
+          "magic_kingdom": {
+            "$ref": "#/components/schemas/CrowdIndexValueDto"
+          },
+          "epcot": {
+            "$ref": "#/components/schemas/CrowdIndexValueDto"
+          },
+          "hollywood_studios": {
+            "$ref": "#/components/schemas/CrowdIndexValueDto"
+          },
+          "animal_kingdom": {
+            "$ref": "#/components/schemas/CrowdIndexValueDto"
+          }
+        },
+        "required": ["magic_kingdom", "epcot", "hollywood_studios", "animal_kingdom"]
+      },
+      "CrowdIndexResponseDto": {
+        "type": "object",
+        "properties": {
+          "global": {
+            "description": "Global crowd index across all four WDW parks (top 5 rides per park × 4 parks = top 20 rides).",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CrowdIndexValueDto"
+              }
+            ]
+          },
+          "parks": {
+            "description": "Per-park crowd indices for Magic Kingdom, EPCOT, Hollywood Studios, and Animal Kingdom.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CrowdIndexParksDto"
+              }
+            ]
+          }
+        },
+        "required": ["global", "parks"]
+      },
+      "WeatherDto": {
+        "type": "object",
+        "properties": {
+          "high_f": {
+            "type": "number",
+            "description": "Daily high temperature in Fahrenheit",
+            "example": 88
+          },
+          "low_f": {
+            "type": "number",
+            "description": "Daily low temperature in Fahrenheit",
+            "example": 72
+          },
+          "condition": {
+            "type": "string",
+            "description": "Weather condition from OpenWeather \"main\" field (e.g., \"Clear\", \"Clouds\", \"Rain\", \"Thunderstorm\")",
+            "example": "Partly Cloudy"
+          },
+          "precipitation_pct": {
+            "type": "number",
+            "description": "Probability of precipitation as a percentage (0–100)",
+            "example": 30
+          },
+          "humidity_pct": {
+            "type": "number",
+            "description": "Relative humidity as a percentage (0–100)",
+            "example": 75
+          },
+          "uv_index": {
+            "type": "number",
+            "description": "UV index for the day (used for sunscreen nudge in trip UI)",
+            "example": 9
+          }
+        },
+        "required": [
+          "high_f",
+          "low_f",
+          "condition",
+          "precipitation_pct",
+          "humidity_pct",
+          "uv_index"
+        ]
+      },
+      "GuestInputDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Guest display name",
+            "example": "Emma"
+          },
+          "age_bracket": {
+            "type": "string",
+            "description": "Age bracket for the guest. Uses bracket string instead of birthdate — LEGL-07 COPPA compliance (no collection of ages for under-13 guests).",
+            "enum": ["0-2", "3-6", "7-9", "10-13", "14-17", "18+"],
+            "example": "7-9"
+          },
+          "has_das": {
+            "type": "boolean",
+            "description": "Whether the guest has a Disney Accessibility Service (DAS) accommodation. Affects attraction queuing strategy in the solver.",
+            "example": false
+          }
+        },
+        "required": ["name", "age_bracket", "has_das"]
+      },
+      "TripPreferencesDto": {
+        "type": "object",
+        "properties": {
+          "budget_tier": {
+            "type": "string",
+            "description": "Budget tier for the trip. Affects Lightning Lane / LLMP recommendations. \"pixie_dust\" = budget-conscious; \"fairy_tale\" = moderate; \"royal_treatment\" = premium.",
+            "enum": ["pixie_dust", "fairy_tale", "royal_treatment"],
+            "example": "fairy_tale"
+          },
+          "must_do_attraction_ids": {
+            "description": "Internal attraction UUIDs the party absolutely wants to experience. Solver treats these as must-do constraints.",
+            "example": ["a1b2c3d4-e5f6-7890-abcd-ef1234567890"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mobility_notes": {
+            "type": "string",
+            "description": "Free-text notes about mobility needs (e.g., \"uses a wheelchair\", \"can't do steep ramps\"). Passed to solver for routing adjustments.",
+            "example": "Uses a manual wheelchair; avoid multi-level queue areas."
+          }
+        },
+        "required": ["budget_tier", "must_do_attraction_ids"]
+      },
+      "TripDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Trip UUID",
+            "example": "trip-uuid-here"
+          },
+          "resort_id": {
+            "type": "string",
+            "description": "Resort UUID (Walt Disney World if omitted)",
+            "example": "wdw-resort-uuid"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "Trip start date in YYYY-MM-DD format",
+            "example": "2026-06-01"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Trip end date in YYYY-MM-DD format (inclusive)",
+            "example": "2026-06-05"
+          },
+          "guests": {
+            "description": "Guests in the party",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestInputDto"
+            }
+          },
+          "preferences": {
+            "description": "Trip planning preferences",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TripPreferencesDto"
+              }
+            ]
+          },
+          "entitlement_state": {
+            "type": "string",
+            "description": "\"free\" = plan not yet purchased (Phase 4 entitlements); \"unlocked\" = plan purchased and available.",
+            "enum": ["free", "unlocked"],
+            "example": "free"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "ISO 8601 creation timestamp",
+            "example": "2026-04-14T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "start_date",
+          "end_date",
+          "guests",
+          "preferences",
+          "entitlement_state",
+          "created_at"
+        ]
+      },
+      "CreateTripDto": {
+        "type": "object",
+        "properties": {
+          "resort_id": {
+            "type": "string",
+            "description": "Resort UUID. Defaults to Walt Disney World if omitted. Reserved for future multi-resort support.",
+            "example": "wdw-resort-uuid"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "Trip start date in YYYY-MM-DD format",
+            "example": "2026-06-01"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "Trip end date in YYYY-MM-DD format (inclusive)",
+            "example": "2026-06-05"
+          },
+          "guests": {
+            "description": "Guests in the party. At least one guest is required.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestInputDto"
+            }
+          },
+          "preferences": {
+            "description": "Trip planning preferences",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TripPreferencesDto"
+              }
+            ]
+          }
+        },
+        "required": ["start_date", "end_date", "guests", "preferences"]
+      },
+      "GeneratePlanResponseDto": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "description": "BullMQ job ID for the plan generation job. Poll GET /v1/plans/:id to check status.",
+            "example": "bullmq-job-id-123"
+          }
+        },
+        "required": ["job_id"]
+      },
+      "RethinkTodayDto": {
+        "type": "object",
+        "properties": {
+          "remaining_item_ids": {
+            "description": "PlanItem UUIDs that remain to be done today. Solver uses this to build a revised afternoon plan.",
+            "example": ["plan-item-uuid-1", "plan-item-uuid-2"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["remaining_item_ids"]
+      },
+      "PlanItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "PlanItem UUID",
+            "example": "plan-item-uuid-here"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of itinerary item",
+            "enum": ["attraction", "dining", "show", "break", "travel"],
+            "example": "attraction"
+          },
+          "ref_id": {
+            "type": "string",
+            "description": "Reference to the catalog entity (attraction UUID, dining UUID, show UUID). Omitted for break/travel items.",
+            "example": "attraction-uuid-here"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name for the item",
+            "example": "Space Mountain"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "Scheduled start time in ISO 8601 format",
+            "example": "2026-06-01T09:30:00.000Z"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "Scheduled end time in ISO 8601 format",
+            "example": "2026-06-01T10:00:00.000Z"
+          },
+          "wait_minutes": {
+            "type": "number",
+            "description": "Predicted wait time in minutes at the scheduled arrival time. Null for non-attraction items.",
+            "example": 35
+          },
+          "notes": {
+            "type": "string",
+            "description": "Solver-generated notes (e.g., \"Use Individual Lightning Lane here\", \"Good time for a break\")",
+            "example": "Recommended for early morning — wait time typically under 20 minutes."
+          },
+          "lightning_lane_type": {
+            "type": "string",
+            "description": "\"LLMP\" = Lightning Lane Multi Pass; \"LLSP\" = Lightning Lane Single Pass; null = standard queue. Solver sets this based on budget_tier and ride popularity.",
+            "enum": ["LLMP", "LLSP"],
+            "example": null,
+            "nullable": true
+          }
+        },
+        "required": ["id", "type", "name", "start_time", "end_time"]
+      },
+      "DayPlanDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "DayPlan UUID",
+            "example": "day-plan-uuid-here"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date for this day plan in YYYY-MM-DD format",
+            "example": "2026-06-01"
+          },
+          "park_id": {
+            "type": "string",
+            "description": "Park UUID for the planned park visit on this day",
+            "example": "magic-kingdom-park-uuid"
+          },
+          "items": {
+            "description": "Ordered list of itinerary items for the day",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlanItemDto"
+            }
+          },
+          "crowd_index": {
+            "description": "Crowd index for this park on this date. Omitted if no crowd data is available.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CrowdIndexValueDto"
+              }
+            ]
+          },
+          "weather": {
+            "description": "Weather forecast for this day. Omitted if date is beyond OpenWeather's 8-day forecast horizon.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WeatherDto"
+              }
+            ]
+          }
+        },
+        "required": ["id", "date", "park_id", "items"]
+      },
+      "PlanDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Plan UUID",
+            "example": "plan-uuid-here"
+          },
+          "trip_id": {
+            "type": "string",
+            "description": "Parent trip UUID",
+            "example": "trip-uuid-here"
+          },
+          "version": {
+            "type": "number",
+            "description": "Plan version number. Increments when a new plan is generated for the same trip (e.g., after rethink-today).",
+            "example": 1
+          },
+          "status": {
+            "type": "string",
+            "description": "\"generating\" = solver job is in progress; \"ready\" = plan is complete and can be viewed; \"failed\" = solver failed (retry available).",
+            "enum": ["generating", "ready", "failed"],
+            "example": "ready"
+          },
+          "day_plans": {
+            "description": "Day plans — one per day in the trip, ordered by date",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DayPlanDto"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "description": "ISO 8601 creation timestamp",
+            "example": "2026-04-14T10:00:00.000Z"
+          }
+        },
+        "required": ["id", "trip_id", "version", "status", "day_plans", "created_at"]
+      },
+      "AnonymousAuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "JWT bearer token for authenticating subsequent requests. Pass in Authorization: Bearer header.",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User UUID for the newly-created anonymous user",
+            "example": "user-uuid-here"
+          },
+          "expires_at": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when the access token expires",
+            "example": "2026-05-14T10:00:00.000Z"
+          }
+        },
+        "required": ["access_token", "user_id", "expires_at"]
+      },
+      "UserMeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User UUID",
+            "example": "user-uuid-here"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address — present only for registered (non-anonymous) users. Omitted for anonymous users.",
+            "example": "user@example.com"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "ISO 8601 account creation timestamp",
+            "example": "2026-04-14T10:00:00.000Z"
+          },
+          "is_anonymous": {
+            "type": "boolean",
+            "description": "True if the user account is anonymous (created via POST /v1/auth/anonymous). False if the user has registered with an email.",
+            "example": true
+          }
+        },
+        "required": ["id", "created_at", "is_anonymous"]
+      }
+    }
+  }
+}

@@ -71,6 +71,14 @@ jobs:
         # are NOT run in CI — they require a local Supabase instance.
         # Run locally with: supabase start && vitest run packages/db/tests/
 
+      - name: Check OpenAPI snapshot
+        run: |
+          # Regenerate from the compiled api dist (Build step ran above).
+          # Uses tsc-compiled JS so emitDecoratorMetadata works for NestJS decorators.
+          node apps/api/dist/scripts/generate-openapi-snapshot.js
+          # Fail if any controller or DTO change altered the spec without a committed snapshot update
+          git diff --exit-code packages/shared-openapi/openapi.v1.snapshot.json
+
       # iOS CI: handled by Xcode Cloud (NOT GitHub Actions)
       # Xcode Cloud reports status checks via the GitHub App.
       # See: .planning/phases/01-foundation/01-RESEARCH.md §5

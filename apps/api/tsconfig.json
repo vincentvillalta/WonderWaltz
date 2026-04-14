@@ -9,5 +9,5 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false
   },
-  "include": ["src", "tests", "vitest.config.mts"]
+  "include": ["src", "tests", "scripts", "vitest.config.mts"]
 }
