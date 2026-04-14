@@ -1,0 +1,45 @@
+{
+  "lands": [
+    {
+      "id": 1,
+      "name": "Adventureland",
+      "rides": [
+        {
+          "id": 56,
+          "name": "Jungle Cruise",
+          "is_open": true,
+          "wait_time": 40,
+          "last_updated": "2026-04-14T14:05:18.000Z"
+        },
+        {
+          "id": 62,
+          "name": "Pirates of the Caribbean",
+          "is_open": true,
+          "wait_time": 25,
+          "last_updated": "2026-04-14T14:04:55.000Z"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Fantasyland",
+      "rides": [
+        {
+          "id": 78,
+          "name": "Seven Dwarfs Mine Train",
+          "is_open": true,
+          "wait_time": 85,
+          "last_updated": "2026-04-14T14:05:00.000Z"
+        },
+        {
+          "id": 91,
+          "name": "It's a Small World",
+          "is_open": false,
+          "wait_time": 0,
+          "last_updated": "2026-04-14T12:00:00.000Z"
+        }
+      ]
+    }
+  ],
+  "rides": []
+}

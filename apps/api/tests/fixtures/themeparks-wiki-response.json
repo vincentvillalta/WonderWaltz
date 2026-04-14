@@ -1,0 +1,36 @@
+{
+  "liveData": [
+    {
+      "id": "75ea578a-adc8-4116-a54d-dccb60765ef9",
+      "name": "Seven Dwarfs Mine Train",
+      "entityType": "ATTRACTION",
+      "status": "OPERATING",
+      "lastUpdated": "2026-04-14T14:00:00-04:00",
+      "queue": {
+        "STANDBY": { "waitTime": 65 },
+        "LIGHTNING_LANE": { "waitTime": 10 }
+      }
+    },
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Haunted Mansion",
+      "entityType": "ATTRACTION",
+      "status": "OPERATING",
+      "lastUpdated": "2026-04-14T14:03:00-04:00",
+      "queue": {
+        "STANDBY": { "waitTime": 45 }
+      }
+    },
+    {
+      "id": "f0e1d2c3-b4a5-6789-0123-456789abcdef",
+      "name": "Festival of Fantasy Parade",
+      "entityType": "SHOW",
+      "status": "OPERATING",
+      "lastUpdated": "2026-04-14T14:00:00-04:00",
+      "showtimes": [
+        { "startTime": "2026-04-14T15:00:00-04:00" },
+        { "startTime": "2026-04-14T17:00:00-04:00" }
+      ]
+    }
+  ]
+}

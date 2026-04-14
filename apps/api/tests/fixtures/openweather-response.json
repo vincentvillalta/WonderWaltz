@@ -1,0 +1,72 @@
+{
+  "lat": 28.5421,
+  "lon": -81.3723,
+  "timezone": "America/New_York",
+  "timezone_offset": -14400,
+  "daily": [
+    {
+      "dt": 1744617600,
+      "temp": { "day": 82, "min": 70, "max": 88, "night": 72 },
+      "humidity": 65,
+      "uvi": 9.2,
+      "pop": 0.35,
+      "weather": [{ "id": 500, "main": "Rain", "description": "light rain" }]
+    },
+    {
+      "dt": 1744704000,
+      "temp": { "day": 84, "min": 71, "max": 90, "night": 74 },
+      "humidity": 60,
+      "uvi": 9.5,
+      "pop": 0.2,
+      "weather": [{ "id": 800, "main": "Clear", "description": "clear sky" }]
+    },
+    {
+      "dt": 1744790400,
+      "temp": { "day": 79, "min": 68, "max": 85, "night": 70 },
+      "humidity": 72,
+      "uvi": 8.8,
+      "pop": 0.55,
+      "weather": [{ "id": 501, "main": "Rain", "description": "moderate rain" }]
+    },
+    {
+      "dt": 1744876800,
+      "temp": { "day": 83, "min": 69, "max": 89, "night": 73 },
+      "humidity": 58,
+      "uvi": 10.1,
+      "pop": 0.15,
+      "weather": [{ "id": 800, "main": "Clear", "description": "clear sky" }]
+    },
+    {
+      "dt": 1744963200,
+      "temp": { "day": 85, "min": 72, "max": 91, "night": 76 },
+      "humidity": 55,
+      "uvi": 9.8,
+      "pop": 0.1,
+      "weather": [{ "id": 801, "main": "Clouds", "description": "few clouds" }]
+    },
+    {
+      "dt": 1745049600,
+      "temp": { "day": 80, "min": 67, "max": 86, "night": 69 },
+      "humidity": 70,
+      "uvi": 8.5,
+      "pop": 0.45,
+      "weather": [{ "id": 500, "main": "Rain", "description": "light rain" }]
+    },
+    {
+      "dt": 1745136000,
+      "temp": { "day": 77, "min": 65, "max": 83, "night": 67 },
+      "humidity": 68,
+      "uvi": 7.9,
+      "pop": 0.3,
+      "weather": [{ "id": 802, "main": "Clouds", "description": "scattered clouds" }]
+    },
+    {
+      "dt": 1745222400,
+      "temp": { "day": 86, "min": 73, "max": 92, "night": 75 },
+      "humidity": 52,
+      "uvi": 10.3,
+      "pop": 0.05,
+      "weather": [{ "id": 800, "main": "Clear", "description": "clear sky" }]
+    }
+  ]
+}
