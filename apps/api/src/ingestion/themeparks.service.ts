@@ -331,12 +331,16 @@ export class ThemeparksService {
         showtimesByDate.set(date, []);
       }
 
-      showtimesByDate.get(date)!.push({
-        entityId: entry.id,
-        name: entry.name,
-        startTime: showtime.startTime,
-        endTime: showtime.endTime,
-      });
+      const showtimeEntry: { entityId: string; name: string; startTime: string; endTime?: string } =
+        {
+          entityId: entry.id,
+          name: entry.name,
+          startTime: showtime.startTime,
+        };
+      if (showtime.endTime !== undefined) {
+        showtimeEntry.endTime = showtime.endTime;
+      }
+      showtimesByDate.get(date)!.push(showtimeEntry);
     }
   }
 }

@@ -243,7 +243,9 @@ describe('ThemeparksService', () => {
       const insertCalls = mockExecute.mock.calls.slice(1);
       expect(insertCalls.length).toBeGreaterThan(0);
 
-      const sqlObj = insertCalls[0][0] as { queryChunks?: unknown[] };
+      const firstInsert = insertCalls[0];
+      expect(firstInsert).toBeDefined();
+      const sqlObj = (firstInsert as [{ queryChunks?: unknown[] }])[0];
       const chunks = sqlObj.queryChunks ?? [];
       expect(chunks).toContain(false); // is_open: false for non-OPERATING status
     });

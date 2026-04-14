@@ -5,13 +5,16 @@ import { describe, it, expect, vi } from 'vitest';
 vi.mock('@nestjs/bullmq', async (importOriginal) => {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   const original = await importOriginal<typeof import('@nestjs/bullmq')>();
-  const mockQueue = {
-    upsertJobScheduler: vi.fn().mockResolvedValue(undefined),
-    add: vi.fn().mockResolvedValue({ id: '1' }),
-    close: vi.fn().mockResolvedValue(undefined),
-    on: vi.fn(),
-  };
-  const queueToken = original.getQueueToken('wait-times');
+
+  function makeMockQueue() {
+    return {
+      upsertJobScheduler: vi.fn().mockResolvedValue(undefined),
+      add: vi.fn().mockResolvedValue({ id: '1' }),
+      close: vi.fn().mockResolvedValue(undefined),
+      on: vi.fn(),
+    };
+  }
+
   return {
     ...original,
     BullModule: {
@@ -21,10 +24,18 @@ vi.mock('@nestjs/bullmq', async (importOriginal) => {
         exports: [],
         global: true,
       }),
-      registerQueue: vi.fn().mockReturnValue({
-        module: class BullQueueModule {},
-        providers: [{ provide: queueToken, useValue: mockQueue }],
-        exports: [queueToken],
+      // registerQueue is called once per queue name; provide a stub token for each
+      registerQueue: vi.fn().mockImplementation((...configs: Array<{ name: string }>) => {
+        const providers = configs.map((cfg) => ({
+          provide: original.getQueueToken(cfg.name),
+          useValue: makeMockQueue(),
+        }));
+        const exports = configs.map((cfg) => original.getQueueToken(cfg.name));
+        return {
+          module: class BullQueueModule {},
+          providers,
+          exports,
+        };
       }),
     },
   };
