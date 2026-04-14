@@ -60,7 +60,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **DATA-02**: BullMQ worker `fetch_themeparks_wiki_hours` pulls park hours + scheduled entertainment every 6 hours as secondary source and failover
 - [ ] **DATA-03**: BullMQ worker `rollup_wait_history` triggers TimescaleDB continuous aggregate refresh hourly
 - [ ] **DATA-04**: BullMQ worker `refresh_crowd_index` computes global crowd index (normalized average across top-20 rides) hourly and writes to Redis
-- [ ] **DATA-05**: queue-times.com attribution displayed in app "About" screen and website footer
+- [x] **DATA-05**: queue-times.com attribution displayed in app "About" screen and website footer
 - [x] **DATA-06**: Sentry alert fires when any ingestion job fails twice in a row or when wait-time lag exceeds 30 minutes
 - [x] **DATA-07**: Ingestion begins running in production from the first day Phase 2 completes; 8+ weeks of accumulated history is a hard gate before public beta
 - [ ] **DATA-08**: OpenWeather integration fetches daily forecast for Orlando, FL for all dates in every active trip; caches by date in Redis with 6-hour TTL
@@ -282,7 +282,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | DATA-02 | Phase 2 | Pending |
 | DATA-03 | Phase 2 | Pending |
 | DATA-04 | Phase 2 | Pending |
-| DATA-05 | Phase 2 | Pending |
+| DATA-05 | Phase 2 | Complete |
 | DATA-06 | Phase 2 | Complete |
 | DATA-07 | Phase 2 | Complete |
 | DATA-08 | Phase 2 | Pending |

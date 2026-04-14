@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-data-pipeline 02-02-PLAN.md
-last_updated: "2026-04-14T18:00:47.401Z"
+stopped_at: Completed 02-data-pipeline 02-03-PLAN.md
+last_updated: "2026-04-14T18:16:37.700Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
   completed_phases: 2
   total_plans: 24
-  completed_plans: 14
+  completed_plans: 15
   percent: 0
 ---
 
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P09 | 7 | 3 tasks | 10 files |
 | Phase 02-data-pipeline P01 | 12 | 2 tasks | 9 files |
 | Phase 02-data-pipeline P02 | 4 | 2 tasks | 5 files |
+| Phase 02-data-pipeline P03 | 35 | 2 tasks | 18 files |
 
 ## Accumulated Context
 
@@ -108,6 +109,9 @@ Recent decisions affecting current work:
 - [Phase 02-data-pipeline]: maxRetriesPerRequest: null CRITICAL for BullMQ blocking commands; enforced in WorkerModule and tested
 - [Phase 02-data-pipeline]: AlertingModule has no BullModule/queue registrations — purely service providers; Wave 2 processor modules import AlertingModule to avoid circular deps
 - [Phase 02-data-pipeline]: LagAlertService uses local DbExecutable duck-type interface instead of importing Db from @wonderwaltz/db — package dist-path mismatch (dist/src vs exports:dist) causes typecheck failures
+- [Phase 02-data-pipeline]: CrowdIndex/Weather at root /v1/ path (not /parks/) per CONTEXT.md spec; separate @Controller decorators
+- [Phase 02-data-pipeline]: OpenAPI snapshot uses tsc-compiled dist/ (not tsx/esbuild): emitDecoratorMetadata required for NestJS Swagger
+- [Phase 02-data-pipeline]: openapi.v1.snapshot.json excluded from prettier: prevents formatting drift in CI git diff check
 
 ### Pending Todos
 
@@ -123,6 +127,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-14T18:00:47.398Z
-Stopped at: Completed 02-data-pipeline 02-02-PLAN.md
+Last session: 2026-04-14T18:16:37.698Z
+Stopped at: Completed 02-data-pipeline 02-03-PLAN.md
 Resume file: None
