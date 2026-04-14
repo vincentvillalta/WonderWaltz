@@ -100,7 +100,7 @@ Not in this phase (explicit): auth implementation (Phase 4), solver engine
 - **Fetch trigger: on-demand, cache-aside.** No worker, no prefetch.
   API endpoint checks Redis; if miss, calls OpenWeather, caches, returns.
 - **Cache key: `weather:orlando:{YYYY-MM-DD}`**, 6-hour TTL.
-- **Beyond OpenWeather's 16-day horizon: skip the weather field entirely.**
+- **Beyond OpenWeather's 8-day horizon: skip the weather field entirely.**
   API response omits the field; does not attempt a seasonal-average
   synthetic value.
 - **Failure handling: best-effort, return `null`, no retry, no circuit
@@ -259,7 +259,7 @@ Captured here so they're not lost. Reconsider in Phase 3+ or later.
 - **OpenWeather prefetch worker** — rejected (Q5.1) in favor of
   on-demand caching. Revisit if API rate limits bite or latency becomes
   a UX problem.
-- **Seasonal-average weather beyond 16 days** — rejected (Q5.2). Revisit
+- **Seasonal-average weather beyond 8 days** — rejected (Q5.2). Revisit
   if users report "why is there no weather for my October trip" feedback.
 - **OpenWeather circuit breaker** — rejected (Q5.3) for simplicity.
   Revisit if third-party weather outages start cascading.
