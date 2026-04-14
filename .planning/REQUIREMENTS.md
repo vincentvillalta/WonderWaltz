@@ -51,7 +51,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **DB-04**: Continuous aggregate `wait_times_1h` rolled up hourly via Timescale DDL
 - [x] **DB-05**: Drizzle schema for `plans`, `plan_days`, `plan_items` with versioning and polymorphic `ref_id` into catalog
 - [x] **DB-06**: Drizzle schema for `entitlements`, `iap_events`, `llm_costs`, `push_tokens`, `affiliate_items`, `packing_list_items`
-- [ ] **DB-07**: Seed script idempotently loads WDW catalog (parks, attractions, dining, shows, resorts, walking_graph) from versioned YAML/JSON in `packages/content/wdw/`
+- [x] **DB-07**: Seed script idempotently loads WDW catalog (parks, attractions, dining, shows, resorts, walking_graph) from versioned YAML/JSON in `packages/content/wdw/`
 - [x] **DB-08**: Row-level security (RLS) policies on `trips`, `guests`, `plans`, `plan_days`, `plan_items` limit reads/writes to the owning `user_id`; admin bypass via service role key only
 
 ### Data Ingestion
@@ -276,7 +276,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | DB-04 | Phase 1 | Complete |
 | DB-05 | Phase 1 | Complete |
 | DB-06 | Phase 1 | Complete |
-| DB-07 | Phase 1 | Pending |
+| DB-07 | Phase 1 | Complete |
 | DB-08 | Phase 1 | Complete |
 | DATA-01 | Phase 2 | Pending |
 | DATA-02 | Phase 2 | Pending |
