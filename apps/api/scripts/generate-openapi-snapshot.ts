@@ -31,6 +31,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 // __dirname when compiled: apps/api/dist/scripts/
+// tsc with rootDir "." outputs src/ files to dist/src/ and scripts/ to dist/scripts/
 // 4 levels up from dist/scripts/ → repo root → packages/shared-openapi/
 const SNAPSHOT_PATH: string = join(
   __dirname,
@@ -39,10 +40,11 @@ const SNAPSHOT_PATH: string = join(
 
 async function generateSnapshot(): Promise<void> {
   // Import AppModule from the compiled dist/ — this requires `pnpm run build` first.
-  // When compiled, this script runs from dist/scripts/ so AppModule is at ../app.module.js
+  // When compiled, this script runs from dist/scripts/ and AppModule is at ../src/app.module.js
+  // (tsc rootDir "." preserves src/ subdir in dist output)
   // Using require() because the dist is CJS (apps/api "type": "commonjs").
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { AppModule } = require('../app.module.js') as {
+  const { AppModule } = require('../src/app.module.js') as {
     AppModule: new () => object;
   };
 

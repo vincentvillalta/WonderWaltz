@@ -1,6 +1,44 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/v1/parks": {
+      "get": {
+        "description": "Returns the catalog list of Walt Disney World parks.",
+        "operationId": "ParksController_getParks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/WaitTimeDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all WDW parks",
+        "tags": [
+          "parks"
+        ]
+      }
+    },
     "/v1/parks/{parkId}/waits": {
       "get": {
         "description": "Returns posted wait times for all tracked attractions in the park. is_stale=true when fetched_at is more than 5 minutes ago. Source is \"queue-times\" (primary, 5-min refresh) or \"themeparks-wiki\" (secondary).",
@@ -544,22 +582,25 @@
           },
           "minutes": {
             "type": "number",
-            "description": "Current posted wait time in minutes",
-            "example": 35
+            "description": "Current posted wait time in minutes. Null when no data is available (attraction not yet polled or no history).",
+            "example": 35,
+            "nullable": true
           },
           "fetched_at": {
             "type": "string",
-            "description": "ISO 8601 timestamp when this wait time was last fetched from the source",
-            "example": "2026-04-14T15:30:00.000Z"
+            "description": "ISO 8601 timestamp when this wait time was last fetched from the source. Null when no data is available.",
+            "example": "2026-04-14T15:30:00.000Z",
+            "nullable": true
           },
           "source": {
             "type": "string",
-            "description": "Data source identifier",
+            "description": "Data source identifier. Null when no data is available.",
             "enum": [
               "queue-times",
               "themeparks-wiki"
             ],
-            "example": "queue-times"
+            "example": "queue-times",
+            "nullable": true
           },
           "is_stale": {
             "type": "boolean",

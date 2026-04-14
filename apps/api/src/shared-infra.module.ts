@@ -54,7 +54,9 @@ import { DB_TOKEN } from './ingestion/queue-times.service.js';
         }
         // Work around @wonderwaltz/db dist-path mismatch (exports: ./dist/index.js
         // but build output is at dist/src/index.js — see 02-02 SUMMARY)
-        const monorepoRoot = resolve(__dirname, '../../..');
+        // __dirname at runtime is apps/api/dist/src/ (tsc rootDir "." preserves src/ in output)
+        // 4 levels up: dist/src → dist → apps/api → apps → repo-root
+        const monorepoRoot = resolve(__dirname, '../../../..');
         const dbIndexPath = resolve(monorepoRoot, 'packages/db/dist/src/index.js');
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const dbPkg: { createDb: (url: string) => unknown } = await import(dbIndexPath);
