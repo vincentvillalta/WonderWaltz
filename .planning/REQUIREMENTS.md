@@ -62,7 +62,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **DATA-04**: BullMQ worker `refresh_crowd_index` computes global crowd index (normalized average across top-20 rides) hourly and writes to Redis
 - [ ] **DATA-05**: queue-times.com attribution displayed in app "About" screen and website footer
 - [ ] **DATA-06**: Sentry alert fires when any ingestion job fails twice in a row or when wait-time lag exceeds 30 minutes
-- [ ] **DATA-07**: Ingestion begins running in production from the first day Phase 2 completes; 8+ weeks of accumulated history is a hard gate before public beta
+- [x] **DATA-07**: Ingestion begins running in production from the first day Phase 2 completes; 8+ weeks of accumulated history is a hard gate before public beta
 - [ ] **DATA-08**: OpenWeather integration fetches daily forecast for Orlando, FL for all dates in every active trip; caches by date in Redis with 6-hour TTL
 
 ### Wait-Time Forecast
@@ -284,7 +284,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | DATA-04 | Phase 2 | Pending |
 | DATA-05 | Phase 2 | Pending |
 | DATA-06 | Phase 2 | Pending |
-| DATA-07 | Phase 2 | Pending |
+| DATA-07 | Phase 2 | Complete |
 | DATA-08 | Phase 2 | Pending |
 | FC-01 | Phase 3 | Pending |
 | FC-02 | Phase 3 | Pending |

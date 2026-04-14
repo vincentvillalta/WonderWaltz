@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 2 context gathered
-last_updated: "2026-04-14T14:05:14.496Z"
+stopped_at: Completed 02-data-pipeline 02-01-PLAN.md
+last_updated: "2026-04-14T17:55:38.302Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
   completed_phases: 2
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 24
+  completed_plans: 13
   percent: 0
 ---
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P10 | 36 | 2 tasks | 6 files |
 | Phase 01-foundation P11 | 15 | 2 tasks | 9 files |
 | Phase 01-foundation P09 | 7 | 3 tasks | 10 files |
+| Phase 02-data-pipeline P01 | 12 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: Figma Make 9FLYsReiTPAfLoKAjW3Ahz is canonical brand source — tokens flow from Figma Make via MCP to tokens.json
 - [Phase 01-foundation]: DSGN-08 gate: all UI PRs must reference the Figma Make frame they implement
 - [Phase 01-foundation]: Gold on Cream fails WCAG text contrast (2.1:1) — gold is decorative/background only, never body text
+- [Phase 02-data-pipeline]: worker.ts uses NestFactory.createApplicationContext (not NestFactory.create) — no HTTP server in worker process
+- [Phase 02-data-pipeline]: WorkerModule intentionally empty of processors — Wave 2 plans register their processor modules here
+- [Phase 02-data-pipeline]: maxRetriesPerRequest: null CRITICAL for BullMQ blocking commands; enforced in WorkerModule and tested
 
 ### Pending Todos
 
@@ -116,6 +120,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-14T14:05:14.492Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-data-pipeline/02-CONTEXT.md
+Last session: 2026-04-14T17:55:38.299Z
+Stopped at: Completed 02-data-pipeline 02-01-PLAN.md
+Resume file: None
