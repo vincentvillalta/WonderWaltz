@@ -57,7 +57,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 ### Data Ingestion
 
 - [x] **DATA-01**: BullMQ worker `fetch_queue_times` pulls queue-times.com every 5 minutes for all WDW parks and writes to Redis (live cache, 2-minute TTL) + TimescaleDB (history)
-- [ ] **DATA-02**: BullMQ worker `fetch_themeparks_wiki_hours` pulls park hours + scheduled entertainment every 6 hours as secondary source and failover
+- [x] **DATA-02**: BullMQ worker `fetch_themeparks_wiki_hours` pulls park hours + scheduled entertainment every 6 hours as secondary source and failover
 - [ ] **DATA-03**: BullMQ worker `rollup_wait_history` triggers TimescaleDB continuous aggregate refresh hourly
 - [ ] **DATA-04**: BullMQ worker `refresh_crowd_index` computes global crowd index (normalized average across top-20 rides) hourly and writes to Redis
 - [x] **DATA-05**: queue-times.com attribution displayed in app "About" screen and website footer
@@ -279,7 +279,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | DB-07 | Phase 1 | Complete |
 | DB-08 | Phase 1 | Complete |
 | DATA-01 | Phase 2 | Complete |
-| DATA-02 | Phase 2 | Pending |
+| DATA-02 | Phase 2 | Complete |
 | DATA-03 | Phase 2 | Pending |
 | DATA-04 | Phase 2 | Pending |
 | DATA-05 | Phase 2 | Complete |
