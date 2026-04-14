@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-data-pipeline 02-09-PLAN.md
-last_updated: "2026-04-14T22:35:12.093Z"
+stopped_at: Completed 02-data-pipeline 02-10-PLAN.md
+last_updated: "2026-04-14T23:01:37.866Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
   completed_phases: 2
   total_plans: 24
-  completed_plans: 21
+  completed_plans: 22
   percent: 0
 ---
 
@@ -69,6 +69,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-data-pipeline P07 | 38 | 2 tasks | 6 files |
 | Phase 02-data-pipeline P08 | 27 | 1 tasks | 4 files |
 | Phase 02-data-pipeline P09 | 15 | 2 tasks | 6 files |
+| Phase 02-data-pipeline P10 | 25 | 1 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -130,6 +131,8 @@ Recent decisions affecting current work:
 - [Phase 02-data-pipeline]: WeatherModule + SharedInfraModule added to AppModule (HTTP side) for plan 02-09 weather endpoint injection
 - [Phase 02-data-pipeline]: WaitTimeDto nullable fields (minutes/fetched_at/source) support no-data case when Redis miss + no history
 - [Phase 02-data-pipeline]: ParksService reads crowd_index Redis keys directly — avoids importing CrowdIndexModule (BullMQ) into HTTP process
+- [Phase 02-data-pipeline]: generate-openapi-snapshot.js AppModule path is '../src/app.module.js' (not '../app.module.js') — tsc rootDir '.' outputs src files to dist/src/ subdir
+- [Phase 02-data-pipeline]: shared-infra.module.ts monorepoRoot: resolve(__dirname, '../../../..') — 4 levels up from dist/src/ to repo root; 3 levels only reached apps/
 
 ### Pending Todos
 
@@ -145,6 +148,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-14T22:35:12.091Z
-Stopped at: Completed 02-data-pipeline 02-09-PLAN.md
+Last session: 2026-04-14T23:01:37.863Z
+Stopped at: Completed 02-data-pipeline 02-10-PLAN.md
 Resume file: None
