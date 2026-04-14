@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-data-pipeline 02-03-PLAN.md
-last_updated: "2026-04-14T18:16:37.700Z"
+stopped_at: Completed 02-data-pipeline 02-04-PLAN.md
+last_updated: "2026-04-14T18:43:04.289Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
   completed_phases: 2
   total_plans: 24
-  completed_plans: 15
+  completed_plans: 16
   percent: 0
 ---
 
@@ -63,6 +63,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-data-pipeline P01 | 12 | 2 tasks | 9 files |
 | Phase 02-data-pipeline P02 | 4 | 2 tasks | 5 files |
 | Phase 02-data-pipeline P03 | 35 | 2 tasks | 18 files |
+| Phase 02-data-pipeline P04 | 23 | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,9 @@ Recent decisions affecting current work:
 - [Phase 02-data-pipeline]: CrowdIndex/Weather at root /v1/ path (not /parks/) per CONTEXT.md spec; separate @Controller decorators
 - [Phase 02-data-pipeline]: OpenAPI snapshot uses tsc-compiled dist/ (not tsx/esbuild): emitDecoratorMetadata required for NestJS Swagger
 - [Phase 02-data-pipeline]: openapi.v1.snapshot.json excluded from prettier: prevents formatting drift in CI git diff check
+- [Phase 02-data-pipeline]: QueueTimesService uses raw sql duck-typed DrizzleDb interface — same pattern as LagAlertService, avoids @wonderwaltz/db dist-path mismatch
+- [Phase 02-data-pipeline]: SharedInfraModule @Global() provides REDIS_CLIENT_TOKEN + DB_TOKEN once at root — eliminates per-module Redis/DB provider duplication across AlertingModule and IngestionModule
+- [Phase 02-data-pipeline]: SlackAlerterService changed from import type Redis to import Redis + @Inject(REDIS_CLIENT_TOKEN) — import type erases NestJS DI token at runtime
 
 ### Pending Todos
 
@@ -127,6 +131,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-14T18:16:37.698Z
-Stopped at: Completed 02-data-pipeline 02-03-PLAN.md
+Last session: 2026-04-14T18:43:04.287Z
+Stopped at: Completed 02-data-pipeline 02-04-PLAN.md
 Resume file: None
