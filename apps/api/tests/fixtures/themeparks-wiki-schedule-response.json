@@ -1,0 +1,22 @@
+{
+  "schedule": [
+    {
+      "date": "2026-04-14",
+      "type": "OPERATING",
+      "openingTime": "2026-04-14T09:00:00-04:00",
+      "closingTime": "2026-04-14T23:00:00-04:00"
+    },
+    {
+      "date": "2026-04-15",
+      "type": "OPERATING",
+      "openingTime": "2026-04-15T08:00:00-04:00",
+      "closingTime": "2026-04-15T22:00:00-04:00"
+    },
+    {
+      "date": "2026-04-16",
+      "type": "TICKETED_EVENT",
+      "openingTime": "2026-04-16T19:00:00-04:00",
+      "closingTime": "2026-04-17T01:00:00-04:00"
+    }
+  ]
+}
