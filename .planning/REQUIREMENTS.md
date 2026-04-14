@@ -63,7 +63,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **DATA-05**: queue-times.com attribution displayed in app "About" screen and website footer
 - [x] **DATA-06**: Sentry alert fires when any ingestion job fails twice in a row or when wait-time lag exceeds 30 minutes
 - [x] **DATA-07**: Ingestion begins running in production from the first day Phase 2 completes; 8+ weeks of accumulated history is a hard gate before public beta
-- [ ] **DATA-08**: OpenWeather integration fetches daily forecast for Orlando, FL for all dates in every active trip; caches by date in Redis with 6-hour TTL
+- [x] **DATA-08**: OpenWeather integration fetches daily forecast for Orlando, FL for all dates in every active trip; caches by date in Redis with 6-hour TTL
 
 ### Wait-Time Forecast
 
@@ -285,7 +285,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | DATA-05 | Phase 2 | Complete |
 | DATA-06 | Phase 2 | Complete |
 | DATA-07 | Phase 2 | Complete |
-| DATA-08 | Phase 2 | Pending |
+| DATA-08 | Phase 2 | Complete |
 | FC-01 | Phase 3 | Pending |
 | FC-02 | Phase 3 | Pending |
 | FC-03 | Phase 3 | Pending |

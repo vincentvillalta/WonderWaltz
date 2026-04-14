@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-data-pipeline 02-07-PLAN.md
-last_updated: "2026-04-14T21:34:54.391Z"
+stopped_at: Completed 02-data-pipeline 02-08-PLAN.md
+last_updated: "2026-04-14T22:06:53.342Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
   completed_phases: 2
   total_plans: 24
-  completed_plans: 19
+  completed_plans: 20
   percent: 0
 ---
 
@@ -67,6 +67,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-data-pipeline P05 | 5 | 2 tasks | 6 files |
 | Phase 02-data-pipeline P06 | 4 | 1 tasks | 4 files |
 | Phase 02-data-pipeline P07 | 38 | 2 tasks | 6 files |
+| Phase 02-data-pipeline P08 | 27 | 1 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -124,6 +125,8 @@ Recent decisions affecting current work:
 - [Phase 02-data-pipeline]: cron pattern '30 * * * *' for rollup monitor — 30min grace after pg_cron :00 refresh; ageMinutes > 90 alert threshold
 - [Phase 02-data-pipeline]: CrowdIndexService auto-switches bootstrap/percentile mode based on getSampleSizeDays() COUNT(DISTINCT DATE(ts)) >= 30 at runtime — no manual flag
 - [Phase 02-data-pipeline]: CrowdIndexModule exports CrowdIndexService for future GET /v1/crowd-index API endpoint without re-querying DB
+- [Phase 02-data-pipeline]: WeatherService uses UTC-based date comparison in isWithinHorizon — avoids local-timezone skew in non-UTC environments
+- [Phase 02-data-pipeline]: WeatherModule + SharedInfraModule added to AppModule (HTTP side) for plan 02-09 weather endpoint injection
 
 ### Pending Todos
 
@@ -139,6 +142,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-14T21:34:54.388Z
-Stopped at: Completed 02-data-pipeline 02-07-PLAN.md
+Last session: 2026-04-14T22:06:53.339Z
+Stopped at: Completed 02-data-pipeline 02-08-PLAN.md
 Resume file: None
