@@ -34,14 +34,14 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Design System
 
-- [ ] **DSGN-01**: `ui-designer` agent produces three brand direction explorations (vintage travel poster / warm modern minimalism / painterly whimsy) with recommendation
-- [ ] **DSGN-02**: Brand direction locked before any UI is built; captured in `docs/design/BRAND.md` (voice, palette, type, motion, photography policy)
+- [x] **DSGN-01**: `ui-designer` agent produces three brand direction explorations (vintage travel poster / warm modern minimalism / painterly whimsy) with recommendation
+- [x] **DSGN-02**: Brand direction locked before any UI is built; captured in `docs/design/BRAND.md` (voice, palette, type, motion, photography policy)
 - [x] **DSGN-03**: Design tokens in `packages/design-tokens/tokens.json` as single source of truth
 - [x] **DSGN-04**: Token build script generates Swift constants (for iOS), Compose theme (for Android), and Tailwind v4 + CSS vars (for web); parity enforced at build time
-- [ ] **DSGN-05**: Component catalog with states in `docs/design/COMPONENTS.md` (loading, empty, error, success, disabled)
-- [ ] **DSGN-06**: WCAG 2.2 AA accessibility rules documented in `docs/design/ACCESSIBILITY.md` (contrast, tap targets, focus not obscured, dragging alternatives, dynamic type, VoiceOver / TalkBack)
+- [x] **DSGN-05**: Component catalog with states in `docs/design/COMPONENTS.md` (loading, empty, error, success, disabled)
+- [x] **DSGN-06**: WCAG 2.2 AA accessibility rules documented in `docs/design/ACCESSIBILITY.md` (contrast, tap targets, focus not obscured, dragging alternatives, dynamic type, VoiceOver / TalkBack)
 - [x] **DSGN-07**: Iconography from Phosphor or Lucide (permissively licensed, covers iOS + Android + web) documented in `docs/design/ICONOGRAPHY.md`
-- [ ] **DSGN-08**: `ui-ux-designer` agent reviews every user-facing UI PR with research-backed critique before merge (mandatory gate)
+- [x] **DSGN-08**: `ui-ux-designer` agent reviews every user-facing UI PR with research-backed critique before merge (mandatory gate)
 
 ### Database Schema
 
@@ -262,14 +262,14 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | FND-10 | Phase 1 | Pending |
 | FND-11 | Phase 1 | Pending |
 | FND-12 | Phase 1 | Complete |
-| DSGN-01 | Phase 1 | Pending |
-| DSGN-02 | Phase 1 | Pending |
+| DSGN-01 | Phase 1 | Complete |
+| DSGN-02 | Phase 1 | Complete |
 | DSGN-03 | Phase 1 | Complete |
 | DSGN-04 | Phase 1 | Complete |
-| DSGN-05 | Phase 1 | Pending |
-| DSGN-06 | Phase 1 | Pending |
+| DSGN-05 | Phase 1 | Complete |
+| DSGN-06 | Phase 1 | Complete |
 | DSGN-07 | Phase 1 | Complete |
-| DSGN-08 | Phase 1 | Pending |
+| DSGN-08 | Phase 1 | Complete |
 | DB-01 | Phase 1 | Complete |
 | DB-02 | Phase 1 | Complete |
 | DB-03 | Phase 1 | Complete |

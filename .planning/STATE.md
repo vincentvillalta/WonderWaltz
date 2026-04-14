@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 01 paused — 01-09 deferred pending Figma MCP connection
-last_updated: "2026-04-14T10:29:25.460Z"
+stopped_at: Completed 01-09-PLAN.md — Phase 01 foundation all 12 plans complete
+last_updated: "2026-04-14T13:11:28.776Z"
 last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
 progress:
   total_phases: 11
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 12
-  completed_plans: 11
+  completed_plans: 12
   percent: 0
 ---
 
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P08 | 8 | 2 tasks | 3 files |
 | Phase 01-foundation P10 | 36 | 2 tasks | 6 files |
 | Phase 01-foundation P11 | 15 | 2 tasks | 9 files |
+| Phase 01-foundation P09 | 7 | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: DSGN-07: Phosphor Icons selected (MIT license, cross-platform: phosphor-react/phosphor-swift/phosphor-compose)
 - [Phase 01-foundation]: DISCLAIMER text inlined in interceptor (not imported from @wonderwaltz/content) due to CommonJS/ESM boundary between packages; APP_INTERCEPTOR DI registration used for Reflector injection enabling @SkipEnvelope()
 - [Phase 01-foundation]: YAML content files use content_version field for future versioning; seed-catalog.ts resolves park/resort UUIDs from external_id strings before inserting FK-dependent rows; walkingGraph uses onConflictDoNothing (edges immutable); tsconfig.json include expanded to cover scripts/
+- [Phase 01-foundation]: Figma Make 9FLYsReiTPAfLoKAjW3Ahz is canonical brand source — tokens flow from Figma Make via MCP to tokens.json
+- [Phase 01-foundation]: DSGN-08 gate: all UI PRs must reference the Figma Make frame they implement
+- [Phase 01-foundation]: Gold on Cream fails WCAG text contrast (2.1:1) — gold is decorative/background only, never body text
 
 ### Pending Todos
 
@@ -112,6 +116,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-14
-Stopped at: Phase 01 paused after 01-11; 01-09 deferred for Figma MCP rework
-Resume file: .planning/todos/pending/restructure-01-09-figma-mcp.md
+Last session: 2026-04-14T13:11:28.774Z
+Stopped at: Completed 01-09-PLAN.md — Phase 01 foundation all 12 plans complete
+Resume file: None
