@@ -1,0 +1,36 @@
+# WDW Parks — 4 parks
+# queue_times_ids verified from queue-times.com/parks.json
+# themeparks_wiki_ids verified from api.themeparks.wiki/v1/entity/{wdw-resort-id}/children
+content_version: '1.0.0'
+parks:
+  - id: 'wdw-magic-kingdom'
+    name: 'Magic Kingdom'
+    queue_times_id: 6
+    themeparks_wiki_id: '75ea578a-adc8-4116-a54d-dccb60765ef9'
+    timezone: 'America/New_York'
+    latitude: 28.4177
+    longitude: -81.5812
+
+  - id: 'wdw-epcot'
+    name: 'EPCOT'
+    queue_times_id: 5
+    themeparks_wiki_id: '47f90d2c-e191-4e1b-b068-4ebf6f2e4e23'
+    timezone: 'America/New_York'
+    latitude: 28.3747
+    longitude: -81.5494
+
+  - id: 'wdw-hollywood-studios'
+    name: 'Hollywood Studios'
+    queue_times_id: 7
+    themeparks_wiki_id: '288747d1-8b4f-4a64-867e-ea7c9b27bad8'
+    timezone: 'America/New_York'
+    latitude: 28.3575
+    longitude: -81.5597
+
+  - id: 'wdw-animal-kingdom'
+    name: 'Animal Kingdom'
+    queue_times_id: 8
+    themeparks_wiki_id: '1c84a229-8862-4648-9a06-1f5c1af9cbfb'
+    timezone: 'America/New_York'
+    latitude: 28.3553
+    longitude: -81.5902

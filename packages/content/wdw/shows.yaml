@@ -1,0 +1,105 @@
+content_version: '1.0.0'
+shows:
+  # Magic Kingdom
+  - id: 'wdw-mk-festival-of-fantasy'
+    park_id: 'wdw-magic-kingdom'
+    name: 'Festival of Fantasy Parade'
+    show_type: 'parade'
+
+  - id: 'wdw-mk-happily-ever-after'
+    park_id: 'wdw-magic-kingdom'
+    name: 'Happily Ever After (Fireworks)'
+    show_type: 'fireworks'
+
+  - id: 'wdw-mk-move-it-shake-it'
+    park_id: 'wdw-magic-kingdom'
+    name: 'Move It! Shake It! MousekeDance It! Street Party'
+    show_type: 'street_show'
+
+  - id: 'wdw-mk-disney-jr-play'
+    park_id: 'wdw-magic-kingdom'
+    name: "Mickey's Royal Friendship Faire"
+    show_type: 'stage_show'
+
+  - id: 'wdw-mk-enchanted-storybook-show'
+    park_id: 'wdw-magic-kingdom'
+    name: 'The Enchanted Storybook'
+    show_type: 'stage_show'
+
+  # EPCOT
+  - id: 'wdw-ep-epcot-forever'
+    park_id: 'wdw-epcot'
+    name: 'EPCOT Forever (Fireworks)'
+    show_type: 'fireworks'
+
+  - id: 'wdw-ep-luminous'
+    park_id: 'wdw-epcot'
+    name: 'Luminous The Symphony of Us'
+    show_type: 'fireworks'
+
+  - id: 'wdw-ep-harmonious'
+    park_id: 'wdw-epcot'
+    name: 'Harmonious'
+    show_type: 'fireworks'
+
+  - id: 'wdw-ep-canada-far-and-wide'
+    park_id: 'wdw-epcot'
+    name: 'Canada Far and Wide in Circle-Vision 360'
+    show_type: 'stage_show'
+
+  - id: 'wdw-ep-impressions-de-france'
+    park_id: 'wdw-epcot'
+    name: 'Impressions de France'
+    show_type: 'stage_show'
+
+  # Hollywood Studios
+  - id: 'wdw-hs-fantasmic'
+    park_id: 'wdw-hollywood-studios'
+    name: 'Fantasmic!'
+    show_type: 'stage_show'
+
+  - id: 'wdw-hs-star-wars-galactic'
+    park_id: 'wdw-hollywood-studios'
+    name: 'Star Wars: A Galactic Spectacular'
+    show_type: 'fireworks'
+
+  - id: 'wdw-hs-beauty-beast'
+    park_id: 'wdw-hollywood-studios'
+    name: 'Beauty and the Beast - Live on Stage'
+    show_type: 'stage_show'
+
+  - id: 'wdw-hs-muppet-vision'
+    park_id: 'wdw-hollywood-studios'
+    name: 'MuppetVision 3D'
+    show_type: 'stage_show'
+
+  - id: 'wdw-hs-march-of-first-order'
+    park_id: 'wdw-hollywood-studios'
+    name: 'March of the First Order'
+    show_type: 'street_show'
+
+  # Animal Kingdom
+  - id: 'wdw-ak-tree-of-life'
+    park_id: 'wdw-animal-kingdom'
+    name: 'Tree of Life Awakenings'
+    show_type: 'street_show'
+
+  - id: 'wdw-ak-rivers-of-light'
+    park_id: 'wdw-animal-kingdom'
+    name: 'Rivers of Light'
+    show_type: 'stage_show'
+
+  - id: 'wdw-ak-festival-of-lion-king'
+    park_id: 'wdw-animal-kingdom'
+    name: 'Festival of the Lion King'
+    show_type: 'stage_show'
+
+  - id: 'wdw-ak-finding-nemo-show'
+    park_id: 'wdw-animal-kingdom'
+    name: 'Finding Nemo: The Big Blue... and Beyond!'
+    show_type: 'stage_show'
+
+  - id: 'wdw-ak-harambe-wildlife-party'
+    park_id: 'wdw-animal-kingdom'
+    name: 'Harambe Wildlife Parti'
+    show_type: 'street_show'

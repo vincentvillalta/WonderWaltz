@@ -1,0 +1,146 @@
+content_version: '1.0.0'
+resorts:
+  # Value
+  - { id: 'wdw-r-pop-century', name: 'Pop Century Resort', tier: 'value', is_on_property: true }
+  - {
+      id: 'wdw-r-art-animation',
+      name: 'Art of Animation Resort',
+      tier: 'value',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-all-star-movies',
+      name: 'All-Star Movies Resort',
+      tier: 'value',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-all-star-sports',
+      name: 'All-Star Sports Resort',
+      tier: 'value',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-all-star-music',
+      name: 'All-Star Music Resort',
+      tier: 'value',
+      is_on_property: true,
+    }
+  # Moderate
+  - {
+      id: 'wdw-r-caribbean-beach',
+      name: 'Caribbean Beach Resort',
+      tier: 'moderate',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-coronado-springs',
+      name: 'Coronado Springs Resort',
+      tier: 'moderate',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-port-orleans-riverside',
+      name: 'Port Orleans - Riverside',
+      tier: 'moderate',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-port-orleans-french',
+      name: 'Port Orleans - French Quarter',
+      tier: 'moderate',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-cabins-fort-wilderness',
+      name: 'The Cabins at Fort Wilderness',
+      tier: 'moderate',
+      is_on_property: true,
+    }
+  # Deluxe
+  - {
+      id: 'wdw-r-grand-floridian',
+      name: 'Grand Floridian Resort & Spa',
+      tier: 'deluxe',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-polynesian',
+      name: 'Polynesian Village Resort',
+      tier: 'deluxe',
+      is_on_property: true,
+    }
+  - { id: 'wdw-r-contemporary', name: 'Contemporary Resort', tier: 'deluxe', is_on_property: true }
+  - { id: 'wdw-r-wilderness-lodge', name: 'Wilderness Lodge', tier: 'deluxe', is_on_property: true }
+  - { id: 'wdw-r-yacht-club', name: 'Yacht Club Resort', tier: 'deluxe', is_on_property: true }
+  - { id: 'wdw-r-beach-club', name: 'Beach Club Resort', tier: 'deluxe', is_on_property: true }
+  - { id: 'wdw-r-boardwalk', name: 'BoardWalk Inn', tier: 'deluxe', is_on_property: true }
+  - {
+      id: 'wdw-r-animal-kingdom-lodge',
+      name: 'Animal Kingdom Lodge',
+      tier: 'deluxe',
+      is_on_property: true,
+    }
+  - { id: 'wdw-r-swan', name: 'Walt Disney World Swan', tier: 'deluxe', is_on_property: true }
+  - { id: 'wdw-r-dolphin', name: 'Walt Disney World Dolphin', tier: 'deluxe', is_on_property: true }
+  - {
+      id: 'wdw-r-swan-reserve',
+      name: 'Walt Disney World Swan Reserve',
+      tier: 'deluxe',
+      is_on_property: true,
+    }
+  # Deluxe Villa
+  - {
+      id: 'wdw-r-bay-lake',
+      name: 'Bay Lake Tower at Contemporary',
+      tier: 'deluxe_villa',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-blt-grand-floridian',
+      name: 'The Villas at Grand Floridian',
+      tier: 'deluxe_villa',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-boulder-ridge',
+      name: 'Boulder Ridge Villas at Wilderness Lodge',
+      tier: 'deluxe_villa',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-copper-creek',
+      name: 'Copper Creek Villas & Cabins',
+      tier: 'deluxe_villa',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-beach-club-villas',
+      name: 'Beach Club Villas',
+      tier: 'deluxe_villa',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-boardwalk-villas',
+      name: 'BoardWalk Villas',
+      tier: 'deluxe_villa',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-old-key-west',
+      name: 'Old Key West Resort',
+      tier: 'deluxe_villa',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-saratoga-springs',
+      name: 'Saratoga Springs Resort',
+      tier: 'deluxe_villa',
+      is_on_property: true,
+    }
+  - {
+      id: 'wdw-r-riviera',
+      name: "Disney's Riviera Resort",
+      tier: 'deluxe_villa',
+      is_on_property: true,
+    }

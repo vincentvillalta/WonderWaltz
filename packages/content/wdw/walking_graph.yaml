@@ -1,0 +1,204 @@
+content_version: '1.0.0'
+# Walking graph: inter-attraction walking times in seconds
+# Nodes use "attraction:{external_id}" format
+# These are approximate walking times including typical crowd flow
+walking_graph:
+  # Magic Kingdom inter-area connections
+  - {
+      from: 'attraction:wdw-mk-space-mountain',
+      to: 'attraction:wdw-mk-buzz-lightyear',
+      walking_seconds: 120,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-seven-dwarfs',
+      to: 'attraction:wdw-mk-haunted-mansion',
+      walking_seconds: 240,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-big-thunder',
+      to: 'attraction:wdw-mk-haunted-mansion',
+      walking_seconds: 180,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-pirates',
+      to: 'attraction:wdw-mk-jungle-cruise',
+      walking_seconds: 90,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-haunted-mansion',
+      to: 'attraction:wdw-mk-peter-pan',
+      walking_seconds: 300,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-peter-pan',
+      to: 'attraction:wdw-mk-its-a-small-world',
+      walking_seconds: 120,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-seven-dwarfs',
+      to: 'attraction:wdw-mk-peter-pan',
+      walking_seconds: 120,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-buzz-lightyear',
+      to: 'attraction:wdw-mk-people-mover',
+      walking_seconds: 60,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-space-mountain',
+      to: 'attraction:wdw-mk-tron',
+      walking_seconds: 180,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-dumbo',
+      to: 'attraction:wdw-mk-barnstormer',
+      walking_seconds: 90,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-winnie-pooh',
+      to: 'attraction:wdw-mk-under-the-sea',
+      walking_seconds: 120,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-pirates',
+      to: 'attraction:wdw-mk-big-thunder',
+      walking_seconds: 240,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-tianas-bayou',
+      to: 'attraction:wdw-mk-big-thunder',
+      walking_seconds: 120,
+      park_id: 'wdw-magic-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-mk-country-bears',
+      to: 'attraction:wdw-mk-liberty-square-riverboat',
+      walking_seconds: 90,
+      park_id: 'wdw-magic-kingdom',
+    }
+
+  # EPCOT connections
+  - {
+      from: 'attraction:wdw-ep-guardians',
+      to: 'attraction:wdw-ep-test-track',
+      walking_seconds: 480,
+      park_id: 'wdw-epcot',
+    }
+  - {
+      from: 'attraction:wdw-ep-frozen',
+      to: 'attraction:wdw-ep-remy',
+      walking_seconds: 60,
+      park_id: 'wdw-epcot',
+    }
+  - {
+      from: 'attraction:wdw-ep-soarin',
+      to: 'attraction:wdw-ep-living-with-land',
+      walking_seconds: 120,
+      park_id: 'wdw-epcot',
+    }
+  - {
+      from: 'attraction:wdw-ep-spaceship-earth',
+      to: 'attraction:wdw-ep-guardians',
+      walking_seconds: 600,
+      park_id: 'wdw-epcot',
+    }
+  - {
+      from: 'attraction:wdw-ep-living-with-land',
+      to: 'attraction:wdw-ep-seas',
+      walking_seconds: 90,
+      park_id: 'wdw-epcot',
+    }
+  - {
+      from: 'attraction:wdw-ep-seas',
+      to: 'attraction:wdw-ep-figment',
+      walking_seconds: 180,
+      park_id: 'wdw-epcot',
+    }
+  - {
+      from: 'attraction:wdw-ep-mission-space',
+      to: 'attraction:wdw-ep-test-track',
+      walking_seconds: 120,
+      park_id: 'wdw-epcot',
+    }
+  - {
+      from: 'attraction:wdw-ep-spaceship-earth',
+      to: 'attraction:wdw-ep-mission-space',
+      walking_seconds: 360,
+      park_id: 'wdw-epcot',
+    }
+
+  # Hollywood Studios connections
+  - {
+      from: 'attraction:wdw-hs-rise-resistance',
+      to: 'attraction:wdw-hs-smugglers-run',
+      walking_seconds: 120,
+      park_id: 'wdw-hollywood-studios',
+    }
+  - {
+      from: 'attraction:wdw-hs-slinky-dog',
+      to: 'attraction:wdw-hs-toy-story-mania',
+      walking_seconds: 180,
+      park_id: 'wdw-hollywood-studios',
+    }
+  - {
+      from: 'attraction:wdw-hs-tower-terror',
+      to: 'attraction:wdw-hs-rockin-rollercoaster',
+      walking_seconds: 60,
+      park_id: 'wdw-hollywood-studios',
+    }
+  - {
+      from: 'attraction:wdw-hs-slinky-dog',
+      to: 'attraction:wdw-hs-alien-swirling',
+      walking_seconds: 120,
+      park_id: 'wdw-hollywood-studios',
+    }
+  - {
+      from: 'attraction:wdw-hs-mickey-minnie-runaway',
+      to: 'attraction:wdw-hs-indiana-jones',
+      walking_seconds: 240,
+      park_id: 'wdw-hollywood-studios',
+    }
+
+  # Animal Kingdom connections
+  - {
+      from: 'attraction:wdw-ak-avatar-flight',
+      to: 'attraction:wdw-ak-navi-river',
+      walking_seconds: 120,
+      park_id: 'wdw-animal-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-ak-kilimanjaro',
+      to: 'attraction:wdw-ak-kali-river',
+      walking_seconds: 420,
+      park_id: 'wdw-animal-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-ak-expedition-everest',
+      to: 'attraction:wdw-ak-kali-river',
+      walking_seconds: 240,
+      park_id: 'wdw-animal-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-ak-dinosaur',
+      to: 'attraction:wdw-ak-triceratops-spin',
+      walking_seconds: 120,
+      park_id: 'wdw-animal-kingdom',
+    }
+  - {
+      from: 'attraction:wdw-ak-avatar-flight',
+      to: 'attraction:wdw-ak-kilimanjaro',
+      walking_seconds: 600,
+      park_id: 'wdw-animal-kingdom',
+    }

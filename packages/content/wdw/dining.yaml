@@ -1,0 +1,280 @@
+content_version: '1.0.0'
+dining:
+  # Magic Kingdom - Table Service
+  - {
+      id: 'wdw-mk-be-our-guest',
+      park_id: 'wdw-magic-kingdom',
+      name: 'Be Our Guest Restaurant',
+      dining_type: 'table_service',
+      cuisine_tags: ['french', 'american'],
+    }
+  - {
+      id: 'wdw-mk-cinderellas',
+      park_id: 'wdw-magic-kingdom',
+      name: "Cinderella's Royal Table",
+      dining_type: 'table_service',
+      cuisine_tags: ['american', 'character-dining'],
+    }
+  - {
+      id: 'wdw-mk-liberty-tree',
+      park_id: 'wdw-magic-kingdom',
+      name: 'Liberty Tree Tavern',
+      dining_type: 'table_service',
+      cuisine_tags: ['american'],
+    }
+  - {
+      id: 'wdw-mk-tony-towns',
+      park_id: 'wdw-magic-kingdom',
+      name: "Tony's Town Square Restaurant",
+      dining_type: 'table_service',
+      cuisine_tags: ['italian', 'american'],
+    }
+  # Magic Kingdom - Quick Service
+  - {
+      id: 'wdw-mk-pecos-bill',
+      park_id: 'wdw-magic-kingdom',
+      name: 'Pecos Bill Tall Tale Inn',
+      dining_type: 'quick_service',
+      cuisine_tags: ['tex-mex'],
+    }
+  - {
+      id: 'wdw-mk-columbia-harbour',
+      park_id: 'wdw-magic-kingdom',
+      name: 'Columbia Harbour House',
+      dining_type: 'quick_service',
+      cuisine_tags: ['seafood', 'american'],
+    }
+  - {
+      id: 'wdw-mk-pinocchio-village',
+      park_id: 'wdw-magic-kingdom',
+      name: 'Pinocchio Village Haus',
+      dining_type: 'quick_service',
+      cuisine_tags: ['italian', 'pizza'],
+    }
+  - {
+      id: 'wdw-mk-cosmic-rays',
+      park_id: 'wdw-magic-kingdom',
+      name: "Cosmic Ray's Starlight Cafe",
+      dining_type: 'quick_service',
+      cuisine_tags: ['american'],
+    }
+  - {
+      id: 'wdw-mk-friar-nooks',
+      park_id: 'wdw-magic-kingdom',
+      name: "Friar's Nook",
+      dining_type: 'quick_service',
+      cuisine_tags: ['american', 'snack'],
+    }
+
+  # EPCOT - Table Service
+  - {
+      id: 'wdw-ep-space-220',
+      park_id: 'wdw-epcot',
+      name: 'Space 220 Restaurant',
+      dining_type: 'table_service',
+      cuisine_tags: ['american', 'premium'],
+    }
+  - {
+      id: 'wdw-ep-garden-grill',
+      park_id: 'wdw-epcot',
+      name: 'Garden Grill Restaurant',
+      dining_type: 'table_service',
+      cuisine_tags: ['american', 'character-dining'],
+    }
+  - {
+      id: 'wdw-ep-san-angel-inn',
+      park_id: 'wdw-epcot',
+      name: 'San Angel Inn Restaurante',
+      dining_type: 'table_service',
+      cuisine_tags: ['mexican'],
+    }
+  - {
+      id: 'wdw-ep-via-napoli',
+      park_id: 'wdw-epcot',
+      name: 'Via Napoli Ristorante e Pizzeria',
+      dining_type: 'table_service',
+      cuisine_tags: ['italian', 'pizza'],
+    }
+  - {
+      id: 'wdw-ep-biergarten',
+      park_id: 'wdw-epcot',
+      name: 'Biergarten Restaurant',
+      dining_type: 'table_service',
+      cuisine_tags: ['german'],
+    }
+  - {
+      id: 'wdw-ep-akershus',
+      park_id: 'wdw-epcot',
+      name: 'Akershus Royal Banquet Hall',
+      dining_type: 'table_service',
+      cuisine_tags: ['norwegian', 'character-dining'],
+    }
+  - {
+      id: 'wdw-ep-coral-reef',
+      park_id: 'wdw-epcot',
+      name: 'Coral Reef Restaurant',
+      dining_type: 'table_service',
+      cuisine_tags: ['seafood', 'american'],
+    }
+  - {
+      id: 'wdw-ep-chefs-de-france',
+      park_id: 'wdw-epcot',
+      name: 'Chefs de France',
+      dining_type: 'table_service',
+      cuisine_tags: ['french'],
+    }
+  # EPCOT - Quick Service
+  - {
+      id: 'wdw-ep-sunshine-seasons',
+      park_id: 'wdw-epcot',
+      name: 'Sunshine Seasons',
+      dining_type: 'quick_service',
+      cuisine_tags: ['american', 'healthy'],
+    }
+  - {
+      id: 'wdw-ep-connections-cafe',
+      park_id: 'wdw-epcot',
+      name: 'Connections Cafe',
+      dining_type: 'quick_service',
+      cuisine_tags: ['american', 'coffee'],
+    }
+
+  # Hollywood Studios - Table Service
+  - {
+      id: 'wdw-hs-50s-prime-time',
+      park_id: 'wdw-hollywood-studios',
+      name: "50's Prime Time Cafe",
+      dining_type: 'table_service',
+      cuisine_tags: ['american'],
+    }
+  - {
+      id: 'wdw-hs-hollywoodvine',
+      park_id: 'wdw-hollywood-studios',
+      name: 'Hollywood & Vine',
+      dining_type: 'table_service',
+      cuisine_tags: ['american', 'character-dining'],
+    }
+  - {
+      id: 'wdw-hs-sci-fi',
+      park_id: 'wdw-hollywood-studios',
+      name: 'Sci-Fi Dine-In Theater Restaurant',
+      dining_type: 'table_service',
+      cuisine_tags: ['american'],
+    }
+  - {
+      id: 'wdw-hs-oga-cantina',
+      park_id: 'wdw-hollywood-studios',
+      name: "Oga's Cantina",
+      dining_type: 'table_service',
+      cuisine_tags: ['bar', 'snack'],
+    }
+  # Hollywood Studios - Quick Service
+  - {
+      id: 'wdw-hs-abc-commissary',
+      park_id: 'wdw-hollywood-studios',
+      name: 'ABC Commissary',
+      dining_type: 'quick_service',
+      cuisine_tags: ['american'],
+    }
+  - {
+      id: 'wdw-hs-docking-bay',
+      park_id: 'wdw-hollywood-studios',
+      name: 'Docking Bay 7 Food and Cargo',
+      dining_type: 'quick_service',
+      cuisine_tags: ['star-wars', 'american'],
+    }
+
+  # Animal Kingdom - Table Service
+  - {
+      id: 'wdw-ak-tusker-house',
+      park_id: 'wdw-animal-kingdom',
+      name: 'Tusker House Restaurant',
+      dining_type: 'table_service',
+      cuisine_tags: ['african', 'character-dining'],
+    }
+  - {
+      id: 'wdw-ak-tiffins',
+      park_id: 'wdw-animal-kingdom',
+      name: 'Tiffins Restaurant',
+      dining_type: 'table_service',
+      cuisine_tags: ['international', 'premium'],
+    }
+  - {
+      id: 'wdw-ak-yak-yeti',
+      park_id: 'wdw-animal-kingdom',
+      name: 'Yak & Yeti Restaurant',
+      dining_type: 'table_service',
+      cuisine_tags: ['asian'],
+    }
+  # Animal Kingdom - Quick Service
+  - {
+      id: 'wdw-ak-flame-tree',
+      park_id: 'wdw-animal-kingdom',
+      name: 'Flame Tree Barbecue',
+      dining_type: 'quick_service',
+      cuisine_tags: ['bbq'],
+    }
+  - {
+      id: 'wdw-ak-satu-li',
+      park_id: 'wdw-animal-kingdom',
+      name: "Satu'li Canteen",
+      dining_type: 'quick_service',
+      cuisine_tags: ['pandoran', 'healthy'],
+    }
+
+  # Disney Springs
+  - {
+      id: 'wdw-ds-chef-art-smiths',
+      name: "Chef Art Smith's Homecomin'",
+      dining_type: 'table_service',
+      cuisine_tags: ['southern', 'american'],
+    }
+  - {
+      id: 'wdw-ds-wine-bar-george',
+      name: 'Wine Bar George',
+      dining_type: 'table_service',
+      cuisine_tags: ['wine-bar', 'american'],
+    }
+  - {
+      id: 'wdw-ds-jaleo',
+      name: 'Jaleo by Jose Andres',
+      dining_type: 'table_service',
+      cuisine_tags: ['spanish', 'tapas'],
+    }
+
+  # Resort dining
+  - {
+      id: 'wdw-r-citricos',
+      resort_id: 'wdw-r-grand-floridian',
+      name: 'Citricos',
+      dining_type: 'table_service',
+      cuisine_tags: ['mediterranean', 'premium'],
+    }
+  - {
+      id: 'wdw-r-ohana',
+      resort_id: 'wdw-r-polynesian',
+      name: "'Ohana",
+      dining_type: 'table_service',
+      cuisine_tags: ['pacific-island', 'character-dining'],
+    }
+  - {
+      id: 'wdw-r-cape-may',
+      resort_id: 'wdw-r-beach-club',
+      name: 'Cape May Cafe',
+      dining_type: 'table_service',
+      cuisine_tags: ['seafood', 'character-dining'],
+    }
+  - {
+      id: 'wdw-r-whispering-canyon',
+      resort_id: 'wdw-r-wilderness-lodge',
+      name: 'Whispering Canyon Cafe',
+      dining_type: 'table_service',
+      cuisine_tags: ['american', 'bbq'],
+    }
+  - {
+      id: 'wdw-r-california-grill',
+      resort_id: 'wdw-r-contemporary',
+      name: 'California Grill',
+      dining_type: 'table_service',
+      cuisine_tags: ['california', 'premium'],
+    }
