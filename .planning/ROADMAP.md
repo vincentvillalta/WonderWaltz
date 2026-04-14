@@ -59,7 +59,21 @@ Plans:
   3. Crowd index (`crowd_index:{date}` Redis key) updates hourly and returns a normalized 0–100 value
   4. A Sentry alert fires correctly when a simulated ingestion failure repeats twice in a row; ingestion-lag alert triggers at >30 minutes
   5. OpenWeather daily forecasts for Orlando are cached per trip date; cache misses trigger a live API call and the result is stored with a 6-hour TTL
-**Plans**: TBD
+**Plans**: 12 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Worker entry point (worker.ts), BullModule root config, Wave 0 test fixtures
+- [ ] 02-02-PLAN.md — AlertingModule: SlackAlerterService + LagAlertService (DATA-06)
+- [ ] 02-03-PLAN.md — OpenAPI v1 shape design: all DTOs, controller stubs, snapshot + CI gate
+- [ ] 02-04-PLAN.md — queue-times.com ingestion worker: QueueTimesService + QueueTimesProcessor (DATA-01)
+- [ ] 02-05-PLAN.md — themeparks.wiki ingestion worker: ThemeparksService + ThemeparksProcessor (DATA-02)
+- [ ] 02-06-PLAN.md — pg_cron monitor worker: RollupProcessor verifies hourly refresh (DATA-03)
+- [ ] 02-07-PLAN.md — Crowd index worker: bootstrap + percentile formulas, 5 Redis keys (DATA-04)
+- [ ] 02-08-PLAN.md — OpenWeather on-demand cache-aside: WeatherService (DATA-08)
+- [ ] 02-09-PLAN.md — Live ingestion read endpoints: /v1/parks/:id/waits, /v1/crowd-index, /v1/weather
+- [ ] 02-10-PLAN.md — Final OpenAPI v1 snapshot freeze and CI gate verification
+- [ ] 02-11-PLAN.md — Attribution content file + web footer wiring (DATA-05)
+- [ ] 02-12-PLAN.md — Production deploy: Railway worker service + ingestion clock start (DATA-07)
 
 ### Phase 3: Engine
 **Goal**: A real plan can be generated end-to-end: solver produces deterministic time-blocked days, Claude adds warm narrative, and the result persists to the database via an async BullMQ job. LLM cost telemetry is live from the first call. The solver passes all six fixture snapshot tests.
