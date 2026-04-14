@@ -33,7 +33,10 @@
                           "$ref": "#/components/schemas/ApiMetaDto"
                         }
                       },
-                      "required": ["data", "meta"]
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
                     }
                   ]
                 }
@@ -42,7 +45,9 @@
           }
         },
         "summary": "Get current wait times for a park",
-        "tags": ["parks"]
+        "tags": [
+          "parks"
+        ]
       }
     },
     "/v1/crowd-index": {
@@ -66,7 +71,10 @@
                           "$ref": "#/components/schemas/ApiMetaDto"
                         }
                       },
-                      "required": ["data", "meta"]
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
                     }
                   ]
                 }
@@ -75,7 +83,9 @@
           }
         },
         "summary": "Get current crowd index (global + per-park)",
-        "tags": ["parks"]
+        "tags": [
+          "parks"
+        ]
       }
     },
     "/v1/weather": {
@@ -110,7 +120,10 @@
                           "$ref": "#/components/schemas/ApiMetaDto"
                         }
                       },
-                      "required": ["data", "meta"]
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
                     }
                   ]
                 }
@@ -119,7 +132,9 @@
           }
         },
         "summary": "Get Orlando weather forecast for a date",
-        "tags": ["parks"]
+        "tags": [
+          "parks"
+        ]
       }
     },
     "/v1/trips": {
@@ -153,7 +168,10 @@
                           "$ref": "#/components/schemas/ApiMetaDto"
                         }
                       },
-                      "required": ["data", "meta"]
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
                     }
                   ]
                 }
@@ -165,7 +183,9 @@
           }
         },
         "summary": "Create a trip (Phase 3)",
-        "tags": ["trips"]
+        "tags": [
+          "trips"
+        ]
       }
     },
     "/v1/trips/{id}": {
@@ -200,7 +220,10 @@
                           "$ref": "#/components/schemas/ApiMetaDto"
                         }
                       },
-                      "required": ["data", "meta"]
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
                     }
                   ]
                 }
@@ -212,7 +235,9 @@
           }
         },
         "summary": "Get a trip by ID (Phase 3)",
-        "tags": ["trips"]
+        "tags": [
+          "trips"
+        ]
       }
     },
     "/v1/trips/{id}/generate-plan": {
@@ -247,7 +272,10 @@
                           "$ref": "#/components/schemas/ApiMetaDto"
                         }
                       },
-                      "required": ["data", "meta"]
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
                     }
                   ]
                 }
@@ -259,7 +287,9 @@
           }
         },
         "summary": "Generate an itinerary plan (Phase 3)",
-        "tags": ["trips"]
+        "tags": [
+          "trips"
+        ]
       }
     },
     "/v1/trips/{id}/rethink-today": {
@@ -304,7 +334,10 @@
                           "$ref": "#/components/schemas/ApiMetaDto"
                         }
                       },
-                      "required": ["data", "meta"]
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
                     }
                   ]
                 }
@@ -316,7 +349,9 @@
           }
         },
         "summary": "Rethink today's remaining itinerary (Phase 3)",
-        "tags": ["trips"]
+        "tags": [
+          "trips"
+        ]
       }
     },
     "/v1/plans/{id}": {
@@ -351,7 +386,10 @@
                           "$ref": "#/components/schemas/ApiMetaDto"
                         }
                       },
-                      "required": ["data", "meta"]
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
                     }
                   ]
                 }
@@ -363,7 +401,9 @@
           }
         },
         "summary": "Get a plan by ID (Phase 3)",
-        "tags": ["plans"]
+        "tags": [
+          "plans"
+        ]
       }
     },
     "/v1/auth/anonymous": {
@@ -387,7 +427,10 @@
                           "$ref": "#/components/schemas/ApiMetaDto"
                         }
                       },
-                      "required": ["data", "meta"]
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
                     }
                   ]
                 }
@@ -399,7 +442,9 @@
           }
         },
         "summary": "Create anonymous user session (Phase 4)",
-        "tags": ["auth"]
+        "tags": [
+          "auth"
+        ]
       }
     },
     "/v1/users/me": {
@@ -423,7 +468,10 @@
                           "$ref": "#/components/schemas/ApiMetaDto"
                         }
                       },
-                      "required": ["data", "meta"]
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
                     }
                   ]
                 }
@@ -440,7 +488,9 @@
           }
         ],
         "summary": "Get current user profile (Phase 4)",
-        "tags": ["users"]
+        "tags": [
+          "users"
+        ]
       }
     }
   },
@@ -475,7 +525,9 @@
             "example": "WonderWaltz is an independent, unofficial planning app. Not affiliated with, endorsed by, or sponsored by The Walt Disney Company."
           }
         },
-        "required": ["disclaimer"]
+        "required": [
+          "disclaimer"
+        ]
       },
       "WaitTimeDto": {
         "type": "object",
@@ -503,7 +555,10 @@
           "source": {
             "type": "string",
             "description": "Data source identifier",
-            "enum": ["queue-times", "themeparks-wiki"],
+            "enum": [
+              "queue-times",
+              "themeparks-wiki"
+            ],
             "example": "queue-times"
           },
           "is_stale": {
@@ -512,7 +567,14 @@
             "example": false
           }
         },
-        "required": ["attractionId", "name", "minutes", "fetched_at", "source", "is_stale"]
+        "required": [
+          "attractionId",
+          "name",
+          "minutes",
+          "fetched_at",
+          "source",
+          "is_stale"
+        ]
       },
       "CrowdIndexValueDto": {
         "type": "object",
@@ -526,7 +588,10 @@
           "confidence": {
             "type": "string",
             "description": "\"bootstrap\" during first 30 days (formula: min(100, avg_wait × 1.2)); \"percentile\" once ≥30 days of history exist. Clients can label early-life values honestly.",
-            "enum": ["bootstrap", "percentile"],
+            "enum": [
+              "bootstrap",
+              "percentile"
+            ],
             "example": "percentile"
           },
           "sample_size_days": {
@@ -535,7 +600,11 @@
             "example": 42
           }
         },
-        "required": ["value", "confidence", "sample_size_days"]
+        "required": [
+          "value",
+          "confidence",
+          "sample_size_days"
+        ]
       },
       "CrowdIndexParksDto": {
         "type": "object",
@@ -553,7 +622,12 @@
             "$ref": "#/components/schemas/CrowdIndexValueDto"
           }
         },
-        "required": ["magic_kingdom", "epcot", "hollywood_studios", "animal_kingdom"]
+        "required": [
+          "magic_kingdom",
+          "epcot",
+          "hollywood_studios",
+          "animal_kingdom"
+        ]
       },
       "CrowdIndexResponseDto": {
         "type": "object",
@@ -575,7 +649,10 @@
             ]
           }
         },
-        "required": ["global", "parks"]
+        "required": [
+          "global",
+          "parks"
+        ]
       },
       "WeatherDto": {
         "type": "object",
@@ -631,7 +708,14 @@
           "age_bracket": {
             "type": "string",
             "description": "Age bracket for the guest. Uses bracket string instead of birthdate — LEGL-07 COPPA compliance (no collection of ages for under-13 guests).",
-            "enum": ["0-2", "3-6", "7-9", "10-13", "14-17", "18+"],
+            "enum": [
+              "0-2",
+              "3-6",
+              "7-9",
+              "10-13",
+              "14-17",
+              "18+"
+            ],
             "example": "7-9"
           },
           "has_das": {
@@ -640,7 +724,11 @@
             "example": false
           }
         },
-        "required": ["name", "age_bracket", "has_das"]
+        "required": [
+          "name",
+          "age_bracket",
+          "has_das"
+        ]
       },
       "TripPreferencesDto": {
         "type": "object",
@@ -648,12 +736,18 @@
           "budget_tier": {
             "type": "string",
             "description": "Budget tier for the trip. Affects Lightning Lane / LLMP recommendations. \"pixie_dust\" = budget-conscious; \"fairy_tale\" = moderate; \"royal_treatment\" = premium.",
-            "enum": ["pixie_dust", "fairy_tale", "royal_treatment"],
+            "enum": [
+              "pixie_dust",
+              "fairy_tale",
+              "royal_treatment"
+            ],
             "example": "fairy_tale"
           },
           "must_do_attraction_ids": {
             "description": "Internal attraction UUIDs the party absolutely wants to experience. Solver treats these as must-do constraints.",
-            "example": ["a1b2c3d4-e5f6-7890-abcd-ef1234567890"],
+            "example": [
+              "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+            ],
             "type": "array",
             "items": {
               "type": "string"
@@ -665,7 +759,10 @@
             "example": "Uses a manual wheelchair; avoid multi-level queue areas."
           }
         },
-        "required": ["budget_tier", "must_do_attraction_ids"]
+        "required": [
+          "budget_tier",
+          "must_do_attraction_ids"
+        ]
       },
       "TripDto": {
         "type": "object",
@@ -708,7 +805,10 @@
           "entitlement_state": {
             "type": "string",
             "description": "\"free\" = plan not yet purchased (Phase 4 entitlements); \"unlocked\" = plan purchased and available.",
-            "enum": ["free", "unlocked"],
+            "enum": [
+              "free",
+              "unlocked"
+            ],
             "example": "free"
           },
           "created_at": {
@@ -761,7 +861,12 @@
             ]
           }
         },
-        "required": ["start_date", "end_date", "guests", "preferences"]
+        "required": [
+          "start_date",
+          "end_date",
+          "guests",
+          "preferences"
+        ]
       },
       "GeneratePlanResponseDto": {
         "type": "object",
@@ -772,21 +877,28 @@
             "example": "bullmq-job-id-123"
           }
         },
-        "required": ["job_id"]
+        "required": [
+          "job_id"
+        ]
       },
       "RethinkTodayDto": {
         "type": "object",
         "properties": {
           "remaining_item_ids": {
             "description": "PlanItem UUIDs that remain to be done today. Solver uses this to build a revised afternoon plan.",
-            "example": ["plan-item-uuid-1", "plan-item-uuid-2"],
+            "example": [
+              "plan-item-uuid-1",
+              "plan-item-uuid-2"
+            ],
             "type": "array",
             "items": {
               "type": "string"
             }
           }
         },
-        "required": ["remaining_item_ids"]
+        "required": [
+          "remaining_item_ids"
+        ]
       },
       "PlanItemDto": {
         "type": "object",
@@ -799,7 +911,13 @@
           "type": {
             "type": "string",
             "description": "Type of itinerary item",
-            "enum": ["attraction", "dining", "show", "break", "travel"],
+            "enum": [
+              "attraction",
+              "dining",
+              "show",
+              "break",
+              "travel"
+            ],
             "example": "attraction"
           },
           "ref_id": {
@@ -835,12 +953,21 @@
           "lightning_lane_type": {
             "type": "string",
             "description": "\"LLMP\" = Lightning Lane Multi Pass; \"LLSP\" = Lightning Lane Single Pass; null = standard queue. Solver sets this based on budget_tier and ride popularity.",
-            "enum": ["LLMP", "LLSP"],
+            "enum": [
+              "LLMP",
+              "LLSP"
+            ],
             "example": null,
             "nullable": true
           }
         },
-        "required": ["id", "type", "name", "start_time", "end_time"]
+        "required": [
+          "id",
+          "type",
+          "name",
+          "start_time",
+          "end_time"
+        ]
       },
       "DayPlanDto": {
         "type": "object",
@@ -884,7 +1011,12 @@
             ]
           }
         },
-        "required": ["id", "date", "park_id", "items"]
+        "required": [
+          "id",
+          "date",
+          "park_id",
+          "items"
+        ]
       },
       "PlanDto": {
         "type": "object",
@@ -907,7 +1039,11 @@
           "status": {
             "type": "string",
             "description": "\"generating\" = solver job is in progress; \"ready\" = plan is complete and can be viewed; \"failed\" = solver failed (retry available).",
-            "enum": ["generating", "ready", "failed"],
+            "enum": [
+              "generating",
+              "ready",
+              "failed"
+            ],
             "example": "ready"
           },
           "day_plans": {
@@ -923,7 +1059,14 @@
             "example": "2026-04-14T10:00:00.000Z"
           }
         },
-        "required": ["id", "trip_id", "version", "status", "day_plans", "created_at"]
+        "required": [
+          "id",
+          "trip_id",
+          "version",
+          "status",
+          "day_plans",
+          "created_at"
+        ]
       },
       "AnonymousAuthResponseDto": {
         "type": "object",
@@ -944,7 +1087,11 @@
             "example": "2026-05-14T10:00:00.000Z"
           }
         },
-        "required": ["access_token", "user_id", "expires_at"]
+        "required": [
+          "access_token",
+          "user_id",
+          "expires_at"
+        ]
       },
       "UserMeDto": {
         "type": "object",
@@ -970,7 +1117,11 @@
             "example": true
           }
         },
-        "required": ["id", "created_at", "is_anonymous"]
+        "required": [
+          "id",
+          "created_at",
+          "is_anonymous"
+        ]
       }
     }
   }

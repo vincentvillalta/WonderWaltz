@@ -4,3 +4,5 @@ dist/
 .next/
 generated/
 pnpm-lock.yaml
+# OpenAPI snapshot is auto-generated — skip prettier to avoid formatting drift with git diff
+packages/shared-openapi/openapi.v1.snapshot.json
