@@ -12,7 +12,7 @@ WORKDIR /app
 # -- deps layer: install workspace dependencies -------------------------------
 FROM base AS deps
 
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 COPY tsconfig.base.json ./
 
 # Copy every workspace package.json (pnpm needs these to resolve the graph)
