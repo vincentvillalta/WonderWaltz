@@ -78,8 +78,34 @@ export class QueueTimesProcessor extends WorkerHost {
    */
   @OnWorkerEvent('failed')
   async onFailed(job: Job, error: Error): Promise<void> {
+    // Enrich error text — postgres-js errors stringify as "Failed query: ... params:"
+    // without exposing the real cause. We grab named props via any-cast to surface them.
+    const e = error as Error & {
+      code?: string;
+      detail?: string;
+      hint?: string;
+      severity?: string;
+      where?: string;
+      cause?: unknown;
+    };
+    const enriched = [
+      error.message,
+      e.code ? `code=${e.code}` : null,
+      e.severity ? `severity=${e.severity}` : null,
+      e.detail ? `detail=${e.detail}` : null,
+      e.hint ? `hint=${e.hint}` : null,
+      e.where ? `where=${e.where}` : null,
+      e.cause instanceof Error
+        ? `cause=${e.cause.message}`
+        : e.cause
+          ? `cause=${JSON.stringify(e.cause)}`
+          : null,
+    ]
+      .filter(Boolean)
+      .join(' | ');
+
     this.log.error(
-      `Job ${job.id} attempt ${job.attemptsMade}/${job.opts.attempts ?? 1} failed: ${error.message}`,
+      `Job ${job.id} attempt ${job.attemptsMade}/${job.opts.attempts ?? 1} failed: ${enriched}`,
       error.stack,
     );
     const maxAttempts = job.opts.attempts ?? 1;
@@ -87,7 +113,7 @@ export class QueueTimesProcessor extends WorkerHost {
       Sentry.captureException(error, {
         tags: { queue: 'wait-times', jobId: String(job.id) },
       });
-      await this.slackAlerter.sendDeadLetter('wait-times', String(job.id), error.message);
+      await this.slackAlerter.sendDeadLetter('wait-times', String(job.id), enriched);
     }
   }
 

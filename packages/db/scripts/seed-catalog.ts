@@ -15,7 +15,7 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const CONTENT_DIR = resolve(__dirname, '../../../content/wdw');
+const CONTENT_DIR = resolve(__dirname, '../../../packages/content/wdw');
 
 const DATABASE_URL = process.env['DATABASE_URL'];
 if (!DATABASE_URL) {
