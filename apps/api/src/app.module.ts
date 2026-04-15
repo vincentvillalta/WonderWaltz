@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module.js';
 import { ResponseEnvelopeInterceptor } from './common/interceptors/response-envelope.interceptor.js';
+import { ForecastModule } from './forecast/forecast.module.js';
 import { NarrativeModule } from './narrative/narrative.module.js';
 import { ParksModule } from './parks/parks.module.js';
 import { SharedInfraModule } from './shared-infra.module.js';
@@ -21,6 +22,7 @@ import { WeatherModule } from './weather/weather.module.js';
     TripsModule,
     AuthModule,
     NarrativeModule,
+    ForecastModule,
   ],
   providers: [
     {
