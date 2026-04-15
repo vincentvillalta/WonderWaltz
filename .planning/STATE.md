@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-04-15T22:33:13.364Z"
-last_activity: "2026-04-15 — Completed Plan 03-03: OpenAPI v1 snapshot amendment (FullDayPlan|LockedDayPlan discriminated union + RethinkRequest + 402 PlanBudgetExhausted)"
+stopped_at: Completed 03-04-PLAN.md
+last_updated: "2026-04-15T22:47:10.012Z"
+last_activity: "2026-04-15 — Completed Plan 03-04: Solver types contract + deterministic hash + package-boundary test (SOLV-01)"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 27
-  percent: 62
+  completed_plans: 28
+  percent: 67
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 3 of 18 in current phase
+Plan: 4 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-15 — Completed Plan 03-03: OpenAPI v1 snapshot amendment (FullDayPlan|LockedDayPlan discriminated union + RethinkRequest + 402 PlanBudgetExhausted)
+Last activity: 2026-04-15 — Completed Plan 03-04: Solver types contract + deterministic hash + package-boundary test (SOLV-01)
 
-Progress: [██████░░░░] 62%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
@@ -74,6 +74,8 @@ Progress: [██████░░░░] 62%
 | Phase 03-engine P01 | 15 min | 3 tasks | 19 files |
 | Phase 03-engine P02 | 7 min | 3 tasks | 14 files |
 | Phase 03-engine P03 | 19 min | 2 tasks | 11 files |
+| Phase 03-engine P04 | 6 min | 2 tasks | 9 files |
+| Phase 03-engine P04 | 6 min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -151,6 +153,10 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-03: Installed class-transformer + class-validator (not Zod-substituted) — @Type discriminator is runtime counterpart to @ApiProperty oneOf discriminator
 - [Phase 03-engine]: 03-03: CI snapshot regen step needs NODE_ENV=test so AppModule boots without ANTHROPIC_API_KEY (NarrativeModule factory guard from 03-02)
 - [Phase 03-engine]: 03-03: Shape-assertion tests + byte-diff CI gate run together — byte gate catches regen drift, shape tests catch silent field drops
+- [Phase 03-engine]: 03-04: Catalog excluded from solver_input_hash (in addition to forecasts/weather/crowd) — content edits would force cache-miss storms otherwise
+- [Phase 03-engine]: 03-04: mustDoAttractionIds order is semantic — reordering produces a different hash (user ranking drives solver priority)
+- [Phase 03-engine]: 03-04: Solver types are structural duplicates of catalog/DTO shapes, not re-imports from @wonderwaltz/content or @wonderwaltz/api — required to keep packages/solver zero-runtime-dep
+- [Phase 03-engine]: 03-04: Package-boundary enforced by static import-scan test (not convention); forbidden list extended beyond plan's six to include bullmq, pg, @anthropic-ai/ and I/O node stdlib in src/
 
 ### Pending Todos
 
@@ -166,6 +172,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-15T22:32:55.621Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-04-15T22:47:10.009Z
+Stopped at: Completed 03-04-PLAN.md
 Resume file: None
