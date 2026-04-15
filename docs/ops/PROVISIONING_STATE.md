@@ -35,18 +35,21 @@ vs. what's still pending.
 - `REDIS_URL` populated in `.env.local`
 - No application data yet; first write happens in Phase 02 ingestion workers
 
-## 3. Railway — ◆ Worker service pending deploy
+## 3. Railway — ✓ Provisioned
 
-- API service: assumed provisioned and running (Phase 02 built against it).
-- **Worker service: pending deploy** — code is complete; worker service must
-  be created in the Railway dashboard with `node dist/worker.js` start command.
-- See `docs/ops/PHASE2-DEPLOYMENT.md` for the full deployment runbook.
-- **Required env vars not yet set (worker service):**
-  - `OPENWEATHER_API_KEY` — required for weather cache (GET /v1/weather). Source: [openweathermap.org](https://home.openweathermap.org/api_keys) → My API Keys
-  - `SLACK_ALERT_WEBHOOK_URL` — required for Sentry alert routing. Source: Slack workspace → Apps → Incoming Webhooks → Add to Slack
-- Shared env vars to copy from `api` service to `worker` service: `DATABASE_URL`, `REDIS_URL`, `SENTRY_DSN_API`
-- **Status moves to ✓ Provisioned** after checkpoint passes (ingestion rows confirmed in wait_times_history)
-- Ingestion clock start: ******\_\_\_\_****** (fill in when worker verified running)
+- API service: assumed provisioned (web-facing HTTP surface).
+- **Worker service: deployed and running.** Dockerfile-based build
+  (`node dist/src/worker.js`). All 5 required env vars set.
+- **DATABASE_URL uses the Supabase Session pooler** (port 5432 at
+  `aws-*.pooler.supabase.com`) because Direct (`db.*.supabase.co`) is
+  IPv6-only and Railway's egress is IPv4.
+- **Ingestion clock start (t=0 for DATA-07 / LNCH-07 8-week gate):**
+  **2026-04-15 16:08:01 UTC** (first row in `wait_times_history`)
+- ⚠ **Catalog coverage gap:** Only 2 of 4 parks are ingesting because
+  many seed-file `queue_times_id` values don't match current queue-times.com
+  live IDs. Ingestion still counts for DATA-07 — the 8-week clock continues
+  from t=0 regardless. Fix tracked at
+  `.planning/todos/pending/fix-queue-times-catalog-ids.md`.
 
 ## 4. Vercel — ◆ Partially provisioned
 
