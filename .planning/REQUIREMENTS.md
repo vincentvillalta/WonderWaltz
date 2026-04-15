@@ -67,11 +67,11 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Wait-Time Forecast
 
-- [ ] **FC-01**: `ForecastModule.predictWait(ride_id, target_ts)` returns `{ minutes, confidence }` derived from bucketed median of `wait_times_history` grouped by `(ride_id, dow, hour_of_day, crowd_level_bucket)`
+- [x] **FC-01**: `ForecastModule.predictWait(ride_id, target_ts)` returns `{ minutes, confidence }` derived from bucketed median of `wait_times_history` grouped by `(ride_id, dow, hour_of_day, crowd_level_bucket)`
 - [x] **FC-02**: Crowd level bucket is derived from rolling calendar heuristic (weekends, federal holidays, school holidays, marathon weekends, festival weeks) with admin-editable static override table
-- [ ] **FC-03**: Forecast confidence label is `high` (8+ weeks of buckets with >50 samples), `medium` (4-8 weeks), `low` (<4 weeks); always returned and always surfaced in UI
-- [ ] **FC-04**: Forecast accuracy unit tests cover fixture history and canonical ride/day combinations
-- [ ] **FC-05**: UI displays "Beta Forecast" framing on every forecasted wait before public beta is 8+ weeks old
+- [x] **FC-03**: Forecast confidence label is `high` (8+ weeks of buckets with >50 samples), `medium` (4-8 weeks), `low` (<4 weeks); always returned and always surfaced in UI
+- [x] **FC-04**: Forecast accuracy unit tests cover fixture history and canonical ride/day combinations
+- [x] **FC-05**: UI displays "Beta Forecast" framing on every forecasted wait before public beta is 8+ weeks old
 
 ### Scheduling Engine (Solver)
 
@@ -286,11 +286,11 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | DATA-06 | Phase 2 | Complete |
 | DATA-07 | Phase 2 | Complete |
 | DATA-08 | Phase 2 | Complete |
-| FC-01 | Phase 3 | Pending |
+| FC-01 | Phase 3 | Complete |
 | FC-02 | Phase 3 | Complete |
-| FC-03 | Phase 3 | Pending |
-| FC-04 | Phase 3 | Pending |
-| FC-05 | Phase 3 | Pending |
+| FC-03 | Phase 3 | Complete |
+| FC-04 | Phase 3 | Complete |
+| FC-05 | Phase 3 | Complete |
 | SOLV-01 | Phase 3 | Complete |
 | SOLV-02 | Phase 3 | Pending |
 | SOLV-03 | Phase 3 | Pending |

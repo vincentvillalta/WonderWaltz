@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-04-15T22:47:10.012Z"
+stopped_at: Completed 03-11-PLAN.md
+last_updated: "2026-04-15T23:08:30.387Z"
 last_activity: "2026-04-15 — Completed Plan 03-04: Solver types contract + deterministic hash + package-boundary test (SOLV-01)"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 28
+  completed_plans: 29
   percent: 67
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 4 of 18 in current phase
+Plan: 11 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-15 — Completed Plan 03-04: Solver types contract + deterministic hash + package-boundary test (SOLV-01)
+Last activity: 2026-04-15 — Completed Plan 03-11: ForecastModule (FC-01, FC-03, FC-04, FC-05) — bucketed median + baseline fallback + hybrid crowd calendar + Beta Forecast framing
 
-Progress: [███████░░░] 67%
+Progress: [███████░░░] 69%
 
 ## Performance Metrics
 
@@ -76,6 +76,7 @@ Progress: [███████░░░] 67%
 | Phase 03-engine P03 | 19 min | 2 tasks | 11 files |
 | Phase 03-engine P04 | 6 min | 2 tasks | 9 files |
 | Phase 03-engine P04 | 6 min | 2 tasks | 9 files |
+| Phase 03-engine P11 | 13 min | 3 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -157,6 +158,10 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-04: mustDoAttractionIds order is semantic — reordering produces a different hash (user ranking drives solver priority)
 - [Phase 03-engine]: 03-04: Solver types are structural duplicates of catalog/DTO shapes, not re-imports from @wonderwaltz/content or @wonderwaltz/api — required to keep packages/solver zero-runtime-dep
 - [Phase 03-engine]: 03-04: Package-boundary enforced by static import-scan test (not convention); forbidden list extended beyond plan's six to include bullmq, pg, @anthropic-ai/ and I/O node stdlib in src/
+- [Phase 03-engine]: 03-11: Rule engine relocated to apps/api/src/forecast/calendar-rules.ts (not packages/content/wdw) — CJS/ESM package boundary prevents synchronous import of ESM pure function into CJS api; mirrors DISCLAIMER inline pattern
+- [Phase 03-engine]: 03-11: Bucket filter intentionally skipped in percentile_cont SQL — baseline-fallback dominates Phase 3 operating mode so bucket-aware median is dead code; Phase 4+ refinement
+- [Phase 03-engine]: 03-11: MIN_SAMPLES_FOR_MEDIAN=5 short-circuit forces baseline even when weeks-of-history qualifies for medium — prevents confident-looking medians over near-empty buckets
+- [Phase 03-engine]: 03-11: postgres-js numeric-as-string normalizer (toNumber) in ForecastService — Math.round on string NaN-bombs silently; explicit test case pins
 
 ### Pending Todos
 
@@ -172,6 +177,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-15T22:47:10.009Z
-Stopped at: Completed 03-04-PLAN.md
+Last session: 2026-04-15T23:08:07.952Z
+Stopped at: Completed 03-11-PLAN.md
 Resume file: None
