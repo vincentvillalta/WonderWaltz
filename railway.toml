@@ -1,0 +1,14 @@
+# Railway config for the WonderWaltz monorepo.
+# Uses a Dockerfile at the repo root so pnpm workspaces work correctly.
+# Railway's Nixpacks/Railpack defaults do not handle `workspace:*` references.
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+# Each Railway service sets its own start command in the dashboard:
+#   api    → node apps/api/dist/main.js
+#   worker → node apps/api/dist/worker.js
+#
+# The Dockerfile's default CMD is the worker start command, so services
+# without a custom start command will run as a worker.
