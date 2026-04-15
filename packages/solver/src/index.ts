@@ -1,17 +1,17 @@
 // Pure TypeScript solver — zero NestJS dependencies, zero I/O side effects.
-// Full implementation in Phase 3 (SOLV-01..13).
-// These type stubs allow apps/api to import types without circular deps.
+// Type contract + deterministic hash are complete (plan 03-04).
+// The `solve()` implementation lands across plans 03-07..03-10.
 
-export interface SolverInput {
-  tripId: string;
-  // Full type definition comes in Phase 3
-}
+export * from './types.js';
+export * from './hash.js';
 
-export interface DayPlan {
-  dayIndex: number;
-  // Full type definition comes in Phase 3
-}
+import type { SolverInput, DayPlan } from './types.js';
 
+/**
+ * Runs the constructive + local-search pipeline. Throws until 03-07..03-10
+ * land the implementation. Signature is frozen: downstream plans import
+ * this symbol directly.
+ */
 export function solve(_input: SolverInput): DayPlan[] {
-  throw new Error('Solver not yet implemented — Phase 3');
+  throw new Error('Solver not yet implemented — lands in plans 03-07..03-10');
 }
