@@ -83,6 +83,10 @@ async function seedAttractions() {
     tags: string[];
     latitude?: number;
     longitude?: number;
+    // Phase 3 (plan 03-01): solver-facing fields.
+    baseline_wait_minutes: number;
+    lightning_lane_type: 'multi_pass' | 'single_pass' | 'none';
+    is_headliner: boolean;
   }>('attractions.yaml');
 
   // Build park externalId → uuid map
@@ -106,6 +110,9 @@ async function seedAttractions() {
         heightReqCm: attraction.height_req_cm ?? null,
         attractionType: attraction.attraction_type,
         tags: attraction.tags,
+        baselineWaitMinutes: attraction.baseline_wait_minutes,
+        lightningLaneType: attraction.lightning_lane_type,
+        isHeadliner: attraction.is_headliner,
       })
       .onConflictDoUpdate({
         target: attractions.externalId,
@@ -115,6 +122,9 @@ async function seedAttractions() {
           heightReqCm: attraction.height_req_cm ?? null,
           attractionType: attraction.attraction_type,
           tags: attraction.tags,
+          baselineWaitMinutes: attraction.baseline_wait_minutes,
+          lightningLaneType: attraction.lightning_lane_type,
+          isHeadliner: attraction.is_headliner,
         },
       });
     count++;

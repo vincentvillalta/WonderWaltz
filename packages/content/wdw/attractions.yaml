@@ -11,6 +11,9 @@ attractions:
     tags: ['dark', 'indoor', 'family', 'slow']
     latitude: 28.4198
     longitude: -81.5831
+    baseline_wait_minutes: 35
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-space-mountain'
     park_id: 'wdw-magic-kingdom'
@@ -22,6 +25,9 @@ attractions:
     tags: ['thrill', 'indoor', 'dark', 'roller-coaster']
     latitude: 28.4188
     longitude: -81.5766
+    baseline_wait_minutes: 45
+    lightning_lane_type: multi_pass
+    is_headliner: true
 
   - id: 'wdw-mk-big-thunder'
     park_id: 'wdw-magic-kingdom'
@@ -33,6 +39,9 @@ attractions:
     tags: ['thrill', 'outdoor', 'roller-coaster', 'family']
     latitude: 28.4194
     longitude: -81.5853
+    baseline_wait_minutes: 35
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-seven-dwarfs'
     park_id: 'wdw-magic-kingdom'
@@ -42,7 +51,10 @@ attractions:
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'outdoor', 'family', 'roller-coaster']
     latitude: 28.4201
-    longitude: -81.5820
+    longitude: -81.582
+    baseline_wait_minutes: 60
+    lightning_lane_type: single_pass
+    is_headliner: true
 
   - id: 'wdw-mk-tianas-bayou'
     park_id: 'wdw-magic-kingdom'
@@ -53,6 +65,9 @@ attractions:
     tags: ['thrill', 'outdoor', 'water', 'family']
     latitude: 28.4194
     longitude: -81.5843
+    baseline_wait_minutes: 50
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-pirates'
     park_id: 'wdw-magic-kingdom'
@@ -63,6 +78,9 @@ attractions:
     tags: ['dark', 'indoor', 'family', 'toddler-friendly', 'boat']
     latitude: 28.4192
     longitude: -81.5845
+    baseline_wait_minutes: 25
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-jungle-cruise'
     park_id: 'wdw-magic-kingdom'
@@ -73,6 +91,9 @@ attractions:
     tags: ['outdoor', 'boat', 'family', 'toddler-friendly']
     latitude: 28.4183
     longitude: -81.5836
+    baseline_wait_minutes: 35
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-barnstormer'
     park_id: 'wdw-magic-kingdom'
@@ -83,6 +104,9 @@ attractions:
     tags: ['roller-coaster', 'family', 'outdoor', 'short']
     latitude: 28.4208
     longitude: -81.5795
+    baseline_wait_minutes: 20
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-dumbo'
     park_id: 'wdw-magic-kingdom'
@@ -93,6 +117,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'outdoor', 'slow']
     latitude: 28.4205
     longitude: -81.5801
+    baseline_wait_minutes: 20
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-its-a-small-world'
     park_id: 'wdw-magic-kingdom'
@@ -102,7 +129,10 @@ attractions:
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'boat', 'slow']
     latitude: 28.4209
-    longitude: -81.5790
+    longitude: -81.579
+    baseline_wait_minutes: 20
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-winnie-pooh'
     park_id: 'wdw-magic-kingdom'
@@ -113,6 +143,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'slow', 'dark']
     latitude: 28.4202
     longitude: -81.5792
+    baseline_wait_minutes: 30
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-peter-pan'
     park_id: 'wdw-magic-kingdom'
@@ -123,6 +156,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'dark', 'flying']
     latitude: 28.4202
     longitude: -81.5808
+    baseline_wait_minutes: 50
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-carousel-of-progress'
     park_id: 'wdw-magic-kingdom'
@@ -132,7 +168,10 @@ attractions:
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'theater', 'low-wait']
     latitude: 28.4193
-    longitude: -81.5770
+    longitude: -81.577
+    baseline_wait_minutes: 5
+    lightning_lane_type: none
+    is_headliner: false
 
   - id: 'wdw-mk-under-the-sea'
     park_id: 'wdw-magic-kingdom'
@@ -143,6 +182,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'slow']
     latitude: 28.4203
     longitude: -81.5794
+    baseline_wait_minutes: 25
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-tomorrowland-speedway'
     park_id: 'wdw-magic-kingdom'
@@ -153,6 +195,9 @@ attractions:
     tags: ['family', 'outdoor', 'cars']
     latitude: 28.4184
     longitude: -81.5782
+    baseline_wait_minutes: 30
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-buzz-lightyear'
     park_id: 'wdw-magic-kingdom'
@@ -163,6 +208,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'shooter']
     latitude: 28.4186
     longitude: -81.5769
+    baseline_wait_minutes: 25
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-mk-people-mover'
     park_id: 'wdw-magic-kingdom'
@@ -173,6 +221,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'slow', 'low-wait']
     latitude: 28.4188
     longitude: -81.5771
+    baseline_wait_minutes: 10
+    lightning_lane_type: none
+    is_headliner: false
 
   - id: 'wdw-mk-tom-sawyer'
     park_id: 'wdw-magic-kingdom'
@@ -183,6 +234,9 @@ attractions:
     tags: ['family', 'outdoor', 'boat', 'slow']
     latitude: 28.4200
     longitude: -81.5858
+    baseline_wait_minutes: 10
+    lightning_lane_type: none
+    is_headliner: false
 
   - id: 'wdw-mk-liberty-square-riverboat'
     park_id: 'wdw-magic-kingdom'
@@ -193,6 +247,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'outdoor', 'boat', 'low-wait']
     latitude: 28.4198
     longitude: -81.5845
+    baseline_wait_minutes: 10
+    lightning_lane_type: none
+    is_headliner: false
 
   - id: 'wdw-mk-enchanted-tiki-room'
     park_id: 'wdw-magic-kingdom'
@@ -203,6 +260,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'theater', 'low-wait']
     latitude: 28.4182
     longitude: -81.5836
+    baseline_wait_minutes: 10
+    lightning_lane_type: none
+    is_headliner: false
 
   - id: 'wdw-mk-monsters-inc'
     park_id: 'wdw-magic-kingdom'
@@ -213,6 +273,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'theater']
     latitude: 28.4186
     longitude: -81.5774
+    baseline_wait_minutes: 15
+    lightning_lane_type: none
+    is_headliner: false
 
   - id: 'wdw-mk-country-bears'
     park_id: 'wdw-magic-kingdom'
@@ -223,6 +286,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'theater', 'low-wait']
     latitude: 28.4197
     longitude: -81.5841
+    baseline_wait_minutes: 10
+    lightning_lane_type: none
+    is_headliner: false
 
   - id: 'wdw-mk-tron'
     park_id: 'wdw-magic-kingdom'
@@ -233,6 +299,9 @@ attractions:
     tags: ['thrill', 'outdoor', 'roller-coaster', 'dark']
     latitude: 28.4191
     longitude: -81.5764
+    baseline_wait_minutes: 70
+    lightning_lane_type: single_pass
+    is_headliner: true
 
   # --- EPCOT (~11 rides) ---
   - id: 'wdw-ep-guardians'
@@ -244,6 +313,9 @@ attractions:
     tags: ['thrill', 'indoor', 'roller-coaster', 'dark']
     latitude: 28.3745
     longitude: -81.5495
+    baseline_wait_minutes: 70
+    lightning_lane_type: single_pass
+    is_headliner: true
 
   - id: 'wdw-ep-remy'
     park_id: 'wdw-epcot'
@@ -254,6 +326,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor']
     latitude: 28.3728
     longitude: -81.5476
+    baseline_wait_minutes: 55
+    lightning_lane_type: multi_pass
+    is_headliner: true
 
   - id: 'wdw-ep-frozen'
     park_id: 'wdw-epcot'
@@ -264,6 +339,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'boat']
     latitude: 28.3730
     longitude: -81.5472
+    baseline_wait_minutes: 60
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-ep-soarin'
     park_id: 'wdw-epcot'
@@ -274,6 +352,9 @@ attractions:
     tags: ['family', 'indoor', 'flying', 'simulator']
     latitude: 28.3711
     longitude: -81.5492
+    baseline_wait_minutes: 35
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-ep-test-track'
     park_id: 'wdw-epcot'
@@ -284,6 +365,9 @@ attractions:
     tags: ['thrill', 'indoor', 'cars']
     latitude: 28.3737
     longitude: -81.5494
+    baseline_wait_minutes: 50
+    lightning_lane_type: multi_pass
+    is_headliner: true
 
   - id: 'wdw-ep-living-with-land'
     park_id: 'wdw-epcot'
@@ -294,6 +378,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'boat', 'low-wait']
     latitude: 28.3713
     longitude: -81.5497
+    baseline_wait_minutes: 15
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-ep-seas'
     park_id: 'wdw-epcot'
@@ -304,6 +391,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'boat']
     latitude: 28.3714
     longitude: -81.5501
+    baseline_wait_minutes: 15
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-ep-figment'
     park_id: 'wdw-epcot'
@@ -314,6 +404,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor']
     latitude: 28.3718
     longitude: -81.5488
+    baseline_wait_minutes: 25
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-ep-spaceship-earth'
     park_id: 'wdw-epcot'
@@ -324,6 +417,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'slow']
     latitude: 28.3748
     longitude: -81.5496
+    baseline_wait_minutes: 20
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-ep-mission-space'
     park_id: 'wdw-epcot'
@@ -334,6 +430,9 @@ attractions:
     tags: ['thrill', 'indoor', 'simulator']
     latitude: 28.3737
     longitude: -81.5491
+    baseline_wait_minutes: 25
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-ep-pixar-film-festival'
     park_id: 'wdw-epcot'
@@ -344,6 +443,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'theater', '4d']
     latitude: 28.3747
     longitude: -81.5497
+    baseline_wait_minutes: 10
+    lightning_lane_type: none
+    is_headliner: false
 
   # --- Hollywood Studios (~9 rides) ---
   - id: 'wdw-hs-rise-resistance'
@@ -355,6 +457,9 @@ attractions:
     tags: ['thrill', 'indoor', 'dark', 'immersive']
     latitude: 28.3558
     longitude: -81.5624
+    baseline_wait_minutes: 70
+    lightning_lane_type: single_pass
+    is_headliner: true
 
   - id: 'wdw-hs-smugglers-run'
     park_id: 'wdw-hollywood-studios'
@@ -365,6 +470,9 @@ attractions:
     tags: ['thrill', 'indoor', 'simulator', 'interactive']
     latitude: 28.3558
     longitude: -81.5617
+    baseline_wait_minutes: 40
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-hs-tower-terror'
     park_id: 'wdw-hollywood-studios'
@@ -375,6 +483,9 @@ attractions:
     tags: ['thrill', 'indoor', 'drop', 'dark']
     latitude: 28.3561
     longitude: -81.5603
+    baseline_wait_minutes: 50
+    lightning_lane_type: multi_pass
+    is_headliner: true
 
   - id: 'wdw-hs-rockin-rollercoaster'
     park_id: 'wdw-hollywood-studios'
@@ -385,6 +496,9 @@ attractions:
     tags: ['thrill', 'indoor', 'roller-coaster', 'dark', 'intense']
     latitude: 28.3563
     longitude: -81.5598
+    baseline_wait_minutes: 50
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-hs-slinky-dog'
     park_id: 'wdw-hollywood-studios'
@@ -395,6 +509,9 @@ attractions:
     tags: ['family', 'outdoor', 'roller-coaster']
     latitude: 28.3549
     longitude: -81.5582
+    baseline_wait_minutes: 60
+    lightning_lane_type: multi_pass
+    is_headliner: true
 
   - id: 'wdw-hs-alien-swirling'
     park_id: 'wdw-hollywood-studios'
@@ -405,6 +522,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'outdoor']
     latitude: 28.3549
     longitude: -81.5574
+    baseline_wait_minutes: 25
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-hs-toy-story-mania'
     park_id: 'wdw-hollywood-studios'
@@ -415,6 +535,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'shooter']
     latitude: 28.3550
     longitude: -81.5579
+    baseline_wait_minutes: 35
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-hs-mickey-minnie-runaway'
     park_id: 'wdw-hollywood-studios'
@@ -425,6 +548,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'dark']
     latitude: 28.3581
     longitude: -81.5595
+    baseline_wait_minutes: 45
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-hs-indiana-jones'
     park_id: 'wdw-hollywood-studios'
@@ -435,6 +561,9 @@ attractions:
     tags: ['family', 'outdoor', 'theater', 'stunt-show']
     latitude: 28.3576
     longitude: -81.5591
+    baseline_wait_minutes: 15
+    lightning_lane_type: none
+    is_headliner: false
 
   # --- Animal Kingdom (~6 rides) ---
   - id: 'wdw-ak-avatar-flight'
@@ -446,6 +575,9 @@ attractions:
     tags: ['thrill', 'indoor', 'simulator', '3d']
     latitude: 28.3548
     longitude: -81.5929
+    baseline_wait_minutes: 75
+    lightning_lane_type: multi_pass
+    is_headliner: true
 
   - id: 'wdw-ak-navi-river'
     park_id: 'wdw-animal-kingdom'
@@ -456,6 +588,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'indoor', 'boat', 'dark']
     latitude: 28.3549
     longitude: -81.5922
+    baseline_wait_minutes: 50
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-ak-expedition-everest'
     park_id: 'wdw-animal-kingdom'
@@ -466,6 +601,9 @@ attractions:
     tags: ['thrill', 'outdoor', 'roller-coaster', 'dark']
     latitude: 28.3591
     longitude: -81.5889
+    baseline_wait_minutes: 30
+    lightning_lane_type: multi_pass
+    is_headliner: true
 
   - id: 'wdw-ak-kilimanjaro'
     park_id: 'wdw-animal-kingdom'
@@ -476,6 +614,9 @@ attractions:
     tags: ['family', 'toddler-friendly', 'outdoor', 'jeep', 'animals']
     latitude: 28.3583
     longitude: -81.5929
+    baseline_wait_minutes: 35
+    lightning_lane_type: multi_pass
+    is_headliner: true
 
   - id: 'wdw-ak-kali-river'
     park_id: 'wdw-animal-kingdom'
@@ -486,6 +627,9 @@ attractions:
     tags: ['family', 'outdoor', 'water', 'raft']
     latitude: 28.3604
     longitude: -81.5897
+    baseline_wait_minutes: 30
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-ak-dinosaur'
     park_id: 'wdw-animal-kingdom'
@@ -496,6 +640,9 @@ attractions:
     tags: ['thrill', 'indoor', 'dark', 'jeep']
     latitude: 28.3559
     longitude: -81.5878
+    baseline_wait_minutes: 20
+    lightning_lane_type: multi_pass
+    is_headliner: false
 
   - id: 'wdw-ak-wildlife-express'
     park_id: 'wdw-animal-kingdom'
@@ -505,7 +652,10 @@ attractions:
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'outdoor', 'train', 'low-wait']
     latitude: 28.3590
-    longitude: -81.5910
+    longitude: -81.591
+    baseline_wait_minutes: 10
+    lightning_lane_type: none
+    is_headliner: false
 
   - id: 'wdw-ak-triceratops-spin'
     park_id: 'wdw-animal-kingdom'
@@ -516,3 +666,6 @@ attractions:
     tags: ['family', 'toddler-friendly', 'outdoor', 'slow']
     latitude: 28.3564
     longitude: -81.5873
+    baseline_wait_minutes: 15
+    lightning_lane_type: none
+    is_headliner: false

@@ -97,3 +97,35 @@ BEGIN
       CHECK ("lightning_lane_type" IN ('multi_pass', 'single_pass', 'none'));
   END IF;
 END $$;
+--> statement-breakpoint
+
+-- ---------------------------------------------------------------------------
+-- walking_graph: deduplicate + add unique constraint so seed-catalog.ts
+-- ON CONFLICT DO NOTHING actually fires (was no-op before — duplicates piled
+-- up on every reseed). Plan 03-01 task 2 idempotency proof depends on this.
+-- ---------------------------------------------------------------------------
+-- Note: cannot use MIN(id) because id is uuid (no MIN aggregate). Use
+-- ROW_NUMBER() partition instead — keeps the first row per logical edge.
+DELETE FROM "walking_graph"
+WHERE id IN (
+  SELECT id FROM (
+    SELECT id,
+           ROW_NUMBER() OVER (
+             PARTITION BY from_node_id, to_node_id, park_id ORDER BY id
+           ) AS rn
+    FROM "walking_graph"
+  ) t WHERE rn > 1
+);
+--> statement-breakpoint
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'walking_graph_edge_unique'
+  ) THEN
+    ALTER TABLE "walking_graph"
+      ADD CONSTRAINT "walking_graph_edge_unique"
+      UNIQUE ("from_node_id", "to_node_id", "park_id");
+  END IF;
+END $$;
