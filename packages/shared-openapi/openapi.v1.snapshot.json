@@ -320,6 +320,16 @@
               }
             }
           },
+          "402": {
+            "description": "Per-trip LLM cost circuit breaker (LLM-07) has tripped for this trip. Client should surface the top-up paywall and retry after upgrading.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanBudgetExhaustedDto"
+                }
+              }
+            }
+          },
           "501": {
             "description": "Not implemented until Phase 3"
           }
@@ -351,7 +361,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RethinkTodayDto"
+                "$ref": "#/components/schemas/RethinkRequestDto"
               }
             }
           }
@@ -378,6 +388,16 @@
                       ]
                     }
                   ]
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Per-trip LLM cost circuit breaker (LLM-07) has tripped for this trip. Client should surface the top-up paywall and retry after upgrading.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanBudgetExhaustedDto"
                 }
               }
             }
@@ -922,23 +942,125 @@
           "job_id"
         ]
       },
-      "RethinkTodayDto": {
+      "ResetOptionDto": {
         "type": "object",
         "properties": {
-          "remaining_item_ids": {
-            "description": "PlanItem UUIDs that remain to be done today. Solver uses this to build a revised afternoon plan.",
+          "type": {
+            "type": "string",
+            "description": "Reset option kind. Only \"top_up\" in v1.",
+            "enum": [
+              "top_up"
+            ],
+            "example": "top_up"
+          },
+          "sku": {
+            "type": "string",
+            "description": "IAP SKU identifier (RevenueCat product). Client passes this to StoreKit / Google Play Billing.",
+            "example": "wonderwaltz.plan.topup.50c"
+          },
+          "usd_cents": {
+            "type": "number",
+            "description": "Top-up amount in USD cents.",
+            "example": 99
+          }
+        },
+        "required": [
+          "type",
+          "sku",
+          "usd_cents"
+        ]
+      },
+      "PlanBudgetExhaustedDto": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Discriminated error code — always \"trip_budget_exhausted\".",
+            "enum": [
+              "trip_budget_exhausted"
+            ],
+            "example": "trip_budget_exhausted"
+          },
+          "spent_cents": {
+            "type": "number",
+            "description": "Cumulative LLM spend on this trip so far, in USD cents.",
+            "example": 52
+          },
+          "budget_cents": {
+            "type": "number",
+            "description": "Per-trip LLM budget cap, in USD cents. Default 50 (from trips.llm_budget_cents).",
+            "example": 50
+          },
+          "resetOptions": {
+            "description": "Options to top-up the budget and retry. Phase 4 wires the actual RevenueCat mutation; Phase 3 just publishes the contract.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResetOptionDto"
+            }
+          }
+        },
+        "required": [
+          "error",
+          "spent_cents",
+          "budget_cents",
+          "resetOptions"
+        ]
+      },
+      "LLBookingDto": {
+        "type": "object",
+        "properties": {
+          "attraction_id": {
+            "type": "string",
+            "description": "Attraction UUID matching packages/content attractions.yaml.",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "return_window_start": {
+            "type": "string",
+            "description": "ISO 8601 start of the Lightning Lane return window.",
+            "example": "2026-06-01T13:40:00.000Z"
+          },
+          "return_window_end": {
+            "type": "string",
+            "description": "ISO 8601 end of the Lightning Lane return window.",
+            "example": "2026-06-01T14:40:00.000Z"
+          }
+        },
+        "required": [
+          "attraction_id",
+          "return_window_start",
+          "return_window_end"
+        ]
+      },
+      "RethinkRequestDto": {
+        "type": "object",
+        "properties": {
+          "current_time": {
+            "type": "string",
+            "description": "Client-side ISO 8601 current time. Solver uses this for in-progress inference.",
+            "example": "2026-06-01T13:15:00.000Z"
+          },
+          "completed_item_ids": {
+            "description": "PlanItem UUIDs the user has already completed today.",
             "example": [
-              "plan-item-uuid-1",
-              "plan-item-uuid-2"
+              "b4b5b6b7-0000-4000-8000-000000000001"
             ],
             "type": "array",
             "items": {
               "type": "string"
             }
+          },
+          "active_ll_bookings": {
+            "description": "Lightning Lane bookings the user currently holds. Each becomes a hard pin in the revised day plan.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LLBookingDto"
+            }
           }
         },
         "required": [
-          "remaining_item_ids"
+          "current_time",
+          "completed_item_ids",
+          "active_ll_bookings"
         ]
       },
       "PlanItemDto": {
@@ -1010,9 +1132,17 @@
           "end_time"
         ]
       },
-      "DayPlanDto": {
+      "FullDayPlanDto": {
         "type": "object",
         "properties": {
+          "type": {
+            "type": "string",
+            "description": "Discriminator tag — always \"full\" for this variant.",
+            "enum": [
+              "full"
+            ],
+            "example": "full"
+          },
           "id": {
             "type": "string",
             "description": "DayPlan UUID",
@@ -1053,11 +1183,68 @@
           }
         },
         "required": [
+          "type",
           "id",
           "date",
           "park_id",
           "items"
         ]
+      },
+      "LockedDayPlanDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Discriminator tag — always \"locked\" for this variant.",
+            "enum": [
+              "locked"
+            ],
+            "example": "locked"
+          },
+          "dayIndex": {
+            "type": "number",
+            "description": "0-indexed day number within the trip (Day 1 = 0, Day 2 = 1, …).",
+            "example": 1
+          },
+          "park": {
+            "type": "string",
+            "description": "Park display name for the locked day (e.g., \"EPCOT\", \"Magic Kingdom\").",
+            "example": "EPCOT"
+          },
+          "totalItems": {
+            "type": "number",
+            "description": "Total number of items on this day (attractions + meals + shows + rest blocks). Clients render \"{totalItems} items planned\" without the individual entries.",
+            "example": 7
+          },
+          "headline": {
+            "type": "string",
+            "description": "Templated headline summarizing the day. Deterministic from solver output — no LLM call. Example: \"Your EPCOT fairy_tale day centers on Guardians of the Galaxy.\"",
+            "example": "Your EPCOT fairy_tale day centers on Guardians of the Galaxy."
+          },
+          "unlockTeaser": {
+            "type": "string",
+            "description": "Upgrade prompt shown beneath the headline on the locked card.",
+            "example": "Upgrade to the Royal Treatment to unlock the full itinerary for this day."
+          }
+        },
+        "required": [
+          "type",
+          "dayIndex",
+          "park",
+          "totalItems",
+          "headline",
+          "unlockTeaser"
+        ]
+      },
+      "PlanMetaDto": {
+        "type": "object",
+        "properties": {
+          "forecast_disclaimer": {
+            "type": "string",
+            "description": "Populated when any forecasted wait on this plan has confidence=low. Clients render this framing (e.g., \"Beta Forecast\") in the UI.",
+            "example": "Beta Forecast"
+          }
+        }
       },
       "PlanDto": {
         "type": "object",
@@ -1087,12 +1274,42 @@
             ],
             "example": "ready"
           },
-          "day_plans": {
-            "description": "Day plans — one per day in the trip, ordered by date",
+          "days": {
+            "type": "array",
+            "description": "Day plans — one per day in the trip, ordered by date. Discriminated union: each entry is either a FullDayPlan (type=\"full\") or a LockedDayPlan (type=\"locked\"). Free-tier users see Day 1 as FullDayPlan and Days 2+ as LockedDayPlan.",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/FullDayPlanDto"
+                },
+                {
+                  "$ref": "#/components/schemas/LockedDayPlanDto"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "full": "#/components/schemas/FullDayPlanDto",
+                  "locked": "#/components/schemas/LockedDayPlanDto"
+                }
+              }
+            }
+          },
+          "warnings": {
+            "description": "Non-fatal warnings produced by the solver or LL allocator. Example: \"Seven Dwarfs Mine Train scheduled standby; upgrade to Royal Treatment for LL access.\" Always present; empty array when the plan has no warnings.",
+            "example": [],
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/DayPlanDto"
+              "type": "string"
             }
+          },
+          "meta": {
+            "description": "Optional meta block. Populated with forecast_disclaimer when any day carries a low-confidence forecast bucket.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PlanMetaDto"
+              }
+            ]
           },
           "created_at": {
             "type": "string",
@@ -1105,7 +1322,8 @@
           "trip_id",
           "version",
           "status",
-          "day_plans",
+          "days",
+          "warnings",
           "created_at"
         ]
       },

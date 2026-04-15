@@ -72,6 +72,12 @@ jobs:
         # Run locally with: supabase start && vitest run packages/db/tests/
 
       - name: Check OpenAPI snapshot
+        env:
+          # NarrativeModule's ANTHROPIC_CLIENT_TOKEN factory throws when the key
+          # is missing outside NODE_ENV=test. CI never has (and should never
+          # have) a live API key, so we boot AppModule in the test-equivalent
+          # mode for snapshot generation only.
+          NODE_ENV: test
         run: |
           # Regenerate from the compiled api dist (Build step ran above).
           # Uses tsc-compiled JS so emitDecoratorMetadata works for NestJS decorators.
