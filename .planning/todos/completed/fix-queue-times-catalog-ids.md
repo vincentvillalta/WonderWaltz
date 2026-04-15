@@ -1,9 +1,25 @@
 ---
 id: fix-queue-times-catalog-ids
 created: 2026-04-15
+resolved: 2026-04-15
+resolved_in: 03-01
 area: phase-02
 priority: medium
+status: completed
 ---
+
+## Resolution (closed in plan 03-01 task 3)
+
+- Fetched live queue_times.com IDs for parks 5/6/7/8 on 2026-04-15 21:35Z.
+- Rewrote `packages/content/wdw/attractions.yaml` with correct
+  `queue_times_id` values for every WDW attraction.
+- Captured the live ride-id snapshot at
+  `apps/api/tests/fixtures/queue-times-live-ids.json`.
+- Added regression test
+  `apps/api/tests/ingestion/queue-times-park-map.test.ts` asserting ≥4
+  rides per park match the live API (was 0/4 for MK + AK before fix).
+- Reseeded; verification query now shows 21/11/9/6 rides ingesting
+  across MK/EPCOT/HS/AK respectively (was 0/N/N/0).
 
 # Fix queue_times_id mismatches in catalog seed
 

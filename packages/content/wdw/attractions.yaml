@@ -4,7 +4,7 @@ attractions:
   - id: 'wdw-mk-haunted-mansion'
     park_id: 'wdw-magic-kingdom'
     name: 'Haunted Mansion'
-    queue_times_id: 38
+    queue_times_id: 140
     themeparks_wiki_id: '163a8b5a-5b7a-4a32-ad5c-c9f697b5e5c4'
     height_req_cm: null
     attraction_type: 'ride'
@@ -18,7 +18,7 @@ attractions:
   - id: 'wdw-mk-space-mountain'
     park_id: 'wdw-magic-kingdom'
     name: 'Space Mountain'
-    queue_times_id: 52
+    queue_times_id: 138
     themeparks_wiki_id: 'e0b30b8a-ed7a-4c1f-bc00-5e2be3b6e8f1'
     height_req_cm: 112
     attraction_type: 'ride'
@@ -32,7 +32,7 @@ attractions:
   - id: 'wdw-mk-big-thunder'
     park_id: 'wdw-magic-kingdom'
     name: 'Big Thunder Mountain Railroad'
-    queue_times_id: 18
+    queue_times_id: 130
     themeparks_wiki_id: '7c3b8c29-8d18-4d05-9a64-5e24a9e4cef2'
     height_req_cm: 102
     attraction_type: 'ride'
@@ -46,7 +46,7 @@ attractions:
   - id: 'wdw-mk-seven-dwarfs'
     park_id: 'wdw-magic-kingdom'
     name: 'Seven Dwarfs Mine Train'
-    queue_times_id: 150
+    queue_times_id: 129
     height_req_cm: 97
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'outdoor', 'family', 'roller-coaster']
@@ -59,7 +59,7 @@ attractions:
   - id: 'wdw-mk-tianas-bayou'
     park_id: 'wdw-magic-kingdom'
     name: "Tiana's Bayou Adventure"
-    queue_times_id: 53
+    queue_times_id: 13630
     height_req_cm: 102
     attraction_type: 'ride'
     tags: ['thrill', 'outdoor', 'water', 'family']
@@ -72,7 +72,7 @@ attractions:
   - id: 'wdw-mk-pirates'
     park_id: 'wdw-magic-kingdom'
     name: 'Pirates of the Caribbean'
-    queue_times_id: 47
+    queue_times_id: 137
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['dark', 'indoor', 'family', 'toddler-friendly', 'boat']
@@ -85,7 +85,7 @@ attractions:
   - id: 'wdw-mk-jungle-cruise'
     park_id: 'wdw-magic-kingdom'
     name: 'Jungle Cruise'
-    queue_times_id: 40
+    queue_times_id: 134
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['outdoor', 'boat', 'family', 'toddler-friendly']
@@ -98,7 +98,7 @@ attractions:
   - id: 'wdw-mk-barnstormer'
     park_id: 'wdw-magic-kingdom'
     name: 'The Barnstormer'
-    queue_times_id: 17
+    queue_times_id: 126
     height_req_cm: 89
     attraction_type: 'ride'
     tags: ['roller-coaster', 'family', 'outdoor', 'short']
@@ -111,7 +111,7 @@ attractions:
   - id: 'wdw-mk-dumbo'
     park_id: 'wdw-magic-kingdom'
     name: 'Dumbo the Flying Elephant'
-    queue_times_id: 23
+    queue_times_id: 132
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'outdoor', 'slow']
@@ -124,7 +124,7 @@ attractions:
   - id: 'wdw-mk-its-a-small-world'
     park_id: 'wdw-magic-kingdom'
     name: "it's a small world"
-    queue_times_id: 37
+    queue_times_id: 133
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'boat', 'slow']
@@ -137,7 +137,7 @@ attractions:
   - id: 'wdw-mk-winnie-pooh'
     park_id: 'wdw-magic-kingdom'
     name: 'The Many Adventures of Winnie the Pooh'
-    queue_times_id: 43
+    queue_times_id: 142
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'slow', 'dark']
@@ -150,7 +150,7 @@ attractions:
   - id: 'wdw-mk-peter-pan'
     park_id: 'wdw-magic-kingdom'
     name: "Peter Pan's Flight"
-    queue_times_id: 45
+    queue_times_id: 136
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'dark', 'flying']
@@ -163,7 +163,7 @@ attractions:
   - id: 'wdw-mk-carousel-of-progress'
     park_id: 'wdw-magic-kingdom'
     name: "Walt Disney's Carousel of Progress"
-    queue_times_id: 19
+    queue_times_id: 457
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'theater', 'low-wait']
@@ -176,7 +176,7 @@ attractions:
   - id: 'wdw-mk-under-the-sea'
     park_id: 'wdw-magic-kingdom'
     name: 'Under the Sea - Journey of the Little Mermaid'
-    queue_times_id: 55
+    queue_times_id: 127
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'slow']
@@ -189,7 +189,7 @@ attractions:
   - id: 'wdw-mk-tomorrowland-speedway'
     park_id: 'wdw-magic-kingdom'
     name: 'Tomorrowland Speedway'
-    queue_times_id: 56
+    queue_times_id: 143
     height_req_cm: 137
     attraction_type: 'ride'
     tags: ['family', 'outdoor', 'cars']
@@ -202,7 +202,7 @@ attractions:
   - id: 'wdw-mk-buzz-lightyear'
     park_id: 'wdw-magic-kingdom'
     name: "Buzz Lightyear's Space Ranger Spin"
-    queue_times_id: 20
+    queue_times_id: 131
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'shooter']
@@ -215,7 +215,7 @@ attractions:
   - id: 'wdw-mk-people-mover'
     park_id: 'wdw-magic-kingdom'
     name: 'Tomorrowland Transit Authority PeopleMover'
-    queue_times_id: 48
+    queue_times_id: 1190
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'slow', 'low-wait']
@@ -228,7 +228,7 @@ attractions:
   - id: 'wdw-mk-tom-sawyer'
     park_id: 'wdw-magic-kingdom'
     name: 'Tom Sawyer Island'
-    queue_times_id: 57
+    queue_times_id: null
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'outdoor', 'boat', 'slow']
@@ -241,7 +241,7 @@ attractions:
   - id: 'wdw-mk-liberty-square-riverboat'
     park_id: 'wdw-magic-kingdom'
     name: 'Liberty Square Riverboat'
-    queue_times_id: 41
+    queue_times_id: null
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'outdoor', 'boat', 'low-wait']
@@ -254,7 +254,7 @@ attractions:
   - id: 'wdw-mk-enchanted-tiki-room'
     park_id: 'wdw-magic-kingdom'
     name: 'Enchanted Tiki Room'
-    queue_times_id: 25
+    queue_times_id: 334
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'theater', 'low-wait']
@@ -267,7 +267,7 @@ attractions:
   - id: 'wdw-mk-monsters-inc'
     park_id: 'wdw-magic-kingdom'
     name: "Monster's Inc. Laugh Floor"
-    queue_times_id: 44
+    queue_times_id: 125
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'theater']
@@ -280,7 +280,7 @@ attractions:
   - id: 'wdw-mk-country-bears'
     park_id: 'wdw-magic-kingdom'
     name: 'Country Bear Jamboree'
-    queue_times_id: 22
+    queue_times_id: 1214
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'theater', 'low-wait']
@@ -293,7 +293,7 @@ attractions:
   - id: 'wdw-mk-tron'
     park_id: 'wdw-magic-kingdom'
     name: 'TRON Lightcycle / Run'
-    queue_times_id: 510
+    queue_times_id: 11527
     height_req_cm: 122
     attraction_type: 'ride'
     tags: ['thrill', 'outdoor', 'roller-coaster', 'dark']
@@ -307,7 +307,7 @@ attractions:
   - id: 'wdw-ep-guardians'
     park_id: 'wdw-epcot'
     name: 'Guardians of the Galaxy: Cosmic Rewind'
-    queue_times_id: 384
+    queue_times_id: 10916
     height_req_cm: 122
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'roller-coaster', 'dark']
@@ -320,7 +320,7 @@ attractions:
   - id: 'wdw-ep-remy'
     park_id: 'wdw-epcot'
     name: "Remy's Ratatouille Adventure"
-    queue_times_id: 315
+    queue_times_id: 10914
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor']
@@ -333,7 +333,7 @@ attractions:
   - id: 'wdw-ep-frozen'
     park_id: 'wdw-epcot'
     name: 'Frozen Ever After'
-    queue_times_id: 198
+    queue_times_id: 2679
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'boat']
@@ -346,7 +346,7 @@ attractions:
   - id: 'wdw-ep-soarin'
     park_id: 'wdw-epcot'
     name: "Soarin' Around the World"
-    queue_times_id: 146
+    queue_times_id: 151
     height_req_cm: 102
     attraction_type: 'ride'
     tags: ['family', 'indoor', 'flying', 'simulator']
@@ -359,7 +359,7 @@ attractions:
   - id: 'wdw-ep-test-track'
     park_id: 'wdw-epcot'
     name: 'Test Track'
-    queue_times_id: 167
+    queue_times_id: 160
     height_req_cm: 102
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'cars']
@@ -372,7 +372,7 @@ attractions:
   - id: 'wdw-ep-living-with-land'
     park_id: 'wdw-epcot'
     name: 'Living with the Land'
-    queue_times_id: 123
+    queue_times_id: 156
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'boat', 'low-wait']
@@ -385,7 +385,7 @@ attractions:
   - id: 'wdw-ep-seas'
     park_id: 'wdw-epcot'
     name: 'The Seas with Nemo & Friends'
-    queue_times_id: 140
+    queue_times_id: 153
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'boat']
@@ -398,7 +398,7 @@ attractions:
   - id: 'wdw-ep-figment'
     park_id: 'wdw-epcot'
     name: 'Journey Into Imagination with Figment'
-    queue_times_id: 102
+    queue_times_id: 155
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor']
@@ -411,7 +411,7 @@ attractions:
   - id: 'wdw-ep-spaceship-earth'
     park_id: 'wdw-epcot'
     name: 'Spaceship Earth'
-    queue_times_id: 147
+    queue_times_id: 159
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'slow']
@@ -424,7 +424,7 @@ attractions:
   - id: 'wdw-ep-mission-space'
     park_id: 'wdw-epcot'
     name: 'Mission: SPACE'
-    queue_times_id: 127
+    queue_times_id: 158
     height_req_cm: 112
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'simulator']
@@ -437,7 +437,7 @@ attractions:
   - id: 'wdw-ep-pixar-film-festival'
     park_id: 'wdw-epcot'
     name: 'Disney & Pixar Short Film Festival'
-    queue_times_id: 164
+    queue_times_id: 2495
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'theater', '4d']
@@ -451,7 +451,7 @@ attractions:
   - id: 'wdw-hs-rise-resistance'
     park_id: 'wdw-hollywood-studios'
     name: 'Star Wars: Rise of the Resistance'
-    queue_times_id: 376
+    queue_times_id: 6369
     height_req_cm: 102
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'dark', 'immersive']
@@ -464,7 +464,7 @@ attractions:
   - id: 'wdw-hs-smugglers-run'
     park_id: 'wdw-hollywood-studios'
     name: 'Millennium Falcon: Smugglers Run'
-    queue_times_id: 375
+    queue_times_id: 6368
     height_req_cm: 97
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'simulator', 'interactive']
@@ -477,7 +477,7 @@ attractions:
   - id: 'wdw-hs-tower-terror'
     park_id: 'wdw-hollywood-studios'
     name: 'The Twilight Zone Tower of Terror'
-    queue_times_id: 169
+    queue_times_id: 123
     height_req_cm: 102
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'drop', 'dark']
@@ -490,7 +490,7 @@ attractions:
   - id: 'wdw-hs-rockin-rollercoaster'
     park_id: 'wdw-hollywood-studios'
     name: "Rock 'n' Roller Coaster Starring Aerosmith"
-    queue_times_id: 154
+    queue_times_id: 119
     height_req_cm: 122
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'roller-coaster', 'dark', 'intense']
@@ -503,7 +503,7 @@ attractions:
   - id: 'wdw-hs-slinky-dog'
     park_id: 'wdw-hollywood-studios'
     name: 'Slinky Dog Dash'
-    queue_times_id: 352
+    queue_times_id: 5476
     height_req_cm: 97
     attraction_type: 'ride'
     tags: ['family', 'outdoor', 'roller-coaster']
@@ -516,7 +516,7 @@ attractions:
   - id: 'wdw-hs-alien-swirling'
     park_id: 'wdw-hollywood-studios'
     name: 'Alien Swirling Saucers'
-    queue_times_id: 349
+    queue_times_id: 5477
     height_req_cm: 97
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'outdoor']
@@ -529,7 +529,7 @@ attractions:
   - id: 'wdw-hs-toy-story-mania'
     park_id: 'wdw-hollywood-studios'
     name: 'Toy Story Mania!'
-    queue_times_id: 171
+    queue_times_id: 117
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'shooter']
@@ -542,7 +542,7 @@ attractions:
   - id: 'wdw-hs-mickey-minnie-runaway'
     park_id: 'wdw-hollywood-studios'
     name: "Mickey & Minnie's Runaway Railway"
-    queue_times_id: 413
+    queue_times_id: 6361
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'dark']
@@ -555,7 +555,7 @@ attractions:
   - id: 'wdw-hs-indiana-jones'
     park_id: 'wdw-hollywood-studios'
     name: 'Indiana Jones Epic Stunt Spectacular!'
-    queue_times_id: 96
+    queue_times_id: 6702
     height_req_cm: null
     attraction_type: 'show'
     tags: ['family', 'outdoor', 'theater', 'stunt-show']
@@ -569,7 +569,7 @@ attractions:
   - id: 'wdw-ak-avatar-flight'
     park_id: 'wdw-animal-kingdom'
     name: 'Avatar Flight of Passage'
-    queue_times_id: 288
+    queue_times_id: 4439
     height_req_cm: 122
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'simulator', '3d']
@@ -582,7 +582,7 @@ attractions:
   - id: 'wdw-ak-navi-river'
     park_id: 'wdw-animal-kingdom'
     name: "Na'vi River Journey"
-    queue_times_id: 289
+    queue_times_id: 4438
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'indoor', 'boat', 'dark']
@@ -595,7 +595,7 @@ attractions:
   - id: 'wdw-ak-expedition-everest'
     park_id: 'wdw-animal-kingdom'
     name: 'Expedition Everest'
-    queue_times_id: 64
+    queue_times_id: 110
     height_req_cm: 112
     attraction_type: 'ride'
     tags: ['thrill', 'outdoor', 'roller-coaster', 'dark']
@@ -608,7 +608,7 @@ attractions:
   - id: 'wdw-ak-kilimanjaro'
     park_id: 'wdw-animal-kingdom'
     name: 'Kilimanjaro Safaris'
-    queue_times_id: 80
+    queue_times_id: 113
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'outdoor', 'jeep', 'animals']
@@ -621,7 +621,7 @@ attractions:
   - id: 'wdw-ak-kali-river'
     park_id: 'wdw-animal-kingdom'
     name: 'Kali River Rapids'
-    queue_times_id: 79
+    queue_times_id: 112
     height_req_cm: 97
     attraction_type: 'ride'
     tags: ['family', 'outdoor', 'water', 'raft']
@@ -634,7 +634,7 @@ attractions:
   - id: 'wdw-ak-dinosaur'
     park_id: 'wdw-animal-kingdom'
     name: 'DINOSAUR'
-    queue_times_id: 62
+    queue_times_id: null
     height_req_cm: 102
     attraction_type: 'ride'
     tags: ['thrill', 'indoor', 'dark', 'jeep']
@@ -647,7 +647,7 @@ attractions:
   - id: 'wdw-ak-wildlife-express'
     park_id: 'wdw-animal-kingdom'
     name: 'Wildlife Express Train'
-    queue_times_id: 65
+    queue_times_id: 655
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'outdoor', 'train', 'low-wait']
@@ -660,7 +660,7 @@ attractions:
   - id: 'wdw-ak-triceratops-spin'
     park_id: 'wdw-animal-kingdom'
     name: 'TriceraTop Spin'
-    queue_times_id: 63
+    queue_times_id: null
     height_req_cm: null
     attraction_type: 'ride'
     tags: ['family', 'toddler-friendly', 'outdoor', 'slow']
