@@ -1,4 +1,5 @@
 import { Processor, WorkerHost, OnWorkerEvent, InjectQueue } from '@nestjs/bullmq';
+import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bullmq';
 import * as Sentry from '@sentry/nestjs';
 import { QueueTimesService } from './queue-times.service.js';
@@ -23,6 +24,8 @@ import { LagAlertService } from '../alerting/lag-alert.service.js';
   },
 })
 export class QueueTimesProcessor extends WorkerHost {
+  private readonly log = new Logger(QueueTimesProcessor.name);
+
   constructor(
     private readonly queueTimesService: QueueTimesService,
     private readonly slackAlerter: SlackAlerterService,
@@ -75,6 +78,10 @@ export class QueueTimesProcessor extends WorkerHost {
    */
   @OnWorkerEvent('failed')
   async onFailed(job: Job, error: Error): Promise<void> {
+    this.log.error(
+      `Job ${job.id} attempt ${job.attemptsMade}/${job.opts.attempts ?? 1} failed: ${error.message}`,
+      error.stack,
+    );
     const maxAttempts = job.opts.attempts ?? 1;
     if (job.attemptsMade >= maxAttempts) {
       Sentry.captureException(error, {
