@@ -33,9 +33,8 @@ FROM deps AS build
 COPY apps/api apps/api
 COPY packages/content packages/content
 COPY packages/db packages/db
-COPY packages/shared-openapi packages/shared-openapi
 COPY packages/solver packages/solver
-# design-tokens is not imported by api at runtime; skip to keep build lean
+# design-tokens + shared-openapi are not imported by api at runtime; skip
 
 RUN pnpm exec turbo run build --filter=@wonderwaltz/api...
 
@@ -61,8 +60,8 @@ COPY --from=build /app/packages/content/package.json ./packages/content/
 COPY --from=build /app/packages/solver/dist ./packages/solver/dist
 COPY --from=build /app/packages/solver/package.json ./packages/solver/
 
-COPY --from=build /app/packages/shared-openapi/dist ./packages/shared-openapi/dist
-COPY --from=build /app/packages/shared-openapi/package.json ./packages/shared-openapi/
+# shared-openapi is NOT needed at runtime — it only holds the v1 spec snapshot
+# used by CI. No api source imports it.
 
 WORKDIR /app/apps/api
 
