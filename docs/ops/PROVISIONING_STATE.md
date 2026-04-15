@@ -1,6 +1,6 @@
 # External Service Provisioning — Current State
 
-**As of:** 2026-04-14 (Phase 02 Data Pipeline — worker deploy pending)
+**As of:** 2026-04-16 (Phase 03 Engine — plan 03-02: Anthropic SDK installed)
 **Source of truth:** `.env.local` (git-ignored) + this document
 
 For the full provisioning _guide_ see `docs/ops/SERVICES.md`. This document
@@ -69,6 +69,29 @@ vs. what's still pending.
 - iOS + Android DSNs set up in `.env.local` but not yet wired into native
   projects (Phase 05 / Phase 07)
 
+## 8. Anthropic (Claude API) — ○ Not yet provisioned
+
+- **Required for Phase 03 (Engine):** `NarrativeModule` calls Claude
+  Messages API for plan narrative generation (LLM-01..08).
+- **Env var:** `ANTHROPIC_API_KEY` — required in Railway **worker** service
+  env (the `plan-generation` BullMQ processor is the only consumer) **and**
+  `.env.local` for local development / integration tests.
+- **Where to obtain:** https://console.anthropic.com → **Settings → API Keys**
+  → Create Key. Scope: workspace-wide is fine for dev; create a
+  per-environment key for production.
+- **Pinned model IDs** (decision locked 2026-04-16, see `03-RESEARCH.md`):
+  - `claude-sonnet-4-6` — initial plan generation
+  - `claude-haiku-4-5` — rethink-my-day + free-tier teaser + budget fallback
+  - Both must be stored as env vars (`ANTHROPIC_SONNET_MODEL`,
+    `ANTHROPIC_HAIKU_MODEL`) so model bumps don't require code changes.
+  - Never use `-latest` aliases — nightly smoke test validates pinned ID
+    responds with a valid Messages payload.
+- **Budget guardrail:** $0.50 per-trip lifetime circuit breaker (LLM-07).
+  Enforced in code; no Anthropic-side rate-limit config required.
+- **Tests run without the key:** plan 03-02 ships a deterministic mock
+  harness (`apps/api/tests/anthropic-mock.ts`) so CI never touches the real
+  API. Only production + manual integration smoke tests require the key.
+
 ## 7. PostHog — ✓ Provisioned
 
 - `POSTHOG_KEY` and `POSTHOG_HOST` populated in `.env.local`
@@ -91,6 +114,20 @@ Phase 02 code is complete. Deployment gate remaining:
 - [ ] Worker deployed and verified: wait_times_history receiving rows (spot-check SQL passing)
 - [ ] Ingestion clock start timestamp recorded (t=0 for 8-week Phase 10 gate)
 - [ ] PostHog blocked properties configured (Dashboard → Data Management → Property definitions)
+
+## Phase 03 Prerequisites
+
+Phase 03 (Engine) adds one new external dependency:
+
+- [ ] `ANTHROPIC_API_KEY` set in Railway **worker** service env vars
+- [ ] `ANTHROPIC_API_KEY` set in local `.env.local` (for integration tests
+      that hit the real API; unit + mock-harness tests do not need it)
+- [ ] `ANTHROPIC_SONNET_MODEL=claude-sonnet-4-6` (env default)
+- [ ] `ANTHROPIC_HAIKU_MODEL=claude-haiku-4-5` (env default)
+
+All four are runtime-only for the worker process. The HTTP `api` service
+does not call Anthropic directly — it enqueues BullMQ jobs that the worker
+consumes.
 
 ---
 

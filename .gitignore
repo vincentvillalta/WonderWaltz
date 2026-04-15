@@ -8,3 +8,17 @@ coverage/
 .env.local
 .env.*.local
 packages/design-tokens/generated/
+
+# Turborepo
+.turbo
+
+# Stray tsc output that leaks into source trees (tests/** outputs
+# from bare `tsc` runs when tsconfig.include has `tests`)
+apps/*/tests/**/*.js
+apps/*/tests/**/*.js.map
+apps/*/tests/**/*.d.ts
+apps/*/tests/**/*.d.ts.map
+packages/*/tests/**/*.js
+packages/*/tests/**/*.js.map
+packages/*/tests/**/*.d.ts
+packages/*/tests/**/*.d.ts.map
