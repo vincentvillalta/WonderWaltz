@@ -43,6 +43,10 @@ export const trips = pgTable('trips', {
   hasDas: boolean('has_das').notNull().default(false),
   planStatus: planStatusEnum('plan_status').notNull().default('pending'),
   entitlementState: entitlementStateEnum('entitlement_state').notNull().default('free'),
+  // Phase 3 (migration 0004): pointer to the active plan; history preserved in plans table.
+  currentPlanId: uuid('current_plan_id'), // FK → plans(id) ON DELETE SET NULL
+  // Phase 3 (migration 0004): per-trip lifetime LLM spend cap in cents (default $0.50).
+  llmBudgetCents: integer('llm_budget_cents').notNull().default(50),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),

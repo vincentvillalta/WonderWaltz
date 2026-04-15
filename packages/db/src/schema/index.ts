@@ -6,3 +6,4 @@ export * from './plans.js';
 export * from './entitlements.js';
 export * from './notifications.js';
 export * from './affiliate.js';
+export * from './ops.js';

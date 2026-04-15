@@ -39,6 +39,13 @@ export const attractions = pgTable('attractions', {
   themeparksWikiId: text('themeparks_wiki_id'),
   attractionType: text('attraction_type').notNull().default('ride'),
   tags: text('tags').array().notNull().default([]),
+  // Phase 3 (migration 0004): solver-facing fields.
+  // baselineWaitMinutes: hardcoded fallback used when forecast confidence is 'low'.
+  baselineWaitMinutes: integer('baseline_wait_minutes'),
+  // lightningLaneType: 'multi_pass' | 'single_pass' | 'none' (CHECK enforced in SQL).
+  lightningLaneType: text('lightning_lane_type').notNull().default('none'),
+  // isHeadliner: top-tier ride per park; drives LL allocation priority.
+  isHeadliner: boolean('is_headliner').notNull().default(false),
   isActive: boolean('is_active').notNull().default(true),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });

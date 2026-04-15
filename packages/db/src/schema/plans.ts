@@ -1,15 +1,31 @@
-import { pgTable, uuid, text, integer, timestamp, boolean, jsonb } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  uuid,
+  text,
+  integer,
+  timestamp,
+  boolean,
+  jsonb,
+  index,
+} from 'drizzle-orm/pg-core';
 
-export const plans = pgTable('plans', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  tripId: uuid('trip_id').notNull(),
-  version: integer('version').notNull().default(1),
-  solverInputHash: text('solver_input_hash'), // for result caching
-  status: text('status').notNull().default('draft'),
-  generatedAt: timestamp('generated_at', { withTimezone: true }),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
-});
+export const plans = pgTable(
+  'plans',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tripId: uuid('trip_id').notNull(),
+    version: integer('version').notNull().default(1),
+    solverInputHash: text('solver_input_hash'), // for result caching
+    status: text('status').notNull().default('draft'),
+    generatedAt: timestamp('generated_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    // Phase 3 (migration 0004): cache-lookup index for solver_input_hash.
+    tripHashIdx: index('plans_trip_hash_idx').on(t.tripId, t.solverInputHash),
+  }),
+);
 
 export const planDays = pgTable('plan_days', {
   id: uuid('id').primaryKey().defaultRandom(),
