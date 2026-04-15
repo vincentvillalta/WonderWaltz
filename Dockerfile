@@ -2,8 +2,8 @@
 # Monorepo-aware Dockerfile for the @wonderwaltz/api workspace package.
 # Used by Railway for both the `api` (HTTP) and `worker` (BullMQ) services.
 # Each service overrides the start command in the Railway dashboard:
-#   api    → node apps/api/dist/main.js
-#   worker → node apps/api/dist/worker.js  (default CMD below)
+#   api    → node apps/api/dist/src/main.js
+#   worker → node apps/api/dist/src/worker.js  (default CMD below)
 
 FROM node:22-slim AS base
 RUN corepack enable
@@ -38,34 +38,18 @@ COPY packages/solver packages/solver
 
 RUN pnpm exec turbo run build --filter=@wonderwaltz/api...
 
-# -- runtime layer: slim production image -------------------------------------
+# -- runtime layer: ship the built workspace ----------------------------------
+# pnpm creates symlinked node_modules at every workspace root. We copy the
+# whole /app tree from the build stage — it already contains only what's
+# needed (and .dockerignore excluded junk from the original context).
 FROM base AS runtime
 
 ENV NODE_ENV=production
 
-# pnpm hoists node_modules to /app/node_modules with the symlinked .pnpm store
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/package.json /app/pnpm-workspace.yaml ./
-
-COPY --from=build /app/apps/api/dist ./apps/api/dist
-COPY --from=build /app/apps/api/package.json ./apps/api/
-
-COPY --from=build /app/packages/db/dist ./packages/db/dist
-COPY --from=build /app/packages/db/package.json ./packages/db/
-
-COPY --from=build /app/packages/content/dist ./packages/content/dist
-COPY --from=build /app/packages/content/legal ./packages/content/legal
-COPY --from=build /app/packages/content/package.json ./packages/content/
-
-COPY --from=build /app/packages/solver/dist ./packages/solver/dist
-COPY --from=build /app/packages/solver/package.json ./packages/solver/
-
-# shared-openapi is NOT needed at runtime — it only holds the v1 spec snapshot
-# used by CI. No api source imports it.
+COPY --from=build /app /app
 
 WORKDIR /app/apps/api
 
-# tsc's rootDir is "." (see apps/api/tsconfig.json), so compiled output lives
-# under dist/src/ and dist/scripts/, not flat in dist/.
-# Default to worker entry; api service overrides to `node dist/src/main.js`
+# Default to worker entry; api service overrides with:
+#   node dist/src/main.js
 CMD ["node", "dist/src/worker.js"]
