@@ -4,6 +4,7 @@
 
 export * from './types.js';
 export * from './hash.js';
+export * from './walkingGraph.js';
 
 import type { SolverInput, DayPlan } from './types.js';
 

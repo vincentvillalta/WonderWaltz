@@ -108,7 +108,13 @@ export type WalkingEdge = {
   walkSeconds: number;
 };
 
-export type WalkingGraph = {
+/**
+ * Raw walking-graph edge bundle carried inside the catalog. The precomputed
+ * Floyd-Warshall shape used at solve-time lives in `./walkingGraph.ts` as
+ * the distinct `WalkingGraph` type — kept separate so the catalog stays a
+ * plain serializable snapshot (no `Map` instances).
+ */
+export type CatalogWalkingGraph = {
   edges: WalkingEdge[];
 };
 
@@ -116,7 +122,7 @@ export type SolverCatalog = {
   attractions: CatalogAttraction[];
   dining: CatalogDining[];
   shows: CatalogShow[];
-  walkingGraph: WalkingGraph;
+  walkingGraph: CatalogWalkingGraph;
 };
 
 // ─── Volatile inputs (excluded from hash per CONTEXT.md) ───────────────────
