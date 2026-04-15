@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-02-PLAN.md
-last_updated: "2026-04-15T22:09:53.556Z"
-last_activity: "2026-04-16 — Completed Plan 03-02: Anthropic SDK installed + deterministic mock harness + NarrativeModule scaffold"
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-04-15T22:33:13.364Z"
+last_activity: "2026-04-15 — Completed Plan 03-03: OpenAPI v1 snapshot amendment (FullDayPlan|LockedDayPlan discriminated union + RethinkRequest + 402 PlanBudgetExhausted)"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 26
+  completed_plans: 27
   percent: 62
 ---
 
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 2 of 18 in current phase
+Plan: 3 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-16 — Completed Plan 03-02: Anthropic SDK installed + deterministic mock harness + NarrativeModule scaffold
+Last activity: 2026-04-15 — Completed Plan 03-03: OpenAPI v1 snapshot amendment (FullDayPlan|LockedDayPlan discriminated union + RethinkRequest + 402 PlanBudgetExhausted)
 
 Progress: [██████░░░░] 62%
 
@@ -73,6 +73,7 @@ Progress: [██████░░░░] 62%
 | Phase 02-data-pipeline P11 | 7 | 1 tasks | 8 files |
 | Phase 03-engine P01 | 15 min | 3 tasks | 19 files |
 | Phase 03-engine P02 | 7 min | 3 tasks | 14 files |
+| Phase 03-engine P03 | 19 min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -146,6 +147,10 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: CACHED_PREFIX SHA-256 invariant test landed in 03-02 (not 03-12) — hardcoded hex is the forcing function against byte drift in the cached catalog+BRAND prefix
 - [Phase 03-engine]: ANTHROPIC_CLIENT_TOKEN factory throws outside NODE_ENV=test when key missing — mis-provisioned envs fail loudly rather than returning a stub that silently no-ops
 - [Phase 03-engine]: NarrativeService stubs reject with /03-12/ marker — grep-discoverable index of every unimplemented seam
+- [Phase 03-engine]: 03-03: Full rename DayPlanDto to FullDayPlanDto (no alias) — trips.controller still stub, no prod code assumed day_plans
+- [Phase 03-engine]: 03-03: Installed class-transformer + class-validator (not Zod-substituted) — @Type discriminator is runtime counterpart to @ApiProperty oneOf discriminator
+- [Phase 03-engine]: 03-03: CI snapshot regen step needs NODE_ENV=test so AppModule boots without ANTHROPIC_API_KEY (NarrativeModule factory guard from 03-02)
+- [Phase 03-engine]: 03-03: Shape-assertion tests + byte-diff CI gate run together — byte gate catches regen drift, shape tests catch silent field drops
 
 ### Pending Todos
 
@@ -161,6 +166,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-15T22:09:16.803Z
-Stopped at: Completed 03-02-PLAN.md
+Last session: 2026-04-15T22:32:55.621Z
+Stopped at: Completed 03-03-PLAN.md
 Resume file: None
