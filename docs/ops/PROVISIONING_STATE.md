@@ -1,6 +1,6 @@
 # External Service Provisioning — Current State
 
-**As of:** 2026-04-14 (end of Phase 01 Foundation)
+**As of:** 2026-04-14 (Phase 02 Data Pipeline — worker deploy pending)
 **Source of truth:** `.env.local` (git-ignored) + this document
 
 For the full provisioning _guide_ see `docs/ops/SERVICES.md`. This document
@@ -35,11 +35,18 @@ vs. what's still pending.
 - `REDIS_URL` populated in `.env.local`
 - No application data yet; first write happens in Phase 02 ingestion workers
 
-## 3. Railway — ○ Not yet provisioned
+## 3. Railway — ◆ Worker service pending deploy
 
-- Not blocking Phase 01. API + worker services will be created at the start
-  of Phase 02 when the ingestion workers are ready to deploy.
-- `apps/api` runs locally against `.env.local` for now.
+- API service: assumed provisioned and running (Phase 02 built against it).
+- **Worker service: pending deploy** — code is complete; worker service must
+  be created in the Railway dashboard with `node dist/worker.js` start command.
+- See `docs/ops/PHASE2-DEPLOYMENT.md` for the full deployment runbook.
+- **Required env vars not yet set (worker service):**
+  - `OPENWEATHER_API_KEY` — required for weather cache (GET /v1/weather). Source: [openweathermap.org](https://home.openweathermap.org/api_keys) → My API Keys
+  - `SLACK_ALERT_WEBHOOK_URL` — required for Sentry alert routing. Source: Slack workspace → Apps → Incoming Webhooks → Add to Slack
+- Shared env vars to copy from `api` service to `worker` service: `DATABASE_URL`, `REDIS_URL`, `SENTRY_DSN_API`
+- **Status moves to ✓ Provisioned** after checkpoint passes (ingestion rows confirmed in wait_times_history)
+- Ingestion clock start: ******\_\_\_\_****** (fill in when worker verified running)
 
 ## 4. Vercel — ◆ Partially provisioned
 
@@ -67,15 +74,20 @@ vs. what's still pending.
 
 ## Phase 02 Readiness Checklist
 
-To unblock Phase 02 data ingestion:
+Phase 02 code is complete. Deployment gate remaining:
 
-- [x] Supabase project + migrations applied
+- [x] Supabase project + migrations applied (including wait_times_1h materialized view + pg_cron)
 - [x] Upstash Redis connection string in `.env.local`
 - [x] Sentry API DSN in `.env.local`
 - [x] PostHog key in `.env.local`
-- [ ] Seed script run against live DB (idempotency test) — see README/seed docs
-- [ ] Railway project + `api` and `worker` services created
-- [ ] PostHog blocked properties configured
+- [x] Seed script run against live DB (idempotency confirmed — plan 02-11)
+- [x] Phase 02 code complete: BullMQ worker, all 4 processors, live API endpoints, OpenAPI v1 snapshot frozen
+- [ ] Railway `worker` service created + start command set to `node dist/worker.js`
+- [ ] `OPENWEATHER_API_KEY` set in Railway worker service env vars
+- [ ] `SLACK_ALERT_WEBHOOK_URL` set in Railway worker service env vars
+- [ ] Worker deployed and verified: wait_times_history receiving rows (spot-check SQL passing)
+- [ ] Ingestion clock start timestamp recorded (t=0 for 8-week Phase 10 gate)
+- [ ] PostHog blocked properties configured (Dashboard → Data Management → Property definitions)
 
 ---
 
