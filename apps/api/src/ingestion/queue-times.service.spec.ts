@@ -58,10 +58,7 @@ describe('QueueTimesService', () => {
 
     // db.execute: first call returns catalog rows (resolveAttractionIds);
     // subsequent calls are INSERT statements (return empty rows)
-    mockExecute = vi
-      .fn()
-      .mockResolvedValueOnce({ rows: mockCatalogRows })
-      .mockResolvedValue({ rows: [] });
+    mockExecute = vi.fn().mockResolvedValueOnce(mockCatalogRows).mockResolvedValue([]);
 
     mockDb = { execute: mockExecute };
 

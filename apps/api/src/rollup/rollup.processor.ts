@@ -69,22 +69,21 @@ export class RollupProcessor extends WorkerHost {
    * IMPORTANT: Do NOT call REFRESH MATERIALIZED VIEW — this is monitor-only.
    */
   async process(_job: Job): Promise<void> {
-    const result = await this.db.execute(sql`
+    // drizzle-orm postgres-js returns RowList (array), not { rows: [] }
+    const rows = (await this.db.execute(sql`
       SELECT status, start_time, end_time, return_message
       FROM cron.job_run_details
       WHERE command LIKE '%wait_times_1h%'
       ORDER BY start_time DESC
       LIMIT 1
-    `);
+    `)) as unknown as {
+      status: string;
+      start_time: string;
+      end_time: string;
+      return_message: string | null;
+    }[];
 
-    const lastRun = result.rows[0] as
-      | {
-          status: string;
-          start_time: string;
-          end_time: string;
-          return_message: string | null;
-        }
-      | undefined;
+    const lastRun = rows[0];
 
     if (!lastRun) {
       Sentry.captureException(new Error('pg_cron rollup has never run'), {

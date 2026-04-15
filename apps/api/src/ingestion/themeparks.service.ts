@@ -127,14 +127,16 @@ export class ThemeparksService {
       return this.attractionIdCache;
     }
 
-    const result = await this.db.execute<AttractionRow>(sql`
+    // drizzle-orm postgres-js driver returns RowList (an iterable array),
+    // NOT an object with a .rows property (that's the pg driver shape).
+    const rows = (await this.db.execute<AttractionRow>(sql`
       SELECT id, themeparks_wiki_id
       FROM attractions
       WHERE themeparks_wiki_id IS NOT NULL
-    `);
+    `)) as unknown as AttractionRow[];
 
     const map = new Map<string, string>();
-    for (const row of result.rows) {
+    for (const row of rows) {
       map.set(String(row.themeparks_wiki_id), String(row.id));
     }
 

@@ -39,7 +39,7 @@ describe('CrowdIndexService', () => {
 
   beforeEach(() => {
     mockRedis = makeRedisClient();
-    mockExecute = vi.fn().mockResolvedValue({ rows: [] });
+    mockExecute = vi.fn().mockResolvedValue([]);
     mockDb = { execute: mockExecute };
 
     service = new CrowdIndexService(mockDb as never, mockRedis as never);
@@ -193,8 +193,8 @@ describe('CrowdIndexService', () => {
       // Mock: getTopRidesForPark returns empty → computeIndexForRides returns null
       // refreshAll should write bootstrap values
       mockExecute
-        .mockResolvedValueOnce({ rows: [{ day_count: 5 }] }) // getSampleSizeDays
-        .mockResolvedValue({ rows: [] }); // all subsequent queries (top rides + index)
+        .mockResolvedValueOnce([{ day_count: 5 }]) // getSampleSizeDays
+        .mockResolvedValue([]); // all subsequent queries (top rides + index)
 
       await service.refreshAll(date);
 
@@ -213,18 +213,18 @@ describe('CrowdIndexService', () => {
       const indexStats = { avg_wait: 40, p0: 10, p50: 35, p95: 70 };
 
       mockExecute
-        .mockResolvedValueOnce({ rows: [{ day_count: 45 }] }) // getSampleSizeDays
+        .mockResolvedValueOnce([{ day_count: 45 }]) // getSampleSizeDays
         // 4 parks × getTopRidesForPark (returns 2 rides each)
-        .mockResolvedValueOnce({ rows: rideUuids.map((id) => ({ ride_id: id })) }) // MK top rides
-        .mockResolvedValueOnce({ rows: [indexStats] }) // MK computeIndexForRides
-        .mockResolvedValueOnce({ rows: rideUuids.map((id) => ({ ride_id: id })) }) // EPCOT top rides
-        .mockResolvedValueOnce({ rows: [indexStats] }) // EPCOT computeIndexForRides
-        .mockResolvedValueOnce({ rows: rideUuids.map((id) => ({ ride_id: id })) }) // HS top rides
-        .mockResolvedValueOnce({ rows: [indexStats] }) // HS computeIndexForRides
-        .mockResolvedValueOnce({ rows: rideUuids.map((id) => ({ ride_id: id })) }) // AK top rides
-        .mockResolvedValueOnce({ rows: [indexStats] }) // AK computeIndexForRides
+        .mockResolvedValueOnce(rideUuids.map((id) => ({ ride_id: id }))) // MK top rides
+        .mockResolvedValueOnce([indexStats]) // MK computeIndexForRides
+        .mockResolvedValueOnce(rideUuids.map((id) => ({ ride_id: id }))) // EPCOT top rides
+        .mockResolvedValueOnce([indexStats]) // EPCOT computeIndexForRides
+        .mockResolvedValueOnce(rideUuids.map((id) => ({ ride_id: id }))) // HS top rides
+        .mockResolvedValueOnce([indexStats]) // HS computeIndexForRides
+        .mockResolvedValueOnce(rideUuids.map((id) => ({ ride_id: id }))) // AK top rides
+        .mockResolvedValueOnce([indexStats]) // AK computeIndexForRides
         // Global: union of all park rides → computeIndexForRides
-        .mockResolvedValueOnce({ rows: [indexStats] }); // global computeIndexForRides
+        .mockResolvedValueOnce([indexStats]); // global computeIndexForRides
 
       await service.refreshAll(date);
 
@@ -243,14 +243,14 @@ describe('CrowdIndexService', () => {
 
   describe('getSampleSizeDays', () => {
     it('returns the day_count from the query result', async () => {
-      mockExecute.mockResolvedValueOnce({ rows: [{ day_count: 42 }] });
+      mockExecute.mockResolvedValueOnce([{ day_count: 42 }]);
 
       const result = await service.getSampleSizeDays();
       expect(result).toBe(42);
     });
 
     it('returns 0 when no rows returned', async () => {
-      mockExecute.mockResolvedValueOnce({ rows: [] });
+      mockExecute.mockResolvedValueOnce([]);
 
       const result = await service.getSampleSizeDays();
       expect(result).toBe(0);

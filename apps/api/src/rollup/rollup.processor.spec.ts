@@ -72,9 +72,9 @@ describe('RollupProcessor', () => {
 
   describe('process -- DATA-03a: no alert on fresh successful run', () => {
     it('does NOT call Sentry when last run is 10min ago with status succeeded', async () => {
-      mockDb.execute.mockResolvedValue({
-        rows: [makeRow({ start_time: new Date(Date.now() - 10 * 60_000).toISOString() })],
-      });
+      mockDb.execute.mockResolvedValue([
+        makeRow({ start_time: new Date(Date.now() - 10 * 60_000).toISOString() }),
+      ]);
 
       const mockJob = {
         id: 'job-1',
@@ -91,9 +91,9 @@ describe('RollupProcessor', () => {
 
   describe('process -- DATA-03b: Sentry called on stale run', () => {
     it('calls Sentry.captureException when last run is 100min ago', async () => {
-      mockDb.execute.mockResolvedValue({
-        rows: [makeRow({ start_time: new Date(Date.now() - 100 * 60_000).toISOString() })],
-      });
+      mockDb.execute.mockResolvedValue([
+        makeRow({ start_time: new Date(Date.now() - 100 * 60_000).toISOString() }),
+      ]);
 
       const mockJob = {
         id: 'job-2',
@@ -112,9 +112,9 @@ describe('RollupProcessor', () => {
 
   describe('process -- failed status triggers Sentry', () => {
     it('calls Sentry.captureException when status is failed even if run is recent', async () => {
-      mockDb.execute.mockResolvedValue({
-        rows: [makeRow({ status: 'failed', return_message: 'ERROR: relation not found' })],
-      });
+      mockDb.execute.mockResolvedValue([
+        makeRow({ status: 'failed', return_message: 'ERROR: relation not found' }),
+      ]);
 
       const mockJob = {
         id: 'job-3',
@@ -133,7 +133,7 @@ describe('RollupProcessor', () => {
 
   describe('process -- no rows: pg_cron never ran', () => {
     it('calls Sentry.captureException when cron.job_run_details has no rows', async () => {
-      mockDb.execute.mockResolvedValue({ rows: [] });
+      mockDb.execute.mockResolvedValue([]);
 
       const mockJob = {
         id: 'job-4',

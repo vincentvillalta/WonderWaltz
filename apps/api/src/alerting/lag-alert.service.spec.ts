@@ -28,9 +28,7 @@ describe('LagAlertService', () => {
    * Pass null to simulate no rows returned.
    */
   function mockMaxFetchedAt(date: Date | null): void {
-    mockDb.execute.mockResolvedValue({
-      rows: [{ max_fetched: date }],
-    });
+    mockDb.execute.mockResolvedValue([{ max_fetched: date }]);
   }
 
   describe('checkAndAlert', () => {

@@ -96,13 +96,14 @@ export class ParksService {
   // ---------------------------------------------------------------------------
 
   async getParks(): Promise<ParkDto[]> {
-    const result = await this.db.execute<ParkRow>(sql`
+    // drizzle-orm postgres-js returns RowList (array), not { rows: [] }
+    const rows = (await this.db.execute<ParkRow>(sql`
       SELECT id::text, external_id, name
       FROM parks
       ORDER BY name ASC
-    `);
+    `)) as unknown as ParkRow[];
 
-    return result.rows.map((row) => ({
+    return rows.map((row) => ({
       id: String(row.id),
       name: String(row.name),
       external_id: String(row.external_id),
@@ -126,7 +127,8 @@ export class ParksService {
    */
   async getWaitTimes(parkId: string): Promise<WaitTimeDto[]> {
     // Fetch all active attractions in the park (by external_id slug)
-    const attractionsResult = await this.db.execute<AttractionRow>(sql`
+    // drizzle-orm postgres-js returns RowList (array), not { rows: [] }
+    const attractionRows = (await this.db.execute<AttractionRow>(sql`
       SELECT a.id::text AS id, a.name, a.queue_times_id
       FROM attractions a
       INNER JOIN parks p ON p.id = a.park_id
@@ -134,11 +136,11 @@ export class ParksService {
         AND a.is_active = true
         AND a.queue_times_id IS NOT NULL
       ORDER BY a.name ASC
-    `);
+    `)) as unknown as AttractionRow[];
 
     const waitTimes: WaitTimeDto[] = [];
 
-    for (const attraction of attractionsResult.rows) {
+    for (const attraction of attractionRows) {
       const attractionId = String(attraction.id);
       const attractionName = String(attraction.name);
 
@@ -166,15 +168,16 @@ export class ParksService {
       }
 
       // Redis miss — try last row of wait_times_history as fallback
-      const historyResult = await this.db.execute<WaitTimeHistoryRow>(sql`
+      // drizzle-orm postgres-js returns RowList (array), not { rows: [] }
+      const historyRows = (await this.db.execute<WaitTimeHistoryRow>(sql`
         SELECT minutes, fetched_at::text, source
         FROM wait_times_history
         WHERE ride_id = ${attractionId}::uuid
         ORDER BY ts DESC
         LIMIT 1
-      `);
+      `)) as unknown as WaitTimeHistoryRow[];
 
-      const historyRow = historyResult.rows[0];
+      const historyRow = historyRows[0];
 
       if (historyRow) {
         const fetchedAt = String(historyRow.fetched_at);

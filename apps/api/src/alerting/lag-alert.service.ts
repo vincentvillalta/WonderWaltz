@@ -37,13 +37,14 @@ export class LagAlertService {
    */
   async checkAndAlert(): Promise<void> {
     try {
-      const result = await this.db.execute<{ max_fetched: Date | null }>(sql`
+      // drizzle-orm postgres-js returns RowList (array), not { rows: [] }
+      const rows = (await this.db.execute<{ max_fetched: Date | null }>(sql`
         SELECT MAX(fetched_at) AS max_fetched
         FROM wait_times_history
         WHERE ts > now() - INTERVAL '1 hour'
-      `);
+      `)) as unknown as { max_fetched: Date | null }[];
 
-      const maxFetched = result.rows[0]?.max_fetched ?? null;
+      const maxFetched = rows[0]?.max_fetched ?? null;
       const lagMinutes = maxFetched
         ? (Date.now() - new Date(maxFetched).getTime()) / 60_000
         : Infinity;

@@ -84,14 +84,16 @@ export class QueueTimesService {
       return this.attractionIdCache;
     }
 
-    const result = await this.db.execute<AttractionRow>(sql`
+    // drizzle-orm postgres-js driver returns RowList (an iterable array),
+    // NOT an object with a .rows property (that's the pg driver shape).
+    const rows = (await this.db.execute<AttractionRow>(sql`
       SELECT id, queue_times_id
       FROM attractions
       WHERE queue_times_id IS NOT NULL
-    `);
+    `)) as unknown as AttractionRow[];
 
     const map = new Map<number, string>();
-    for (const row of result.rows) {
+    for (const row of rows) {
       map.set(Number(row.queue_times_id), String(row.id));
     }
 

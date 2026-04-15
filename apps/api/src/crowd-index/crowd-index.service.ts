@@ -136,12 +136,13 @@ export class CrowdIndexService {
    * >= 30 days → percentile mode; < 30 days → bootstrap mode
    */
   async getSampleSizeDays(): Promise<number> {
-    const result = await this.db.execute<DayCountRow>(sql`
+    // drizzle-orm postgres-js returns RowList (array), not { rows: [] }
+    const rows = (await this.db.execute<DayCountRow>(sql`
       SELECT COUNT(DISTINCT DATE(ts))::int AS day_count
       FROM wait_times_history
-    `);
+    `)) as unknown as DayCountRow[];
 
-    return result.rows[0]?.day_count ?? 0;
+    return rows[0]?.day_count ?? 0;
   }
 
   /**
@@ -149,7 +150,7 @@ export class CrowdIndexService {
    * Used to scope queries to the most-representative rides per park.
    */
   async getTopRidesForPark(parkSlug: string): Promise<string[]> {
-    const result = await this.db.execute<TopRideRow>(sql`
+    const rows = (await this.db.execute<TopRideRow>(sql`
       SELECT a.id AS ride_id
       FROM attractions a
       INNER JOIN parks p ON p.id = a.park_id
@@ -163,9 +164,9 @@ export class CrowdIndexService {
           AND w.ts > now() - INTERVAL '90 days'
       ) DESC NULLS LAST
       LIMIT ${TOP_RIDES_PER_PARK}
-    `);
+    `)) as unknown as TopRideRow[];
 
-    return result.rows.map((r) => String(r.ride_id));
+    return rows.map((r) => String(r.ride_id));
   }
 
   /**
@@ -184,7 +185,7 @@ export class CrowdIndexService {
 
     // Pattern 7 from RESEARCH.md — percentile_cont against 90-day history
     // Note: rideUuids are trusted UUIDs from our own DB queries, not user input
-    const result = await this.db.execute<IndexStatsRow>(sql`
+    const rows = (await this.db.execute<IndexStatsRow>(sql`
       WITH top_rides AS (
         SELECT id AS ride_id
         FROM attractions
@@ -211,9 +212,9 @@ export class CrowdIndexService {
       )
       SELECT ca.avg_wait, hd.p0, hd.p50, hd.p95
       FROM current_avg ca, historical_dist hd
-    `);
+    `)) as unknown as IndexStatsRow[];
 
-    const row = result.rows[0];
+    const row = rows[0];
     if (!row || row.avg_wait == null) {
       return null;
     }

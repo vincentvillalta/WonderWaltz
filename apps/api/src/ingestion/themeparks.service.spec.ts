@@ -64,10 +64,7 @@ describe('ThemeparksService', () => {
 
   beforeEach(async () => {
     mockRedis = makeRedisClient();
-    mockExecute = vi
-      .fn()
-      .mockResolvedValueOnce({ rows: mockCatalogRows })
-      .mockResolvedValue({ rows: [] });
+    mockExecute = vi.fn().mockResolvedValueOnce(mockCatalogRows).mockResolvedValue([]);
     mockDb = { execute: mockExecute };
 
     const { ThemeparksService } = await import('./themeparks.service.js');
@@ -289,7 +286,7 @@ describe('ThemeparksService', () => {
 
       // Reset execute mock so it returns empty for the SELECT (no SHOW in catalog)
       mockExecute.mockReset();
-      mockExecute.mockResolvedValue({ rows: [] });
+      mockExecute.mockResolvedValue([]);
 
       mockFetch.mockResolvedValue({
         ok: true,
