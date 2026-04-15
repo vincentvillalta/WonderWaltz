@@ -65,5 +65,7 @@ COPY --from=build /app/packages/solver/package.json ./packages/solver/
 
 WORKDIR /app/apps/api
 
-# Default to worker entry; api service overrides to `node dist/main.js`
-CMD ["node", "dist/worker.js"]
+# tsc's rootDir is "." (see apps/api/tsconfig.json), so compiled output lives
+# under dist/src/ and dist/scripts/, not flat in dist/.
+# Default to worker entry; api service overrides to `node dist/src/main.js`
+CMD ["node", "dist/src/worker.js"]
