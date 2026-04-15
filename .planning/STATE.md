@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-04-15T21:58:40.423Z"
-last_activity: "2026-04-15 — Completed Plan 03-01: Wave 0 schema + content scaffolding; queue-times catalog ID gap closed"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-04-15T22:09:53.556Z"
+last_activity: "2026-04-16 — Completed Plan 03-02: Anthropic SDK installed + deterministic mock harness + NarrativeModule scaffold"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 25
-  percent: 60
+  completed_plans: 26
+  percent: 62
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 1 of 18 in current phase
+Plan: 2 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-15 — Completed Plan 03-01: Wave 0 schema + content scaffolding; queue-times catalog ID gap closed
+Last activity: 2026-04-16 — Completed Plan 03-02: Anthropic SDK installed + deterministic mock harness + NarrativeModule scaffold
 
-Progress: [██████░░░░] 60%
+Progress: [██████░░░░] 62%
 
 ## Performance Metrics
 
@@ -72,6 +72,7 @@ Progress: [██████░░░░] 60%
 | Phase 02-data-pipeline P10 | 25 | 1 tasks | 3 files |
 | Phase 02-data-pipeline P11 | 7 | 1 tasks | 8 files |
 | Phase 03-engine P01 | 15 min | 3 tasks | 19 files |
+| Phase 03-engine P02 | 7 min | 3 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -140,6 +141,11 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: Migration 0004 applied via direct postgres-js driver against Supabase Session Pooler (MCP not exposed to executor session) — Same project_ref, same DDL, durably applied; equivalent path
 - [Phase 03-engine]: lightning_lane_type enforced via SQL CHECK constraint, not pgEnum — Future LL-type additions become a one-line migration instead of an ENUM ALTER
 - [Phase 03-engine]: queue-times ID fix landed at YAML data layer, not as a service-level mapping override — apps/api/src/ingestion/queue-times.service.ts uses DB lookup; YAML correction is the natural fix point and the regression test guards it
+- [Phase 03-engine]: Anthropic SDK pinned at @anthropic-ai/sdk ^0.65.0; model IDs claude-sonnet-4-6 (generation) and claude-haiku-4-5 (rethink/fallback) surfaced via env vars never -latest aliases
+- [Phase 03-engine]: Mock harness locks 96% cache_read_input_tokens ratio on hit; load-bearing for 03-11 llm_costs cost-math tests
+- [Phase 03-engine]: CACHED_PREFIX SHA-256 invariant test landed in 03-02 (not 03-12) — hardcoded hex is the forcing function against byte drift in the cached catalog+BRAND prefix
+- [Phase 03-engine]: ANTHROPIC_CLIENT_TOKEN factory throws outside NODE_ENV=test when key missing — mis-provisioned envs fail loudly rather than returning a stub that silently no-ops
+- [Phase 03-engine]: NarrativeService stubs reject with /03-12/ marker — grep-discoverable index of every unimplemented seam
 
 ### Pending Todos
 
@@ -155,6 +161,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-15T21:58:21.108Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-04-15T22:09:16.803Z
+Stopped at: Completed 03-02-PLAN.md
 Resume file: None

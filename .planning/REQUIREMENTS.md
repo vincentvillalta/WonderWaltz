@@ -91,7 +91,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### LLM Narrative Layer
 
-- [ ] **LLM-01**: `NarrativeModule` sends the solver's structured output + compact trip context to Claude; Claude produces per-day intro + per-item tips + budget hacks + rain/crowd contingency notes + packing-list delta
+- [x] **LLM-01**: `NarrativeModule` sends the solver's structured output + compact trip context to Claude; Claude produces per-day intro + per-item tips + budget hacks + rain/crowd contingency notes + packing-list delta
 - [ ] **LLM-02**: Anthropic prompt caching is used with the static catalog context before the cache boundary, dynamic trip context after; cache header set correctly
 - [ ] **LLM-03**: Claude Sonnet (pinned model ID) runs initial generation; Claude Haiku (pinned model ID) runs "Rethink my day" and free-tier teaser narration
 - [ ] **LLM-04**: Structured output parsing validates LLM output against a Zod schema; narrative never references a ride not in the solver output (contract test)
@@ -304,7 +304,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | SOLV-11 | Phase 3 | Pending |
 | SOLV-12 | Phase 3 | Pending |
 | SOLV-13 | Phase 3 | Pending |
-| LLM-01 | Phase 3 | Pending |
+| LLM-01 | Phase 3 | Complete |
 | LLM-02 | Phase 3 | Pending |
 | LLM-03 | Phase 3 | Pending |
 | LLM-04 | Phase 3 | Pending |
