@@ -85,7 +85,27 @@ Plans:
   3. Free-tier `GET /plans/:id` returns Day 1 fully detailed and Days 2+ as blurred summary cards; `POST /trips/:id/rethink-today` triggers Haiku and re-generates remaining items
   4. Every LLM call writes a row to `llm_costs`; a simulated cache miss drops the hit rate below 70% and triggers the Sentry alert; circuit breaker halts generation at $0.50 accumulated spend
   5. Forecast confidence label (`high` / `medium` / `low`) is present on every forecasted wait returned by `ForecastModule.predictWait()`; "Beta Forecast" framing is returned in the plan response metadata
-**Plans**: TBD
+**Plans**: 18 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Schema migrations + YAML schema additions + queue-times catalog ID fix (FC-02, SOLV-04, SOLV-10 support)
+- [ ] 03-02-PLAN.md — @anthropic-ai/sdk install + mock harness + narrative fixtures + NarrativeModule scaffold (LLM-01)
+- [ ] 03-03-PLAN.md — OpenAPI v1 snapshot amendment: FullDayPlan/LockedDayPlan union + warnings + RethinkRequest + PlanBudgetExhausted (PLAN-02)
+- [ ] 03-04-PLAN.md — Solver types + SolverInput/DayPlan contract + deterministic hash + package-boundary test (SOLV-01)
+- [ ] 03-05-PLAN.md — Walking graph preload + Floyd-Warshall + WalkingGraphLoader (SOLV-13)
+- [ ] 03-06-PLAN.md — Solver filtering: height, mobility, sensory, dietary (SOLV-02)
+- [ ] 03-07-PLAN.md — Scoring function + greedy construct + must-do pinning + meals + shows (SOLV-03, SOLV-05, SOLV-06)
+- [ ] 03-08-PLAN.md — Adjacent-pair local search + ResourcePool + LL allocator + DAS + park-hours EE/EEH (SOLV-04, SOLV-08, SOLV-09)
+- [ ] 03-09-PLAN.md — Budget tier rules + age-weighted fatigue rest blocks (SOLV-07, SOLV-10)
+- [ ] 03-10-PLAN.md — solve() orchestration + 6 canonical fixture snapshots + 100-run determinism proof (SOLV-11, SOLV-12)
+- [ ] 03-11-PLAN.md — ForecastModule bucketed median + baseline fallback + calendar rule engine + Beta Forecast framing (FC-01, FC-03, FC-04, FC-05)
+- [ ] 03-12-PLAN.md — Narrative prompt + byte-stable CACHED_PREFIX + Zod schema + ride-ID contract (LLM-02, LLM-04)
+- [ ] 03-13-PLAN.md — LLM cost telemetry + USD math + cache-hit-rate rolling alert (LLM-05, LLM-06)
+- [ ] 03-14-PLAN.md — Pinned model IDs + circuit breaker + Sonnet→Haiku fallback + 3-sink telemetry + 402 contract (LLM-03, LLM-07)
+- [ ] 03-15-PLAN.md — Rate limits: rethink daily cap + free-tier lifetime cap + Guard (LLM-08, PLAN-05)
+- [ ] 03-16-PLAN.md — PlanGenerationProcessor + orchestrator + PersistPlanService + cache-hit short-circuit (PLAN-01, PLAN-03)
+- [ ] 03-17-PLAN.md — trips.controller endpoints + plans.controller entitlement projection + e2e roundtrip (PLAN-04)
+- [ ] 03-18-PLAN.md — Packing list generator + Amazon Associates affiliate tag injection (PLAN-06)
 
 ### Phase 4: Entitlements & Accounts
 **Goal**: Users can create anonymous accounts, upgrade to Sign in with Apple or Google, purchase a trip unlock, receive refunds, delete their accounts with full data cascade, and restore purchases across devices — all correctly reflected in backend entitlement state.
@@ -179,7 +199,7 @@ Plans:
 | 0. Name Lock | 1/1 | Complete    | 2026-04-09 |
 | 1. Foundation | 10/11 | In Progress|  |
 | 2. Data Pipeline | 11/12 | In Progress|  |
-| 3. Engine | 0/TBD | Not started | - |
+| 3. Engine | 0/18 | Not started | - |
 | 4. Entitlements & Accounts | 0/TBD | Not started | - |
 | 5. iOS Core | 0/TBD | Not started | - |
 | 6. iOS Paywall & Notifications | 0/TBD | Not started | - |

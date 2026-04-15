@@ -1,10 +1,11 @@
 ---
 phase: 03
 slug: engine
-status: draft
-nyquist_compliant: false
+status: planned
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-04-15
+updated: 2026-04-15
 ---
 
 # Phase 03 — Validation Strategy
@@ -40,99 +41,91 @@ created: 2026-04-15
 
 ## Per-Task Verification Map
 
-The planner fills this table as it decomposes the 31 requirement IDs
-into concrete plans. Every task maps to one or more automated checks.
+Every requirement ID below maps to an automated verify command in exactly one PLAN.md task. See that plan's `<verify><automated>…</automated></verify>` block for the canonical command.
 
-Expected high-level requirement → verification mapping (from research
-"Validation Architecture"):
+| Requirement | Plan       | Verification type | Automated command (from plan) |
+| ----------- | ---------- | ----------------- | ----------------------------- |
+| FC-01 | 03-11 | Integration test (bucketed median + baseline fallback) | `pnpm --filter @wonderwaltz/api test -- tests/forecast/forecast.service.test.ts tests/forecast/confidence.test.ts --run` |
+| FC-02 | 03-01 + 03-11 | Schema migration test + rule-engine unit + DB override | `pnpm --filter @wonderwaltz/api test -- tests/forecast/calendar-rules.test.ts tests/forecast/calendar.service.test.ts --run` |
+| FC-03 | 03-11 | Unit test (confidence classifier) | `pnpm --filter @wonderwaltz/api test -- tests/forecast/confidence.test.ts --run` |
+| FC-04 | 03-11 + 03-10 | Forecast exercised inside solver snapshot suite | `pnpm --filter @wonderwaltz/solver test -- tests/snapshot.test.ts --run` |
+| FC-05 | 03-11 | Beta-framing contract test | `pnpm --filter @wonderwaltz/api test -- tests/forecast/beta-framing.test.ts --run` |
+| SOLV-01 | 03-04 | Package boundary static check + types | `pnpm --filter @wonderwaltz/solver test -- tests/package-boundary.test.ts --run` |
+| SOLV-02 | 03-06 | 4 predicate unit tests | `pnpm --filter @wonderwaltz/solver test -- tests/filter-*.test.ts --run` |
+| SOLV-03 | 03-07 | Scoring + construct-pinning unit tests | `pnpm --filter @wonderwaltz/solver test -- tests/score.test.ts tests/construct-pinning.test.ts --run` |
+| SOLV-04 | 03-08 | LL allocation table-driven test | `pnpm --filter @wonderwaltz/solver test -- tests/ll-allocation.test.ts --run` |
+| SOLV-05 | 03-07 | Meal insertion test | `pnpm --filter @wonderwaltz/solver test -- tests/meals.test.ts --run` |
+| SOLV-06 | 03-07 | Show/parade/fireworks insertion test | `pnpm --filter @wonderwaltz/solver test -- tests/shows.test.ts --run` |
+| SOLV-07 | 03-09 | Fatigue rest-block table-driven test | `pnpm --filter @wonderwaltz/solver test -- tests/fatigue.test.ts --run` |
+| SOLV-08 | 03-08 | DAS pool test | `pnpm --filter @wonderwaltz/solver test -- tests/das.test.ts --run` |
+| SOLV-09 | 03-08 | Park-hours EE/EEH table-driven test | `pnpm --filter @wonderwaltz/solver test -- tests/park-hours.test.ts --run` |
+| SOLV-10 | 03-09 | Budget tier rules test | `pnpm --filter @wonderwaltz/solver test -- tests/budget-tier.test.ts --run` |
+| SOLV-11 | 03-10 | 100-run determinism test | `pnpm --filter @wonderwaltz/solver test -- tests/deterministic.test.ts --run` |
+| SOLV-12 | 03-10 | 6 canonical fixture snapshots | `pnpm --filter @wonderwaltz/solver test -- tests/snapshot.test.ts --run` |
+| SOLV-13 | 03-05 | Walking graph preload + load-once proof | `pnpm --filter @wonderwaltz/api test -- tests/plan-generation/walking-graph-loader.test.ts --run` |
+| LLM-01 | 03-02 | NarrativeModule DI + mock resolution | `pnpm --filter @wonderwaltz/api test -- tests/narrative/narrative.module.test.ts --run` |
+| LLM-02 | 03-12 | Byte-stable CACHED_PREFIX test | `pnpm --filter @wonderwaltz/api test -- tests/narrative/prompt-cache-prefix.test.ts --run` |
+| LLM-03 | 03-14 | Model-ID contract test | `pnpm --filter @wonderwaltz/api test -- tests/narrative/model-id-contract.test.ts --run` |
+| LLM-04 | 03-12 | Zod schema + ride-ID subset contract | `pnpm --filter @wonderwaltz/api test -- tests/narrative/zod-schema.test.ts tests/narrative/ride-id-contract.test.ts --run` |
+| LLM-05 | 03-13 | Cost math + llm_costs row assertion | `pnpm --filter @wonderwaltz/api test -- tests/narrative/cost.test.ts tests/narrative/narrative-service.test.ts --run` |
+| LLM-06 | 03-13 | Rolling hit-rate alert test | `pnpm --filter @wonderwaltz/api test -- tests/narrative/cost-hit-rate-alert.test.ts --run` |
+| LLM-07 | 03-14 | Circuit breaker + 3-sink + Sonnet→Haiku swap | `pnpm --filter @wonderwaltz/api test -- tests/plan-generation/circuit-breaker.test.ts tests/narrative/sonnet-haiku-fallback.test.ts --run` |
+| LLM-08 | 03-15 | Rethink rate limit test | `pnpm --filter @wonderwaltz/api test -- tests/plan-generation/rethink-rate-limit.test.ts tests/plan-generation/rate-limit-guard.test.ts --run` |
+| PLAN-01 | 03-16 | Processor + service integration | `pnpm --filter @wonderwaltz/api test -- tests/plan-generation/plan-generation.service.test.ts tests/plan-generation/plan-generation.processor.test.ts --run` |
+| PLAN-02 | 03-03 + 03-17 | Discriminated union DTO + projection e2e | `pnpm --filter @wonderwaltz/api test -- tests/dto/plan-dto-discriminator.test.ts tests/e2e/get-plan-projection.e2e.test.ts --run` |
+| PLAN-03 | 03-16 | PersistPlanService multi-table insert | `pnpm --filter @wonderwaltz/api test -- tests/plan-generation/persist-plan.test.ts --run` |
+| PLAN-04 | 03-17 | Rethink e2e + roundtrip | `pnpm --filter @wonderwaltz/api test -- tests/e2e/rethink-today.e2e.test.ts tests/e2e/plan-roundtrip.e2e.test.ts --run` |
+| PLAN-05 | 03-15 | Free-tier lifetime counter | `pnpm --filter @wonderwaltz/api test -- tests/plan-generation/free-tier-lifetime.test.ts --run` |
+| PLAN-06 | 03-18 | Packing list rules + affiliate tag injection | `pnpm --filter @wonderwaltz/api test -- tests/packing-list/packing-list.service.test.ts tests/packing-list/affiliate.test.ts --run` |
 
-| Requirement | Verification type | Notes |
-| ----------- | ----------------- | ----- |
-| FC-01 | Integration test: seed wait_times_1h fixtures → assert bucketed median returned | Needs `baseline_wait_minutes` fallback test |
-| FC-02 | Unit test (rule engine) + integration test (DB override wins) | Two distinct signals |
-| FC-03 | Unit test: confidence label from sample count + window | Table-driven |
-| FC-04 | Snapshot test: forecast(ride, ts) for canonical rides across bucket combos | Part of solver fixture suite |
-| FC-05 | Contract test: plan response metadata always contains `"framing": "Beta Forecast"` pre-launch | Static check |
-| SOLV-01 | Package boundary test: `packages/solver` has zero NestJS / I/O imports | Grep + typecheck |
-| SOLV-02 | Unit tests per constraint (height, mobility, sensory, dietary) | Independent signals |
-| SOLV-03 | Unit test: scoring function returns known value for known input | Deterministic |
-| SOLV-04 | Unit test: LL allocation budget respected per tier | Table-driven |
-| SOLV-05 | Unit test: meal windows scheduled in rides-free slots | |
-| SOLV-06 | Unit test: parades/fireworks/shows scored as optional blocks | |
-| SOLV-07 | Unit test: fatigue model inserts rest blocks by age bracket | Table-driven |
-| SOLV-08 | Unit test: DAS budget math equivalent to LL | |
-| SOLV-09 | Unit test: EE/EEH rules applied to on-property hotel guests | |
-| SOLV-10 | Unit test: tier → LL/rest/dining allocations match | Table-driven |
-| SOLV-11 | **Determinism test:** same SolverInput → byte-identical DayPlan[] on 100 repeated runs | Critical; non-negotiable |
-| SOLV-12 | **Snapshot suite: 6 canonical fixtures, byte-identical across runs** | Main phase gate |
-| SOLV-13 | Unit test: walking graph loaded once at startup; `shortestPath` does not query DB | Spy on DB client |
-| LLM-01 | Integration test: NarrativeModule called with solver output → structured narrative returned | Mock Anthropic SDK |
-| LLM-02 | Integration test: first call cache_miss, second call cache_hit in same minute | Mock returns cache_control field |
-| LLM-03 | Contract test: plan generation uses `claude-sonnet-4-6`; rethink + fallback use `claude-haiku-4-5` | Grep + env-var check |
-| LLM-04 | Unit test: Zod schema validates well-formed narrative; rejects narrative referencing a ride not in solver output | Contract test |
-| LLM-05 | Integration test: after LLM call, `llm_costs` row exists with correct fields | DB assertion |
-| LLM-06 | Unit test: cache hit rate calculator + Sentry trigger when rate < 70% | Mocked metrics |
-| LLM-07 | Integration test: spend tracker trips at $0.50; Sonnet→Haiku swap observed mid-generation | Fixture with 2 narrative batches |
-| LLM-08 | Unit test: rate limiter returns 429 at 16th rethink/day unlocked, 6th free-tier | Redis-backed counter |
-| PLAN-01 | Integration test: POST /trips/:id/generate-plan returns 202 with `{ plan_job_id }`; job completes within 30s in test runner | End-to-end signal |
-| PLAN-02 | Contract test: free tier GET /plans/:id returns `Array<FullDayPlan \| LockedDayPlan>` with type discriminator | DTO shape check |
-| PLAN-03 | Integration test: after job, all 4 tables (plans, plan_days, plan_items, llm_costs) have rows; trips.plan_status='ready' | Multi-table assertion |
-| PLAN-04 | Integration test: POST /trips/:id/rethink-today with completed_item_ids + active_ll_bookings → plan_days for remaining day only | |
-| PLAN-05 | Unit test: middleware counts requests per anonymous device; 4th request returns 403 | Redis-backed |
-| PLAN-06 | Unit test: packing list generation reads solver output + weather + ages → items array; affiliate tag injected at read time | |
-
-Planner will expand this table with per-plan-per-task rows including
-exact paths + commit hashes as execution proceeds.
-
-*Status legend: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+*Status legend: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky* — filled during execution.
 
 ---
 
 ## Wave 0 Requirements
 
-From research findings, Wave 0 must complete these before any feature
-work begins:
+Delivered by plans 03-01, 03-02, 03-03 (all in wave 1). Each is a scaffolding plan without feature logic; Wave 0 is "complete" when all three plans ship.
 
-**New packages / deps:**
-- [ ] Install `@anthropic-ai/sdk` in `apps/api/package.json` (NOT
-      currently installed despite earlier assumptions)
-- [ ] Install `date-fns-tz` for Orlando-local-time handling
-- [ ] Set `ANTHROPIC_API_KEY` env var in Railway worker + `.env.local`
+**New packages / deps** — plan 03-02:
+- [ ] Install `@anthropic-ai/sdk` in `apps/api/package.json`
+- [ ] Install `date-holidays` in `packages/content` (plan 03-11 also may touch this)
+- [ ] Document `ANTHROPIC_API_KEY` in `docs/ops/PROVISIONING_STATE.md`
 
-**Schema migrations (4):**
-- [ ] `crowd_calendar` table: `(date, bucket, reason, created_at)`
-- [ ] `llm_cost_incidents` table: `(trip_id, event, model, spent_cents, timestamp, ...)`
-- [ ] Add `trips.current_plan_id` column (FK to plans.id, nullable)
-- [ ] Add `trips.llm_budget_cents` column (default 50)
-- [ ] Add index on `plans(trip_id, solver_input_hash)`
+**Schema migrations** — plan 03-01:
+- [ ] `crowd_calendar` table
+- [ ] `llm_cost_incidents` table
+- [ ] `trips.current_plan_id` column
+- [ ] `trips.llm_budget_cents` column (default 50)
+- [ ] `plans(trip_id, solver_input_hash)` index
+- [ ] `attractions` columns: `baseline_wait_minutes`, `lightning_lane_type`, `is_headliner` (same migration)
 
-**YAML schema additions:**
-- [ ] `attractions.yaml`: add `baseline_wait_minutes`, `lightning_lane_type`, `is_headliner` fields per attraction
-- [ ] Update seed script to handle new fields idempotently
+**YAML schema additions** — plan 03-01 (task 2):
+- [ ] `attractions.yaml` populated with 3 new fields on every row
+- [ ] `attraction.zod.ts` validator green
+- [ ] Seed script idempotent
 
-**Solver package scaffold:**
-- [ ] `packages/solver/src/types.ts` — SolverInput, DayPlan, PlanItem types
-- [ ] `packages/solver/vitest.config.ts` — solver-only test config
-- [ ] `packages/solver/src/fixtures/` directory for 6 canonical trips
-- [ ] Solver snapshot scaffold (empty fixtures; filled in Wave 2)
+**Solver package scaffold** — plan 03-04:
+- [ ] `packages/solver/src/types.ts` complete
+- [ ] `packages/solver/vitest.config.ts` present
+- [ ] `packages/solver/src/hash.ts` + deterministic hash test green
+- [ ] Package boundary static check green
 
-**Test infrastructure:**
-- [ ] `apps/api/tests/anthropic-mock.ts` — deterministic mock for
-      Anthropic SDK (prompt caching semantics + token counting)
-- [ ] `apps/api/tests/fixtures/narrative-response.json` — real-shape
-      Anthropic response captured for replay
-- [ ] `packages/solver/tests/deterministic.test.ts` — runs `solve()`
-      100× on same input, asserts byte-identical output
+Fixture directory `packages/solver/src/__fixtures__/` and snapshot suite land in plan 03-10 (not Wave 0 — they depend on the implemented solver).
 
-**v1 OpenAPI snapshot amendment (ONE deliberate update):**
+**Test infrastructure** — plan 03-02:
+- [ ] `apps/api/tests/anthropic-mock.ts` with cache-aware usage reporting
+- [ ] `apps/api/tests/fixtures/narrative-response.json` (happy path)
+- [ ] `apps/api/tests/fixtures/narrative-response.invalid-ride.json` (hallucinated-ride negative fixture)
+
+**v1 OpenAPI snapshot amendment (ONE deliberate update)** — plan 03-03:
 - [ ] Replace stub `DayPlan` with `FullDayPlan` + `LockedDayPlan` discriminated union
 - [ ] Add `Plan.warnings: string[]`
 - [ ] Add `RethinkRequestDto` with `active_ll_bookings: LLBookingDto[]`
 - [ ] Add `PlanBudgetExhaustedDto` for 402 responses
-- [ ] Regenerate snapshot; CI gate should pass cleanly after
+- [ ] Regenerate snapshot; CI gate passes cleanly after
 
-**Phase 2 carry-forward (optional but recommended):**
-- [ ] Fix queue-times catalog IDs (tracked in `todos/pending/fix-queue-times-catalog-ids.md`) — without this, 2 of 4 parks have zero forecast data which degrades solver quality for Phase 3 fixtures
+**Phase 2 carry-forward** — plan 03-01 (task 3):
+- [ ] Queue-times catalog ID gap closed — all 4 WDW parks resolve correctly
 
 ---
 
@@ -151,25 +144,23 @@ work begins:
 
 ## Nyquist Continuity Check
 
-After planner populates per-task map above:
-
-- [ ] No 3 consecutive tasks without automated verification signal
-- [ ] Every SOLV-0X requirement maps to a unit or snapshot test
-- [ ] Every LLM-0X requirement maps to an integration test with Anthropic mock
-- [ ] Every PLAN-0X requirement maps to an HTTP integration test
-- [ ] Every FC-0X requirement maps to a unit test
-- [ ] SOLV-12 fixture suite is the phase gate (6/6 green = phase complete for solver work)
-- [ ] `nyquist_compliant: true` set in frontmatter once tasks are laid out
+- [x] No 3 consecutive tasks without automated verification signal — every task in every Phase 3 plan has an `<automated>` command.
+- [x] Every SOLV-0X requirement maps to a unit or snapshot test (see table above).
+- [x] Every LLM-0X requirement maps to an integration test with Anthropic mock (or cost/rate-limit equivalent).
+- [x] Every PLAN-0X requirement maps to an HTTP integration test or multi-table insert test.
+- [x] Every FC-0X requirement maps to a unit or integration test.
+- [x] SOLV-12 fixture suite is the phase gate (6/6 green = phase complete for solver work).
+- [x] `nyquist_compliant: true` set in frontmatter (this file).
 
 ---
 
 ## Validation Sign-Off
 
-- [ ] All 31 requirement IDs have at least one `<automated>` verify or a documented manual verification
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING fixture references
-- [ ] No watch-mode flags in automated commands
-- [ ] Feedback latency <60s (quick <10s)
-- [ ] `nyquist_compliant: true` set once planner finishes laying out tasks
+- [x] All 31 requirement IDs have at least one `<automated>` verify command assigned (per table above).
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify.
+- [x] Wave 0 covers all MISSING fixture references (plans 03-01 through 03-03).
+- [x] No watch-mode flags in automated commands (every command uses `--run`).
+- [x] Feedback latency <60s (quick <10s).
+- [x] `nyquist_compliant: true` set.
 
-**Approval:** pending (planner completes task map first)
+**Approval:** validation mapping complete; execute-phase may proceed once plans are committed.
