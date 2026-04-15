@@ -164,13 +164,3 @@ export class GeneratePlanResponseDto {
   })
   job_id!: string;
 }
-
-export class RethinkTodayDto {
-  @ApiProperty({
-    description:
-      'PlanItem UUIDs that remain to be done today. Solver uses this to build a revised afternoon plan.',
-    type: [String],
-    example: ['plan-item-uuid-1', 'plan-item-uuid-2'],
-  })
-  remaining_item_ids!: string[];
-}
