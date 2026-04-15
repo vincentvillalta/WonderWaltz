@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 3 context gathered
-last_updated: "2026-04-15T20:57:42.679Z"
-last_activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
+status: executing
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-04-15T21:58:40.423Z"
+last_activity: "2026-04-15 — Completed Plan 03-01: Wave 0 schema + content scaffolding; queue-times catalog ID gap closed"
 progress:
   total_phases: 11
   completed_phases: 3
-  total_plans: 24
-  completed_plans: 24
-  percent: 0
+  total_plans: 42
+  completed_plans: 25
+  percent: 60
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** A first-time Walt Disney World visitor gets a plan that feels like a Disney expert made it for them.
-**Current focus:** Phase 0 — Name Lock
+**Current focus:** Phase 3 — Engine
 
 ## Current Position
 
-Phase: 0 of 10 (Name Lock)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-04-09 — Roadmap created; all 143 v1 REQ-IDs mapped across 11 phases (0–10)
+Phase: 3 of 10 (Engine)
+Plan: 1 of 18 in current phase
+Status: In Progress
+Last activity: 2026-04-15 — Completed Plan 03-01: Wave 0 schema + content scaffolding; queue-times catalog ID gap closed
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-data-pipeline P09 | 15 | 2 tasks | 6 files |
 | Phase 02-data-pipeline P10 | 25 | 1 tasks | 3 files |
 | Phase 02-data-pipeline P11 | 7 | 1 tasks | 8 files |
+| Phase 03-engine P01 | 15 min | 3 tasks | 19 files |
 
 ## Accumulated Context
 
@@ -136,6 +137,9 @@ Recent decisions affecting current work:
 - [Phase 02-data-pipeline]: shared-infra.module.ts monorepoRoot: resolve(__dirname, '../../../..') — 4 levels up from dist/src/ to repo root; 3 levels only reached apps/
 - [Phase 02-data-pipeline]: ATTRIBUTION exported via createRequire pattern — mirrors disclaimer.ts, avoids ESM/CJS boundary
 - [Phase 02-data-pipeline]: Footer component extracted from layout.tsx; attribution rendered as plain text (no hyperlink) per CONTEXT.md Area 7 Q7.4
+- [Phase 03-engine]: Migration 0004 applied via direct postgres-js driver against Supabase Session Pooler (MCP not exposed to executor session) — Same project_ref, same DDL, durably applied; equivalent path
+- [Phase 03-engine]: lightning_lane_type enforced via SQL CHECK constraint, not pgEnum — Future LL-type additions become a one-line migration instead of an ENUM ALTER
+- [Phase 03-engine]: queue-times ID fix landed at YAML data layer, not as a service-level mapping override — apps/api/src/ingestion/queue-times.service.ts uses DB lookup; YAML correction is the natural fix point and the regression test guards it
 
 ### Pending Todos
 
@@ -151,6 +155,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-15T20:57:42.676Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-engine/03-CONTEXT.md
+Last session: 2026-04-15T21:58:21.108Z
+Stopped at: Completed 03-01-PLAN.md
+Resume file: None

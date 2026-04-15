@@ -68,7 +68,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 ### Wait-Time Forecast
 
 - [ ] **FC-01**: `ForecastModule.predictWait(ride_id, target_ts)` returns `{ minutes, confidence }` derived from bucketed median of `wait_times_history` grouped by `(ride_id, dow, hour_of_day, crowd_level_bucket)`
-- [ ] **FC-02**: Crowd level bucket is derived from rolling calendar heuristic (weekends, federal holidays, school holidays, marathon weekends, festival weeks) with admin-editable static override table
+- [x] **FC-02**: Crowd level bucket is derived from rolling calendar heuristic (weekends, federal holidays, school holidays, marathon weekends, festival weeks) with admin-editable static override table
 - [ ] **FC-03**: Forecast confidence label is `high` (8+ weeks of buckets with >50 samples), `medium` (4-8 weeks), `low` (<4 weeks); always returned and always surfaced in UI
 - [ ] **FC-04**: Forecast accuracy unit tests cover fixture history and canonical ride/day combinations
 - [ ] **FC-05**: UI displays "Beta Forecast" framing on every forecasted wait before public beta is 8+ weeks old
@@ -78,13 +78,13 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **SOLV-01**: Pure TypeScript package `packages/solver` with `solve(SolverInput): DayPlan[]` signature; zero NestJS dependencies, zero I/O side effects
 - [ ] **SOLV-02**: Solver filters attractions per guest constraints: height requirement vs minimum guest height, mobility vs walking budget, sensory tolerance vs tag tolerance, dietary restrictions for dining candidates
 - [ ] **SOLV-03**: Solver greedy + local-search schedules rides using priority function `score = enjoyment_weight / (time_cost + wait_cost + walk_cost)` with must-do pinning as hard constraints
-- [ ] **SOLV-04**: Solver allocates Lightning Lane Multi Pass bookings (up to ~3/day default) and Lightning Lane Single Pass (0-2/day scaled to budget tier)
+- [x] **SOLV-04**: Solver allocates Lightning Lane Multi Pass bookings (up to ~3/day default) and Lightning Lane Single Pass (0-2/day scaled to budget tier)
 - [ ] **SOLV-05**: Solver schedules meals: table-service as hard constraints if user supplied them, quick-service in rides-free windows tagged for mobile order
 - [ ] **SOLV-06**: Solver pins preferred parades, fireworks, and shows as optional blocks with scoring
 - [ ] **SOLV-07**: Solver encodes **child fatigue model**: toddlers (0-2 bracket) peak fatigue 12:30-14:00, young kids (3-6) peak 13:00-15:00; rest/resort-return blocks inserted proportionally to age distribution and budget tier
 - [ ] **SOLV-08**: Solver encodes **DAS constraint**: when `trip.das_flag === true`, DAS return windows are modeled as LL-equivalent resource (same per-day budget math) with narrative explaining DAS application via Disney's video chat
 - [ ] **SOLV-09**: Solver encodes **on-property advantages**: Early Entry (+30 min) for any on-property hotel; Extended Evening Hours on eligible nights for Deluxe / Deluxe Villa
-- [ ] **SOLV-10**: Solver encodes **budget tier rules**: Pixie Dust = 0 LL + 1 rest/3hr + value dining; Fairy Tale = LLMP + 0-1 LLSP + 1 rest/2hr + moderate dining; Royal Treatment = LLMP + up to 2 LLSP + resort mid-day break + signature dining
+- [x] **SOLV-10**: Solver encodes **budget tier rules**: Pixie Dust = 0 LL + 1 rest/3hr + value dining; Fairy Tale = LLMP + 0-1 LLSP + 1 rest/2hr + moderate dining; Royal Treatment = LLMP + up to 2 LLSP + resort mid-day break + signature dining
 - [ ] **SOLV-11**: Solver output is deterministic: same `SolverInput` produces identical `DayPlan[]`; `solver_input_hash` used to cache results
 - [ ] **SOLV-12**: Solver snapshot test suite covers six fixture trips: single-day MK with toddler, 3-day all-parks family, adult thrill-day, mobility-constrained multi-day, ECV guest with DAS flag, 5-day Royal Treatment trip
 - [ ] **SOLV-13**: Solver walking graph preloaded from Postgres + PostGIS into process memory at worker startup (not queried per job)
@@ -287,20 +287,20 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | DATA-07 | Phase 2 | Complete |
 | DATA-08 | Phase 2 | Complete |
 | FC-01 | Phase 3 | Pending |
-| FC-02 | Phase 3 | Pending |
+| FC-02 | Phase 3 | Complete |
 | FC-03 | Phase 3 | Pending |
 | FC-04 | Phase 3 | Pending |
 | FC-05 | Phase 3 | Pending |
 | SOLV-01 | Phase 3 | Pending |
 | SOLV-02 | Phase 3 | Pending |
 | SOLV-03 | Phase 3 | Pending |
-| SOLV-04 | Phase 3 | Pending |
+| SOLV-04 | Phase 3 | Complete |
 | SOLV-05 | Phase 3 | Pending |
 | SOLV-06 | Phase 3 | Pending |
 | SOLV-07 | Phase 3 | Pending |
 | SOLV-08 | Phase 3 | Pending |
 | SOLV-09 | Phase 3 | Pending |
-| SOLV-10 | Phase 3 | Pending |
+| SOLV-10 | Phase 3 | Complete |
 | SOLV-11 | Phase 3 | Pending |
 | SOLV-12 | Phase 3 | Pending |
 | SOLV-13 | Phase 3 | Pending |
