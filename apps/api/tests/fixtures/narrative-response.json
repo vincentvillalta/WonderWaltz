@@ -1,0 +1,20 @@
+{
+  "id": "msg_01MockNarrativeFixture000000",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-sonnet-4-6",
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"days\": [\n    {\n      \"dayIndex\": 0,\n      \"intro\": \"Rope-drop Magic Kingdom and lean into the mountains while the park is fresh. Seven Dwarfs first — that is the standby window that will evaporate by 10 a.m. — then weave Space Mountain and Big Thunder before lunch. Afternoon parade viewing from Frontierland gives you shade AND a straight shot to Pirates.\",\n      \"items\": [\n        { \"planItemId\": \"{{PLAN_ITEM_0_0}}\", \"tip\": \"Be at the tapstile 30 minutes before official open. Seven Dwarfs standby posts 25 min at rope drop and climbs to 95 by 11.\" },\n        { \"planItemId\": \"{{PLAN_ITEM_0_1}}\", \"tip\": \"Take the Tomorrowland back path to skip the hub crowd; Space Mountain loads front-to-back, ask for row 1 for the kid.\" },\n        { \"planItemId\": \"{{PLAN_ITEM_0_2}}\", \"tip\": \"Big Thunder's single-rider queue is not published but a cast member at merge will usually grant it if you ask nicely — saves 40 min on paper-25 posted waits.\" }\n      ]\n    },\n    {\n      \"dayIndex\": 1,\n      \"intro\": \"EPCOT day. World Celebration opens first; Guardians is Lightning Lane Single Pass — book at 7 a.m. the moment the app goes live. Afternoon is World Showcase pavilions, which means walking, which means water and electrolytes.\",\n      \"items\": [\n        { \"planItemId\": \"{{PLAN_ITEM_1_0}}\", \"tip\": \"Guardians reverse-launches; warn anyone with motion sensitivity. The pre-show is 4 minutes — use the restroom at Connections Cafe first.\" },\n        { \"planItemId\": \"{{PLAN_ITEM_1_1}}\", \"tip\": \"Test Track's Lightning Lane re-opened after the 2025 refurb with a new design studio — earliest standby window is 11-11:30.\" }\n      ]\n    }\n  ],\n  \"packingDelta\": [\n    { \"item\": \"Sunscreen (SPF 50+, reef-safe)\", \"reason\": \"Orlando UV index runs 9-11 in April; the parades have zero shade.\" },\n    { \"item\": \"Portable phone charger\", \"reason\": \"Lightning Lane bookings, mobile ordering, and PhotoPass will drain a phone to 20% by 2 p.m.\" },\n    { \"item\": \"Rain poncho (not an umbrella)\", \"reason\": \"April afternoon storms are 30-min bursts. Umbrellas are banned on most attractions; ponchos fold into a hip pack.\" }\n  ],\n  \"budgetHacks\": [\n    \"Mobile-order lunch at Pecos Bill at 10:45 — kitchen is fresh and the line is 3 people deep instead of 30.\",\n    \"Refillable Rapid Fill mug only pays off if you are a 3+ night resort guest drinking 4+ beverages/day; otherwise skip.\",\n    \"Bring one empty bottle per guest — every counter-service stand gives free ice water, no purchase required.\"\n  ]\n}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 200,
+    "output_tokens": 650,
+    "cache_creation_input_tokens": 5000,
+    "cache_read_input_tokens": 0
+  }
+}
