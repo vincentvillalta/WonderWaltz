@@ -98,7 +98,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **LLM-05**: `llm_costs` table records every LLM call with `trip_id`, `plan_id`, `model`, `input_tok`, `cached_read_tok`, `output_tok`, `usd_cents`, `created_at`
 - [x] **LLM-06**: Sentry alert fires when cache hit rate (`cached_read_tok / input_tok`) drops below 70% over a 1-hour window
 - [x] **LLM-07**: Per-trip LLM cost circuit breaker halts generation at $0.50 accumulated spend and logs incident
-- [ ] **LLM-08**: Per-user daily rethink cap: 15/day for unlocked trips, 5/day for free-tier teaser
+- [x] **LLM-08**: Per-user daily rethink cap: 15/day for unlocked trips, 5/day for free-tier teaser
 
 ### Plan Generation API
 
@@ -106,7 +106,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **PLAN-02**: `GET /plans/:id` returns plan with entitlement projection: free tier sees Day 1 items + blurred summary cards for Days 2+; unlocked tier sees all days
 - [ ] **PLAN-03**: Plan generation job: load trip → hydrate solver input (catalog, walking graph, forecasts, weather) → run solver → run NarrativeModule → persist `plans` + `plan_days` + `plan_items` + `llm_costs` → update `trips.plan_status`
 - [ ] **PLAN-04**: Plan generation supports on-demand re-optimization: `POST /trips/:id/rethink-today` takes `{ current_time, completed_item_ids }` and regenerates the remaining day with Haiku
-- [ ] **PLAN-05**: Free-tier plan generation is rate-limited per device: 3 free plans/lifetime per anonymous user; enforced in middleware
+- [x] **PLAN-05**: Free-tier plan generation is rate-limited per device: 3 free plans/lifetime per anonymous user; enforced in middleware
 - [ ] **PLAN-06**: Packing list is generated per plan: solver + weather + temperature + guest ages drive item selection; items rewritten with Amazon Associates affiliate tag at read time
 
 ### Authentication & Accounts
@@ -311,12 +311,12 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | LLM-05 | Phase 3 | Complete |
 | LLM-06 | Phase 3 | Complete |
 | LLM-07 | Phase 3 | Complete |
-| LLM-08 | Phase 3 | Pending |
+| LLM-08 | Phase 3 | Complete |
 | PLAN-01 | Phase 3 | Pending |
 | PLAN-02 | Phase 3 | Complete |
 | PLAN-03 | Phase 3 | Pending |
 | PLAN-04 | Phase 3 | Pending |
-| PLAN-05 | Phase 3 | Pending |
+| PLAN-05 | Phase 3 | Complete |
 | PLAN-06 | Phase 3 | Pending |
 | AUTH-01 | Phase 4 | Pending |
 | AUTH-02 | Phase 4 | Pending |

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-10-PLAN.md
-last_updated: "2026-04-16T14:50:00.000Z"
-last_activity: "2026-04-16 — Completed Plan 03-10: Solver Pipeline Orchestration + Determinism Gate (SOLV-11, SOLV-12)"
+stopped_at: Completed 03-15-PLAN.md
+last_updated: "2026-04-16T16:55:14.046Z"
+last_activity: "2026-04-16 — Completed Plan 03-15: Rethink Daily Cap + Free-Tier Lifetime Cap (LLM-08, PLAN-05) — Redis-backed rate limiters with NestJS guard"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 38
-  percent: 79
+  completed_plans: 39
+  percent: 93
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 15 of 18 in current phase
+Plan: 16 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-16 — Completed Plan 03-10: Solver Pipeline Orchestration + Determinism Gate (SOLV-11, SOLV-12) — solve() wired end-to-end, 6 canonical snapshots, 100-run determinism proven
+Last activity: 2026-04-16 — Completed Plan 03-15: Rethink Daily Cap + Free-Tier Lifetime Cap (LLM-08, PLAN-05) — Redis-backed rate limiters with NestJS guard
 
-Progress: [█████████░] 79%
+Progress: [█████████░] 93%
 
 ## Performance Metrics
 
@@ -86,6 +86,7 @@ Progress: [█████████░] 79%
 | Phase 03-engine P09 | 6 | 2 tasks | 5 files |
 | Phase 03-engine P14 | 12 min | 3 tasks | 6 files |
 | Phase 03-engine P10 | 60 min | 2 tasks | 13 files |
+| Phase 03-engine P15 | 8 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -199,6 +200,8 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-10: Hash-based forecast fallback SHA-256(rideId+slot)[0]%60+baseline/2 when no real buckets exist
 - [Phase 03-engine]: 03-10: Multi-day dedup via sorting (visited rides after unvisited) not exclusion — allows re-rides if needed
 - [Phase 03-engine]: 03-10: construct.ts buildIso rounds fractional minutes with Math.round — prevents invalid ISO strings from walk-time division
+- [Phase 03-engine]: 03-15: INCR/DECR atomic Redis pattern for rate limiting — avoids TOCTOU race vs GET-then-INCR
+- [Phase 03-engine]: 03-15: Guard defaults to free-tier (isUnlocked=false) when user tier unknown — safer to apply tighter limit
 
 ### Pending Todos
 
@@ -214,6 +217,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T14:50:00.000Z
-Stopped at: Completed 03-10-PLAN.md
+Last session: 2026-04-16T16:55:14.043Z
+Stopped at: Completed 03-15-PLAN.md
 Resume file: None
