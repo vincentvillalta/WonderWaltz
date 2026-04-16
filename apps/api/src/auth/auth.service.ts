@@ -115,4 +115,26 @@ export class AuthService {
       expires_at: expiresAt,
     };
   }
+
+  /**
+   * Sync an upgraded identity to public.users.
+   * Called after the client completes Supabase linkIdentity (OAuth merge).
+   * Idempotent — if user is already non-anonymous, returns success without error.
+   */
+  async upgradeUser(
+    userId: string,
+    email: string | undefined,
+  ): Promise<{ upgraded: boolean; user_id: string }> {
+    await this.db.execute(
+      sql`UPDATE users
+          SET is_anonymous = false,
+              email = ${email ?? null},
+              updated_at = NOW()
+          WHERE id = ${userId}`,
+    );
+
+    this.logger.log(`Upgraded user ${userId} (email: ${email ?? 'none'})`);
+
+    return { upgraded: true, user_id: userId };
+  }
 }

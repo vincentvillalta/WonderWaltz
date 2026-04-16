@@ -21,6 +21,20 @@ export class AnonymousAuthResponseDto {
   expires_at!: string;
 }
 
+export class UpgradeResponseDto {
+  @ApiProperty({
+    description: 'Whether the upgrade was applied (always true on success)',
+    example: true,
+  })
+  upgraded!: boolean;
+
+  @ApiProperty({
+    description: 'User UUID of the upgraded account',
+    example: 'user-uuid-here',
+  })
+  user_id!: string;
+}
+
 export class UserMeDto {
   @ApiProperty({
     description: 'User UUID',
