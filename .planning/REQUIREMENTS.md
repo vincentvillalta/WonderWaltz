@@ -14,7 +14,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **LEGL-03**: No Disney trademarked imagery anywhere in the product (no logos, Mickey silhouettes, castle imagery, character art, ride photography) unless CC-licensed or user-provided
 - [ ] **LEGL-04**: App Store and Play Store metadata strategy excludes trademarked terms ("Disney", "Magic Kingdom", "Epcot", "Hollywood Studios", "Animal Kingdom", "WDW") from the 100-character keyword field (Apple Guideline 2.3.7)
 - [ ] **LEGL-05**: IP lawyer engaged by Phase 8 and reviews trademark posture, disclaimers, privacy policy, ToS, and store listings before v1 launch (hard gate)
-- [ ] **LEGL-06**: User can delete their account; deletion cascade-removes all trips, guests, plans, entitlements, push tokens, and analytics data (GDPR + CCPA + COPPA deletion right)
+- [x] **LEGL-06**: User can delete their account; deletion cascade-removes all trips, guests, plans, entitlements, push tokens, and analytics data (GDPR + CCPA + COPPA deletion right)
 - [x] **LEGL-07**: Guest age data is stored as age brackets (`0-2`, `3-6`, `7-9`, `10-13`, `14-17`, `18+`), not birthdates, to minimize COPPA scope; never included in PostHog event properties
 
 ### Foundations & Infrastructure
@@ -117,7 +117,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **AUTH-04**: Upgrade to a real account is required before IAP purchase (enforced client-side at paywall, server-side on purchase validation)
 - [x] **AUTH-05**: User can log out and back in on the same device preserving their trips
 - [x] **AUTH-06**: User can sign in on a new device and restore their trips (read-only until device-level entitlement re-validated via RevenueCat)
-- [ ] **AUTH-07**: User can delete their account from Settings; confirmation required; deletion is hard and cascade-removes all data within 30 days (LEGL-06)
+- [x] **AUTH-07**: User can delete their account from Settings; confirmation required; deletion is hard and cascade-removes all data within 30 days (LEGL-06)
 
 ### Monetization & Entitlements
 
@@ -125,7 +125,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **IAP-02**: iOS uses StoreKit 2 via RevenueCat Purchases SDK; Android uses Google Play Billing via RevenueCat Purchases SDK
 - [x] **IAP-03**: Purchase flow: user taps "Unlock Trip" → native paywall → transaction committed → RevenueCat receipt validated → webhook to backend → `entitlement` row created → `trips.entitlement_state = unlocked` → UI refreshes
 - [x] **IAP-04**: RevenueCat webhook handles `INITIAL_PURCHASE`, `REFUND`, `CANCELLATION`, `EXPIRATION`, `NON_RENEWING_PURCHASE`; refund revokes entitlement on the specific trip
-- [ ] **IAP-05**: User can restore purchases from Settings; RevenueCat SDK `restorePurchases()` is the canonical path; backend entitlements are the source of truth
+- [x] **IAP-05**: User can restore purchases from Settings; RevenueCat SDK `restorePurchases()` is the canonical path; backend entitlements are the source of truth
 - [ ] **IAP-06**: App Store review notes explicitly explain the consumable model: "each $9.99 unlock applies to one trip; once applied, the credit is consumed and cannot be reused" (Phase 10 submission asset)
 - [x] **IAP-07**: Affiliate links (Amazon Associates) in packing list are rewritten server-side with the affiliate tag at read time; no client knowledge of the tag
 
@@ -248,7 +248,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | LEGL-03 | Phase 1 | Complete |
 | LEGL-04 | Phase 8 | Pending |
 | LEGL-05 | Phase 8 | Pending |
-| LEGL-06 | Phase 4 | Pending |
+| LEGL-06 | Phase 4 | Complete |
 | LEGL-07 | Phase 1 | Complete |
 | FND-01 | Phase 1 | Complete |
 | FND-02 | Phase 1 | Complete |
@@ -324,12 +324,12 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | AUTH-04 | Phase 4 | Complete |
 | AUTH-05 | Phase 4 | Complete |
 | AUTH-06 | Phase 4 | Complete |
-| AUTH-07 | Phase 4 | Pending |
+| AUTH-07 | Phase 4 | Complete |
 | IAP-01 | Phase 4 | Complete |
 | IAP-02 | Phase 4 | Complete |
 | IAP-03 | Phase 4 | Complete |
 | IAP-04 | Phase 4 | Complete |
-| IAP-05 | Phase 4 | Pending |
+| IAP-05 | Phase 4 | Complete |
 | IAP-06 | Phase 4 | Pending |
 | IAP-07 | Phase 4 | Complete |
 | IOS-01 | Phase 5 | Pending |
