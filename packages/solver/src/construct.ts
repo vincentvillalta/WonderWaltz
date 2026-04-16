@@ -66,10 +66,11 @@ function parseIso(iso: string): { datePrefix: string; minutes: number } {
   return { datePrefix, minutes: parseInt(hh, 10) * 60 + parseInt(mm, 10) };
 }
 
-/** Build ISO string from date prefix + minutes since midnight. */
+/** Build ISO string from date prefix + minutes since midnight (rounds to nearest integer). */
 function buildIso(datePrefix: string, minutes: number): string {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
+  const roundedMin = Math.round(minutes);
+  const h = Math.floor(roundedMin / 60);
+  const m = roundedMin % 60;
   return `${datePrefix}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
 }
 
