@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-06-PLAN.md
+stopped_at: Completed 03-12-PLAN.md
 last_updated: "2026-04-16T08:00:31.863Z"
 last_activity: "2026-04-15 — Completed Plan 03-11: ForecastModule (FC-01, FC-03, FC-04, FC-05) — bucketed median + baseline fallback + hybrid crowd calendar + Beta Forecast framing"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 31
-  percent: 69
+  completed_plans: 32
+  percent: 71
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 11 of 18 in current phase
+Plan: 12 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-15 — Completed Plan 03-11: ForecastModule (FC-01, FC-03, FC-04, FC-05) — bucketed median + baseline fallback + hybrid crowd calendar + Beta Forecast framing
+Last activity: 2026-04-16 — Completed Plan 03-12: Narrative Generation Pipeline (LLM-02, LLM-04) — byte-stable cached prefix, Zod-validated output, retry-once + fallback, Haiku rethink intro
 
-Progress: [███████░░░] 69%
+Progress: [████████░░] 71%
 
 ## Performance Metrics
 
@@ -79,6 +79,7 @@ Progress: [███████░░░] 69%
 | Phase 03-engine P11 | 13 min | 3 tasks | 14 files |
 | Phase 03-engine P05 | 8 min | 2 tasks | 11 files |
 | Phase 03-engine P06 | 5 min | 2 tasks | 7 files |
+| Phase 03-engine P12 | 34 min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -168,6 +169,9 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-05: ESM solver loaded into CJS api via createRequire + pathToFileURL dynamic import; mirror types in loader to avoid TS1541
 - [Phase 03-engine]: 03-06: Tag-based mobility/sensory filtering instead of explicit ecvAccessible/intensityTier fields — CatalogAttraction tags drive compatibility
 - [Phase 03-engine]: 03-06: accommodates field added as optional to CatalogDining — dining YAML has no dietary data yet; filter handles missing field conservatively
+- [Phase 03-engine]: 03-12: Cached prefix uses XML-tagged sections (<CATALOG>, <BRAND_VOICE>, <TONE_RULES>) for clear LLM section boundaries; sorted YAML loads ensure byte-stability
+- [Phase 03-engine]: 03-12: Retry corrective prompt appended as systemSuffix (not replacing system) — preserves cache_control on the original cached block for cache hit on retry
+- [Phase 03-engine]: 03-12: GenerateResult.narrative typed as NarrativeResponse | undefined — exactOptionalPropertyTypes tsconfig requires explicit undefined
 
 ### Pending Todos
 
@@ -183,6 +187,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T08:00:31.860Z
-Stopped at: Completed 03-06-PLAN.md
+Last session: 2026-04-16T08:39:00Z
+Stopped at: Completed 03-12-PLAN.md
 Resume file: None
