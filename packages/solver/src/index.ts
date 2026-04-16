@@ -14,6 +14,7 @@ export * from './localSearch.js';
 export * from './resources.js';
 export * from './lightningLane.js';
 export * from './parkHours.js';
+export * from './rules.js';
 
 import type { SolverInput, DayPlan } from './types.js';
 
