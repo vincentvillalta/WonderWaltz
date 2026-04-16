@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsBoolean } from 'class-validator';
 
 export class AnonymousAuthResponseDto {
   @ApiProperty({
@@ -61,4 +62,29 @@ export class UserMeDto {
     example: true,
   })
   is_anonymous!: boolean;
+}
+
+export class DeleteAccountDto {
+  @ApiProperty({
+    description:
+      'Must be true to confirm account deletion (double-tap confirm). ' +
+      'Prevents accidental deletions.',
+    example: true,
+  })
+  @IsBoolean()
+  confirmed!: boolean;
+}
+
+export class DeleteAccountResponseDto {
+  @ApiProperty({
+    description: 'Whether the account was marked for deletion',
+    example: true,
+  })
+  deleted!: boolean;
+
+  @ApiProperty({
+    description: 'ISO 8601 timestamp when the account data will be permanently purged (30 days)',
+    example: '2026-05-16T10:00:00.000Z',
+  })
+  purge_scheduled_at!: string;
 }

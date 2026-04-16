@@ -1,15 +1,28 @@
-import { Controller, Get, NotFoundException, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  NotFoundException,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiEnvelopedResponse } from '../common/decorators/api-enveloped-response.decorator.js';
-import { UserMeDto } from '../shared/dto/auth.dto.js';
+import { DeleteAccountDto, DeleteAccountResponseDto, UserMeDto } from '../shared/dto/auth.dto.js';
 import { SupabaseAuthGuard, type RequestUser } from './auth.guard.js';
 import { UsersService } from './users.service.js';
+import { AccountDeletionService } from '../account-deletion/account-deletion.service.js';
 
 @ApiTags('users')
 @Controller('users')
 @UseGuards(SupabaseAuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly accountDeletionService: AccountDeletionService,
+  ) {}
 
   /**
    * GET /v1/users/me
@@ -44,5 +57,31 @@ export class UsersController {
       dto.email = profile.email;
     }
     return dto;
+  }
+
+  /**
+   * DELETE /v1/users/me
+   * Soft-delete the current user, revoke entitlements, schedule 30-day purge.
+   * Requires confirmed:true in request body (double-tap confirm).
+   */
+  @Delete('me')
+  @HttpCode(200)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Delete current user account',
+    description:
+      'Soft-deletes the authenticated user account, revokes all active entitlements, ' +
+      'and schedules a 30-day data purge. Requires confirmed:true in the request body ' +
+      '(double-tap confirmation). After deletion, the user will be blocked from all API access.',
+  })
+  @ApiEnvelopedResponse(DeleteAccountResponseDto)
+  @ApiResponse({ status: 200, description: 'Account marked for deletion' })
+  @ApiResponse({ status: 400, description: 'Missing confirmed:true in request body' })
+  @ApiResponse({ status: 401, description: 'Missing or invalid token' })
+  async deleteMe(
+    @Req() req: { user: RequestUser },
+    @Body() body: DeleteAccountDto,
+  ): Promise<DeleteAccountResponseDto> {
+    return this.accountDeletionService.requestDeletion(req.user.id, body.confirmed);
   }
 }
