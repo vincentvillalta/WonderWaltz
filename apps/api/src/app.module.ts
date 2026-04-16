@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { ResponseEnvelopeInterceptor } from './common/interceptors/response-envelope.interceptor.js';
 import { ForecastModule } from './forecast/forecast.module.js';
 import { NarrativeModule } from './narrative/narrative.module.js';
+import { PackingListModule } from './packing-list/packing-list.module.js';
 import { ParksModule } from './parks/parks.module.js';
 import { PlanGenerationModule } from './plan-generation/plan-generation.module.js';
 import { PlansModule } from './plans/plans.module.js';
@@ -26,6 +27,7 @@ import { WeatherModule } from './weather/weather.module.js';
     NarrativeModule,
     ForecastModule,
     PlanGenerationModule,
+    PackingListModule,
     PlansModule,
   ],
   providers: [
