@@ -17,6 +17,7 @@ export const plans = pgTable(
     version: integer('version').notNull().default(1),
     solverInputHash: text('solver_input_hash'), // for result caching
     status: text('status').notNull().default('draft'),
+    warnings: text('warnings').default('[]'), // JSON array of solver warning strings
     generatedAt: timestamp('generated_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
@@ -33,7 +34,8 @@ export const planDays = pgTable('plan_days', {
   dayIndex: integer('day_index').notNull(),
   parkId: uuid('park_id').notNull(),
   date: text('date').notNull(), // ISO date string
-  narrative: text('narrative'), // LLM-generated day intro
+  narrativeIntro: text('narrative_intro'), // LLM-generated day intro (renamed from narrative)
+  forecastConfidence: text('forecast_confidence'), // 'high' | 'medium' | 'low'
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -42,10 +44,14 @@ export const planItems = pgTable('plan_items', {
   planDayId: uuid('plan_day_id').notNull(),
   itemType: text('item_type').notNull(), // 'attraction' | 'meal' | 'show' | 'll_reminder' | 'rest' | 'walk'
   refId: uuid('ref_id'), // polymorphic FK into catalog
+  name: text('name').notNull().default(''), // display name from solver
   startTime: text('start_time').notNull(), // 'HH:MM'
   endTime: text('end_time').notNull(), // 'HH:MM'
+  waitMinutes: integer('wait_minutes'), // predicted wait from forecast
   sortIndex: integer('sort_index').notNull(),
-  narrative: text('narrative'), // LLM-generated item tip
+  lightningLaneType: text('lightning_lane_type'), // 'multi_pass' | 'single_pass' | 'none'
+  notes: text('notes'), // solver notes e.g. "Use LL here"
+  narrativeTip: text('narrative_tip'), // LLM-generated item tip (renamed from narrative)
   metadata: jsonb('metadata'), // flexible per-type data
   isCompleted: boolean('is_completed').notNull().default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
