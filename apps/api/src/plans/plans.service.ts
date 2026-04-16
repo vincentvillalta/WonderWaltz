@@ -1,6 +1,7 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
+import { AffiliateService } from '../packing-list/affiliate.service.js';
 import type {
   FullDayPlanDto,
   LockedDayPlanDto,
@@ -60,6 +61,24 @@ interface PlanItemRow extends Record<string, unknown> {
   metadata: string | null;
 }
 
+interface PackingListItemRow extends Record<string, unknown> {
+  id: string;
+  plan_id: string;
+  category: string;
+  name: string;
+  is_affiliate: boolean;
+  recommended_amazon_url: string | null;
+  sort_index: string;
+}
+
+export interface PackingListItemDto {
+  id: string;
+  name: string;
+  category: string;
+  isAffiliate: boolean;
+  recommendedUrl?: string;
+}
+
 /**
  * PlansService -- retrieves plan data and projects it for the user's
  * entitlement state.
@@ -74,7 +93,10 @@ interface PlanItemRow extends Record<string, unknown> {
 export class PlansService {
   private readonly logger = new Logger(PlansService.name);
 
-  constructor(@Inject(DB_TOKEN) private readonly db: DbExecutable) {}
+  constructor(
+    @Inject(DB_TOKEN) private readonly db: DbExecutable,
+    @Optional() private readonly affiliateService?: AffiliateService,
+  ) {}
 
   /**
    * Load and project a plan for display.
@@ -153,6 +175,9 @@ export class PlansService {
       warnings = [];
     }
 
+    // 8. Load packing list items + rewrite affiliate URLs
+    const packingList = await this.loadPackingList(planId);
+
     return {
       id: plan.id,
       trip_id: plan.trip_id,
@@ -161,6 +186,7 @@ export class PlansService {
       days,
       warnings,
       meta,
+      packing_list: packingList.length > 0 ? packingList : undefined,
       created_at: plan.created_at,
     };
   }
@@ -213,6 +239,37 @@ export class PlansService {
     }
 
     return mapped;
+  }
+
+  private async loadPackingList(planId: string): Promise<PackingListItemDto[]> {
+    const rows = await this.queryRows<PackingListItemRow>(
+      sql`SELECT pli.id, pli.plan_id, pli.category, pli.name, pli.is_affiliate, ai.base_url as recommended_amazon_url, pli.sort_index
+          FROM packing_list_items pli
+          LEFT JOIN affiliate_items ai ON ai.id = pli.affiliate_item_id
+          WHERE pli.plan_id = ${planId}
+          ORDER BY pli.sort_index`,
+    );
+
+    return rows.map((row) => {
+      const url = row.recommended_amazon_url;
+      const rewrittenUrl =
+        url && this.affiliateService
+          ? (this.affiliateService.rewriteUrl(url) ?? undefined)
+          : (url ?? undefined);
+
+      const dto: PackingListItemDto = {
+        id: row.id,
+        name: row.name,
+        category: row.category,
+        isAffiliate: row.is_affiliate,
+      };
+
+      if (rewrittenUrl) {
+        dto.recommendedUrl = rewrittenUrl;
+      }
+
+      return dto;
+    });
   }
 
   private async queryRows<T>(query: ReturnType<typeof sql>): Promise<T[]> {
