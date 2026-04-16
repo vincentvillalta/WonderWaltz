@@ -119,7 +119,14 @@ Plans:
   3. A RevenueCat `INITIAL_PURCHASE` webhook creates an `entitlement` row and flips `trips.entitlement_state = unlocked` within 5 seconds; a `REFUND` webhook revokes the specific trip's entitlement
   4. `DELETE /users/me` with confirmation removes all rows across `trips`, `guests`, `plans`, `plan_days`, `plan_items`, `entitlements`, `iap_events`, `push_tokens`, `llm_costs`, `affiliate_items` within 30 days; the endpoint requires authentication
   5. Affiliate packing-list items are rewritten server-side with the Amazon Associates tag; no client response contains the raw affiliate tag string
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Supabase Admin provider + JWT Auth Guard + anonymous auth endpoint (AUTH-01, AUTH-05)
+- [ ] 04-02-PLAN.md — Account upgrade flow + user profile endpoints (AUTH-03, AUTH-04, AUTH-06)
+- [ ] 04-03-PLAN.md — RevenueCat webhook handler + entitlement service (IAP-01, IAP-02, IAP-03, IAP-04, IAP-07)
+- [ ] 04-04-PLAN.md — Purchase restore + account deletion + 30-day purge cascade (IAP-05, AUTH-07, LEGL-06)
+- [ ] 04-05-PLAN.md — Anonymous trip limit guard + OpenAPI snapshot + IAP-06 review notes (AUTH-02, IAP-06)
 
 ### Phase 5: iOS Core
 **Goal**: A working iOS app can be installed on a real iPhone, takes a user through onboarding and the trip wizard, displays a plan view with real backend data, caches the full trip package for offline use, and meets WCAG 2.2 AA accessibility criteria — all before the paywall is connected.
@@ -203,7 +210,7 @@ Plans:
 | 1. Foundation | 10/11 | In Progress|  |
 | 2. Data Pipeline | 11/12 | In Progress|  |
 | 3. Engine | 20/20 | Complete   | 2026-04-16 |
-| 4. Entitlements & Accounts | 0/TBD | Not started | - |
+| 4. Entitlements & Accounts | 0/5 | Not started | - |
 | 5. iOS Core | 0/TBD | Not started | - |
 | 6. iOS Paywall & Notifications | 0/TBD | Not started | - |
 | 7. Android | 0/TBD | Not started | - |
