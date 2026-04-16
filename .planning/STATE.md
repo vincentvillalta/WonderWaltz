@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Phase 4 In Progress
-stopped_at: Completed 04-04-PLAN.md
-last_updated: "2026-04-16T21:57:00Z"
-last_activity: "2026-04-16 -- Completed Plan 04-04: Purchase Restore + Account Deletion"
+status: Phase 4 Complete
+stopped_at: Completed 04-05-PLAN.md
+last_updated: "2026-04-17T00:05:00Z"
+last_activity: "2026-04-17 -- Completed Plan 04-05: Anonymous Trip Limit + Auth Guards + OpenAPI Snapshot"
 progress:
   total_phases: 11
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 49
-  completed_plans: 48
-  percent: 97
+  completed_plans: 49
+  percent: 100
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 4 of 10 (Entitlements & Accounts)
-Plan: 4 of 5 in current phase (complete)
-Status: Phase 4 In Progress
-Last activity: 2026-04-16 -- Completed Plan 04-04: Purchase Restore + Account Deletion
+Plan: 5 of 5 in current phase (complete)
+Status: Phase 4 Complete
+Last activity: 2026-04-17 -- Completed Plan 04-05: Anonymous Trip Limit + Auth Guards + OpenAPI Snapshot
 
-Progress: [█████████▋] 97%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -96,6 +96,7 @@ Progress: [█████████▋] 97%
 | Phase 04-entitlements-accounts P02 | 3 min | 2 tasks | 9 files |
 | Phase 04-entitlements-accounts P03 | 5 min | 2 tasks | 11 files |
 | Phase 04-entitlements-accounts P04 | 6 min | 2 tasks | 14 files |
+| Phase 04-entitlements-accounts P05 | 5 min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -237,6 +238,8 @@ Recent decisions affecting current work:
 - [Phase 04-entitlements-accounts]: PurgeProcessor uses Injectable() not @Processor() -- direct test instantiation without BullMQ dependency
 - [Phase 04-entitlements-accounts]: AccountDeletionModule imported by AuthModule (not AppModule) -- keeps DI chain clean via UsersController
 - [Phase 04-entitlements-accounts]: Purge cascade uses 14 sequential DELETEs in FK-safe order with per-statement try/catch for best-effort execution
+- [Phase 04-entitlements-accounts]: AnonymousTripLimitGuard short-circuits for registered users (no DB call); controller-level SupabaseAuthGuard with method-level compound guard override on POST /trips
+- [Phase 04-entitlements-accounts]: AuthModule imported by TripsModule and PlansModule for guard DI resolution (no circular deps)
 
 ### Pending Todos
 
@@ -252,6 +255,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T21:57:00Z
-Stopped at: Completed 04-04-PLAN.md
-Resume file: .planning/phases/04-entitlements-accounts/04-05-PLAN.md
+Last session: 2026-04-17T00:05:00Z
+Stopped at: Completed 04-05-PLAN.md (Phase 4 complete)
+Resume file: Next phase

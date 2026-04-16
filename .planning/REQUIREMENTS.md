@@ -112,7 +112,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 ### Authentication & Accounts
 
 - [x] **AUTH-01**: User can create an anonymous device-linked account via Supabase Auth without any input (silent onboarding)
-- [ ] **AUTH-02**: User can create a trip, configure guests and preferences, and view the free Day 1 teaser without signing up
+- [x] **AUTH-02**: User can create a trip, configure guests and preferences, and view the free Day 1 teaser without signing up
 - [x] **AUTH-03**: User can upgrade anonymous account to Sign in with Apple or Sign in with Google; upgrade merges the anon account preserving all trips and state
 - [x] **AUTH-04**: Upgrade to a real account is required before IAP purchase (enforced client-side at paywall, server-side on purchase validation)
 - [x] **AUTH-05**: User can log out and back in on the same device preserving their trips
@@ -126,7 +126,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **IAP-03**: Purchase flow: user taps "Unlock Trip" → native paywall → transaction committed → RevenueCat receipt validated → webhook to backend → `entitlement` row created → `trips.entitlement_state = unlocked` → UI refreshes
 - [x] **IAP-04**: RevenueCat webhook handles `INITIAL_PURCHASE`, `REFUND`, `CANCELLATION`, `EXPIRATION`, `NON_RENEWING_PURCHASE`; refund revokes entitlement on the specific trip
 - [x] **IAP-05**: User can restore purchases from Settings; RevenueCat SDK `restorePurchases()` is the canonical path; backend entitlements are the source of truth
-- [ ] **IAP-06**: App Store review notes explicitly explain the consumable model: "each $9.99 unlock applies to one trip; once applied, the credit is consumed and cannot be reused" (Phase 10 submission asset)
+- [x] **IAP-06**: App Store review notes explicitly explain the consumable model: "each $9.99 unlock applies to one trip; once applied, the credit is consumed and cannot be reused" (Phase 10 submission asset)
 - [x] **IAP-07**: Affiliate links (Amazon Associates) in packing list are rewritten server-side with the affiliate tag at read time; no client knowledge of the tag
 
 ### iOS App (Phase 5 + Phase 6 + Phase 9)
@@ -319,7 +319,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | PLAN-05 | Phase 3 | Complete |
 | PLAN-06 | Phase 3 | Complete |
 | AUTH-01 | Phase 4 | Complete |
-| AUTH-02 | Phase 4 | Pending |
+| AUTH-02 | Phase 4 | Complete |
 | AUTH-03 | Phase 4 | Complete |
 | AUTH-04 | Phase 4 | Complete |
 | AUTH-05 | Phase 4 | Complete |
@@ -330,7 +330,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | IAP-03 | Phase 4 | Complete |
 | IAP-04 | Phase 4 | Complete |
 | IAP-05 | Phase 4 | Complete |
-| IAP-06 | Phase 4 | Pending |
+| IAP-06 | Phase 4 | Complete |
 | IAP-07 | Phase 4 | Complete |
 | IOS-01 | Phase 5 | Pending |
 | IOS-02 | Phase 5 | Pending |
