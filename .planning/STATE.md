@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 
 ## Current Position
 
-Phase: 3 of 10 (Engine) -- COMPLETE
-Plan: 18 of 18 in current phase (ALL COMPLETE)
-Status: Phase 3 Complete
-Last activity: 2026-04-16 -- Completed Plan 03-18: Packing list generator + affiliate tag injection (LAST PLAN)
+Phase: 3 of 10 (Engine) -- GAP CLOSURE
+Plan: 19 of 19 in current phase (gap closure plan complete)
+Status: Phase 3 Gap Closure
+Last activity: 2026-04-16 -- Completed Plan 03-19: DB schema alignment (8 missing columns)
 
 Progress: [██████████] 100%
 
@@ -90,6 +90,7 @@ Progress: [██████████] 100%
 | Phase 03-engine P16 | 58 min | 3 tasks | 9 files |
 | Phase 03-engine P17 | 31 min | 3 tasks | 10 files |
 | Phase 03-engine P18 | 6 min | 2 tasks | 8 files |
+| Phase 03-engine P19 | 2 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -216,6 +217,9 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-18: Water rides hardcoded as Set (not tagged in attractions.yaml) — YAML has no gets_wet field; Set is simpler for handful of known rides
 - [Phase 03-engine]: 03-18: AffiliateService uses @Optional() injection in PlansService — backwards-compatible with existing tests
 - [Phase 03-engine]: 03-18: Amazon Associates tag sourced from AMAZON_ASSOCIATES_TAG env var, default wonderwaltz-20 — configurable without code change
+- [Phase 03-engine]: 03-19: RENAME COLUMN (narrative -> narrative_intro/narrative_tip) instead of adding alias columns — Postgres lacks aliases; safe since only persist-plan + plans.service touch these tables
+- [Phase 03-engine]: 03-19: warnings stored as TEXT with JSON.stringify (not JSONB) — matches plans.service.ts COALESCE pattern
+- [Phase 03-engine]: 03-19: metadata column kept as empty JSONB '{}' for future extensibility
 
 ### Pending Todos
 
@@ -231,6 +235,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T18:42:00Z
-Stopped at: Completed 03-18-PLAN.md (Phase 3 COMPLETE)
+Last session: 2026-04-16T19:35:00Z
+Stopped at: Completed 03-19-PLAN.md (Gap closure: DB schema alignment)
 Resume file: None
