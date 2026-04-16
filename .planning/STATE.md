@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Phase 4 In Progress
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-04-16T21:36:22Z"
-last_activity: "2026-04-16 -- Completed Plan 04-01: Supabase Auth Foundation"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-04-16T21:42:01Z"
+last_activity: "2026-04-16 -- Completed Plan 04-02: Account Upgrade Flow and User Profile"
 progress:
   total_phases: 11
   completed_phases: 4
   total_plans: 49
-  completed_plans: 45
-  percent: 92
+  completed_plans: 46
+  percent: 94
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 4 of 10 (Entitlements & Accounts)
-Plan: 1 of 5 in current phase (complete)
+Plan: 2 of 5 in current phase (complete)
 Status: Phase 4 In Progress
-Last activity: 2026-04-16 -- Completed Plan 04-01: Supabase Auth Foundation
+Last activity: 2026-04-16 -- Completed Plan 04-02: Account Upgrade Flow and User Profile
 
-Progress: [█████████▏] 92%
+Progress: [█████████▍] 94%
 
 ## Performance Metrics
 
@@ -93,6 +93,7 @@ Progress: [█████████▏] 92%
 | Phase 03-engine P19 | 2 min | 2 tasks | 3 files |
 | Phase 03-engine P20 | 5 | 2 tasks | 5 files |
 | Phase 04-entitlements-accounts P01 | 5 min | 2 tasks | 7 files |
+| Phase 04-entitlements-accounts P02 | 3 min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -226,6 +227,8 @@ Recent decisions affecting current work:
 - [Phase 04-entitlements-accounts]: jose used for JWT signing via dynamic import — ESM-only library requires import() in CJS NestJS context
 - [Phase 04-entitlements-accounts]: Custom JWT signed with SUPABASE_JWT_SECRET rather than Supabase admin session API — admin.createUser does not return a session
 - [Phase 04-entitlements-accounts]: SUPABASE_ADMIN_TOKEN factory returns stub when env vars missing — unit tests run without Supabase credentials
+- [Phase 04-entitlements-accounts]: exactOptionalPropertyTypes-safe DTO construction — conditional assignment instead of ?? undefined for optional fields
+- [Phase 04-entitlements-accounts]: AnonymousPurchaseGuard is synchronous CanActivate (no async) — reads request.user set by prior SupabaseAuthGuard
 
 ### Pending Todos
 
@@ -241,6 +244,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T21:36:22Z
-Stopped at: Completed 04-01-PLAN.md
-Resume file: .planning/phases/04-entitlements-accounts/04-02-PLAN.md
+Last session: 2026-04-16T21:42:01Z
+Stopped at: Completed 04-02-PLAN.md
+Resume file: .planning/phases/04-entitlements-accounts/04-03-PLAN.md
