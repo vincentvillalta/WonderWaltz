@@ -32,6 +32,7 @@
     "date-holidays": "^3.27.0",
     "drizzle-orm": "0.45.2",
     "ioredis": "^5.0.0",
+    "jose": "^6.2.2",
     "nestjs-zod": "^3.0.0",
     "postgres": "^3.4.0",
     "posthog-node": "5.29.1",

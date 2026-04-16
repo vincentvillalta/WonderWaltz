@@ -1,8 +1,12 @@
 import { Module, Global } from '@nestjs/common';
 import Redis, { type RedisOptions } from 'ioredis';
 import { resolve } from 'path';
+import { createClient } from '@supabase/supabase-js';
 import { REDIS_CLIENT_TOKEN } from './alerting/slack-alerter.service.js';
 import { DB_TOKEN } from './ingestion/queue-times.service.js';
+
+/** Injection token for the Supabase admin client (service_role key) */
+export const SUPABASE_ADMIN_TOKEN = 'SUPABASE_ADMIN_TOKEN';
 
 /**
  * Shared infrastructure module — marked @Global() so Redis and DB providers
@@ -19,6 +23,25 @@ import { DB_TOKEN } from './ingestion/queue-times.service.js';
 @Global()
 @Module({
   providers: [
+    {
+      provide: SUPABASE_ADMIN_TOKEN,
+      useFactory: () => {
+        const url = process.env['SUPABASE_URL'];
+        const key = process.env['SUPABASE_SERVICE_ROLE_KEY'];
+        if (!url || !key) {
+          // Return a stub in environments without Supabase (e.g. unit tests)
+          return {
+            auth: {
+              getUser: () => Promise.resolve({ data: { user: null }, error: { message: 'stub' } }),
+              admin: {},
+            },
+          };
+        }
+        return createClient(url, key, {
+          auth: { autoRefreshToken: false, persistSession: false },
+        });
+      },
+    },
     {
       provide: REDIS_CLIENT_TOKEN,
       useFactory: () => {
@@ -64,6 +87,6 @@ import { DB_TOKEN } from './ingestion/queue-times.service.js';
       },
     },
   ],
-  exports: [REDIS_CLIENT_TOKEN, DB_TOKEN],
+  exports: [SUPABASE_ADMIN_TOKEN, REDIS_CLIENT_TOKEN, DB_TOKEN],
 })
 export class SharedInfraModule {}
