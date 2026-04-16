@@ -134,7 +134,7 @@ export class TripsController {
       { attempts: 5, backoff: { type: 'fixed', delay: 30_000 } },
     );
 
-    return { job_id: job.id };
+    return { job_id: job.id ?? '' };
   }
 
   /**
@@ -236,7 +236,7 @@ export class TripsController {
       { attempts: 5, backoff: { type: 'fixed', delay: 30_000 } },
     );
 
-    return { job_id: job.id };
+    return { job_id: job.id ?? '' };
   }
 
   // ─── Private helpers ───────────────────────────────────────────

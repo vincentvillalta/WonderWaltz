@@ -94,7 +94,7 @@ export class PlanItemDto {
     nullable: true,
     type: String,
   })
-  lightning_lane_type?: LightningLaneTypeEnum | null;
+  lightning_lane_type?: LightningLaneTypeEnum | null | undefined;
 }
 
 /**
@@ -294,7 +294,20 @@ export class PlanDto {
     type: () => PlanMetaDto,
   })
   @Type(() => PlanMetaDto)
-  meta?: PlanMetaDto;
+  meta?: PlanMetaDto | undefined;
+
+  @ApiPropertyOptional({
+    description: 'Packing list items generated from solver output + weather + guest ages',
+  })
+  packing_list?:
+    | Array<{
+        id: string;
+        name: string;
+        category: string;
+        isAffiliate: boolean;
+        recommendedUrl?: string | undefined;
+      }>
+    | undefined;
 
   @ApiProperty({
     description: 'ISO 8601 creation timestamp',
