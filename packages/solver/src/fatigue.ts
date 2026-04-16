@@ -31,8 +31,8 @@ function parseIso(iso: string): { datePrefix: string; minutes: number } {
   const m = iso.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/);
   if (!m) throw new Error(`Invalid ISO string: ${iso}`);
   return {
-    datePrefix: m[1],
-    minutes: parseInt(m[2], 10) * 60 + parseInt(m[3], 10),
+    datePrefix: m[1]!,
+    minutes: parseInt(m[2]!, 10) * 60 + parseInt(m[3]!, 10),
   };
 }
 
@@ -149,11 +149,11 @@ export function insertRestBlocks(
     return { item, startMin: s.minutes, endMin: e.minutes };
   });
 
-  const datePrefix = parseIso(items[0].startTime).datePrefix;
+  const datePrefix = parseIso(items[0]!.startTime).datePrefix;
 
   // Determine the day's time span
-  const dayStartMin = parsed[0].startMin;
-  const dayEndMin = parsed[parsed.length - 1].endMin;
+  const dayStartMin = parsed[0]!.startMin;
+  const dayEndMin = parsed[parsed.length - 1]!.endMin;
 
   // Collect rest blocks to insert
   const restBlocks: Array<{
@@ -223,8 +223,8 @@ export function insertRestBlocks(
         .sort((a, b) => a.start - b.start);
 
       // Try before first must-do
-      if (occupiedRanges[0].start > rest.startMin) {
-        const gapEnd = occupiedRanges[0].start;
+      if (occupiedRanges[0]!.start > rest.startMin) {
+        const gapEnd = occupiedRanges[0]!.start;
         if (gapEnd - rest.startMin >= 30) {
           finalRestBlocks.push({
             startMin: rest.startMin,
@@ -235,7 +235,7 @@ export function insertRestBlocks(
       }
 
       // Try after last must-do
-      const lastOccupied = occupiedRanges[occupiedRanges.length - 1];
+      const lastOccupied = occupiedRanges[occupiedRanges.length - 1]!;
       if (lastOccupied.end < rest.endMin) {
         const gapStart = lastOccupied.end;
         if (rest.endMin - gapStart >= 30) {

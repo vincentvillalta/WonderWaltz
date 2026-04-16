@@ -63,15 +63,15 @@ export function adjacentPairSwap(
 
   for (let i = 0; i < current.length - 1; i++) {
     // Skip if either item in the pair is pinned.
-    if (isPinned(current[i]) || isPinned(current[i + 1])) {
+    if (isPinned(current[i]!) || isPinned(current[i + 1]!)) {
       continue;
     }
 
     const currentScore = totalScoreFn(current);
 
     // Try the swap.
-    const temp = current[i];
-    current[i] = current[i + 1];
+    const temp = current[i]!;
+    current[i] = current[i + 1]!;
     current[i + 1] = temp;
 
     const swappedScore = totalScoreFn(current);
@@ -80,7 +80,7 @@ export function adjacentPairSwap(
       // Keep the swap — score improved.
     } else {
       // Revert the swap — no improvement.
-      current[i + 1] = current[i];
+      current[i + 1] = current[i]!;
       current[i] = temp;
     }
   }

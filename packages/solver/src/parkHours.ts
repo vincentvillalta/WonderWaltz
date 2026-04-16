@@ -62,7 +62,7 @@ const EEH_ELIGIBLE: ReadonlySet<LodgingType> = new Set(['deluxe', 'deluxe_villa'
 function parseIso(iso: string): { datePrefix: string; minutes: number } {
   const match = iso.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2}):(\d{2})/);
   if (!match) throw new Error(`Invalid ISO string: ${iso}`);
-  const [, datePrefix, hh, mm] = match;
+  const [, datePrefix, hh, mm] = match as [string, string, string, string, string];
   return { datePrefix, minutes: parseInt(hh, 10) * 60 + parseInt(mm, 10) };
 }
 
@@ -82,7 +82,7 @@ function buildIso(datePrefix: string, minutes: number): string {
 
 /** Increment a YYYY-MM-DD date by 1 day. */
 function incrementDate(dateStr: string): string {
-  const [y, mo, d] = dateStr.split('-').map(Number);
+  const [y, mo, d] = dateStr.split('-').map(Number) as [number, number, number];
   const date = new Date(Date.UTC(y, mo - 1, d + 1));
   const yy = date.getUTCFullYear();
   const mm = String(date.getUTCMonth() + 1).padStart(2, '0');

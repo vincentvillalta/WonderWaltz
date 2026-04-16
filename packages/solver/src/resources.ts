@@ -72,7 +72,7 @@ function computeReturnWindow(rideId: string, bookingTime: string): ReturnWindow 
   const match = bookingTime.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2}):(\d{2})/);
   if (!match) throw new Error(`Invalid ISO string: ${bookingTime}`);
 
-  const [, datePrefix, hh, mm] = match;
+  const [, datePrefix, hh, mm] = match as [string, string, string, string, string];
   const bookingMinutes = parseInt(hh, 10) * 60 + parseInt(mm, 10);
   const returnStartMin = bookingMinutes + RETURN_WINDOW_OFFSET_MINUTES;
   const returnEndMin = returnStartMin + RETURN_WINDOW_OFFSET_MINUTES;

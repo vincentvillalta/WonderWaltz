@@ -67,7 +67,7 @@ function buildFromMinutes(prefix: string, totalMinutes: number): string {
 
 /** Parse HH:MM to minutes since midnight. */
 function parseHhMm(hhmm: string): number {
-  const [h, m] = hhmm.split(':').map(Number);
+  const [h, m] = hhmm.split(':').map(Number) as [number, number];
   return h * 60 + m;
 }
 
@@ -75,7 +75,7 @@ function parseHhMm(hhmm: string): number {
 function parseIsoMinutes(iso: string): number {
   const match = iso.match(/T(\d{2}):(\d{2})/);
   if (!match) return 0;
-  return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+  return parseInt(match[1]!, 10) * 60 + parseInt(match[2]!, 10);
 }
 
 /** Generate a deterministic show item ID. */
@@ -111,7 +111,7 @@ export function insertShows(input: InsertShowsInput): PlanItem[] {
   let result = items.map((i) => ({ ...i }));
 
   const preferredSet = new Set(preferredShowIds);
-  const prefix = result.length > 0 ? datePrefix(result[0].startTime) : datePrefix(parkHours.open);
+  const prefix = result.length > 0 ? datePrefix(result[0]!.startTime) : datePrefix(parkHours.open);
 
   const { minutes: closeMin } = { minutes: parseIsoMinutes(parkHours.close) };
 

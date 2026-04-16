@@ -43,7 +43,7 @@ export type InsertMealsInput = {
 function parseHour(iso: string): number {
   const match = iso.match(/T(\d{2}):(\d{2})/);
   if (!match) return 0;
-  return parseInt(match[1], 10) + parseInt(match[2], 10) / 60;
+  return parseInt(match[1]!, 10) + parseInt(match[2]!, 10) / 60;
 }
 
 /** Extract date prefix from ISO string. */
@@ -101,7 +101,7 @@ export function insertMeals(input: InsertMealsInput): PlanItem[] {
     tsItems.push({
       id: makeMealId(res.venueName, res.startTime),
       type: 'dining',
-      refId: res.attractionRefId,
+      ...(res.attractionRefId != null ? { refId: res.attractionRefId } : {}),
       name: res.venueName,
       startTime: res.startTime,
       endTime: res.endTime,
@@ -115,7 +115,7 @@ export function insertMeals(input: InsertMealsInput): PlanItem[] {
   // Sort items by startTime for gap analysis.
   result.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-  const prefix = result.length > 0 ? datePrefix(result[0].startTime) : '2026-06-01';
+  const prefix = result.length > 0 ? datePrefix(result[0]!.startTime) : '2026-06-01';
 
   // Check if lunch/dinner already covered by TS reservations.
   const hasLunchTs = tsItems.some((ts) => {

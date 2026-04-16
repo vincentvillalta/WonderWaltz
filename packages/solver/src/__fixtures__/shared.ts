@@ -424,15 +424,15 @@ function buildParkEdges(parkId: string, attractionIds: string[]): WalkingEdge[] 
   // Connect entrance to first attraction
   edges.push({
     fromNodeId: 'entrance',
-    toNodeId: attractionIds[0],
+    toNodeId: attractionIds[0]!,
     parkId,
     walkSeconds: 300, // 5 min from entrance
   });
   // Connect attractions linearly
   for (let i = 0; i < attractionIds.length - 1; i++) {
     edges.push({
-      fromNodeId: attractionIds[i],
-      toNodeId: attractionIds[i + 1],
+      fromNodeId: attractionIds[i]!,
+      toNodeId: attractionIds[i + 1]!,
       parkId,
       walkSeconds: 120 + (i % 3) * 60, // 2-4 min between rides
     });

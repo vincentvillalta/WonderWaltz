@@ -62,7 +62,7 @@ export type ConstructDayInput = {
 function parseIso(iso: string): { datePrefix: string; minutes: number } {
   const match = iso.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2}):(\d{2})/);
   if (!match) throw new Error(`Invalid ISO string: ${iso}`);
-  const [, datePrefix, hh, mm] = match;
+  const [, datePrefix, hh, mm] = match as [string, string, string, string, string];
   return { datePrefix, minutes: parseInt(hh, 10) * 60 + parseInt(mm, 10) };
 }
 
@@ -214,7 +214,7 @@ export function constructDay(input: ConstructDayInput): PlanItem[] {
     let bestScore = -Infinity;
 
     for (let i = 0; i < remaining.length; i++) {
-      const a = remaining[i];
+      const a = remaining[i]!;
       const walkSec = shortestPath(walkingGraph, lastNodeId, a.id);
       const walkMin = walkSec / 60;
       const forecast = forecastFn(a.id, slotIso);
@@ -245,7 +245,7 @@ export function constructDay(input: ConstructDayInput): PlanItem[] {
       continue;
     }
 
-    const chosen = remaining[bestIdx];
+    const chosen = remaining[bestIdx]!;
     const walkSec = shortestPath(walkingGraph, lastNodeId, chosen.id);
     const walkMin = walkSec / 60;
     const forecast = forecastFn(chosen.id, slotIso);

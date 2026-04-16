@@ -190,13 +190,14 @@ export function allocateLL(input: AllocateLLInput): AllocateLLResult {
   const itemsWithLL: PlanItem[] = dayItems.map((item) => {
     const update = itemUpdates.get(item.id);
     if (!update) return { ...item };
-    return {
-      ...item,
-      ...(update.lightningLaneType !== undefined
-        ? { lightningLaneType: update.lightningLaneType }
-        : {}),
-      notes: update.notes,
-    };
+    const patched = { ...item };
+    if (update.lightningLaneType !== undefined) {
+      patched.lightningLaneType = update.lightningLaneType;
+    }
+    if (update.notes !== undefined) {
+      patched.notes = update.notes;
+    }
+    return patched;
   });
 
   return { itemsWithLL, warnings };
@@ -207,5 +208,5 @@ export function allocateLL(input: AllocateLLInput): AllocateLLResult {
 /** Extract HH:MM from ISO string for display. */
 function formatTime(iso: string): string {
   const match = iso.match(/T(\d{2}:\d{2})/);
-  return match ? match[1] : iso;
+  return match ? match[1]! : iso;
 }

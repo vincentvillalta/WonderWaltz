@@ -7,7 +7,7 @@ export * from './hash.js';
 export * from './walkingGraph.js';
 export * from './filter.js';
 export * from './score.js';
-export * from './construct.js';
+export { constructDay, type ForecastFn, type ConstructDayInput } from './construct.js';
 export * from './meals.js';
 export * from './shows.js';
 export * from './localSearch.js';
@@ -44,8 +44,8 @@ import type { LodgingType } from './parkHours.js';
 /** Generate inclusive date range from startDate to endDate (YYYY-MM-DD). */
 function generateDateRange(startDate: string, endDate: string): string[] {
   const dates: string[] = [];
-  const [sy, sm, sd] = startDate.split('-').map(Number);
-  const [ey, em, ed] = endDate.split('-').map(Number);
+  const [sy, sm, sd] = startDate.split('-').map(Number) as [number, number, number];
+  const [ey, em, ed] = endDate.split('-').map(Number) as [number, number, number];
   const start = Date.UTC(sy, sm - 1, sd);
   const end = Date.UTC(ey, em - 1, ed);
 
@@ -75,7 +75,7 @@ function assignParksToDays(dates: string[], attractions: CatalogAttraction[]): M
 
   const map = new Map<string, string>();
   for (let i = 0; i < dates.length; i++) {
-    map.set(dates[i], parks[i % parks.length]);
+    map.set(dates[i]!, parks[i % parks.length]!);
   }
   return map;
 }
@@ -110,7 +110,7 @@ function buildForecastFn(
         .update(attractionId + slotStart)
         .digest();
       return {
-        predictedWaitMinutes: (hash[0] % 60) + Math.max(10, attraction.baselineWaitMinutes / 2),
+        predictedWaitMinutes: (hash[0]! % 60) + Math.max(10, attraction.baselineWaitMinutes / 2),
         confidence: 'low' as const,
       };
     }
@@ -192,7 +192,7 @@ export function solve(input: SolverInput): DayPlan[] {
   const dayPlans: DayPlan[] = [];
 
   for (let dayIndex = 0; dayIndex < dates.length; dayIndex++) {
-    const date = dates[dayIndex];
+    const date = dates[dayIndex]!;
     const parkId = parkAssignment.get(date);
     if (!parkId) continue;
 
@@ -273,10 +273,11 @@ export function solve(input: SolverInput): DayPlan[] {
     items = itemsWithLL;
 
     // 8. Insert fatigue rest blocks
-    items = insertRestBlocks(items, input.guests, input.preferences.budgetTier, {
-      mustDoIds: parkMustDoIds,
-      lodgingType: input.trip.lodgingType,
-    });
+    const restOpts: Parameters<typeof insertRestBlocks>[3] = { mustDoIds: parkMustDoIds };
+    if (input.trip.lodgingType != null) {
+      restOpts.lodgingType = input.trip.lodgingType;
+    }
+    items = insertRestBlocks(items, input.guests, input.preferences.budgetTier, restOpts);
 
     // Track visited attractions for multi-day dedup
     for (const item of items) {
