@@ -141,7 +141,7 @@ function loadBrandVoice(): string {
 
   // Extract the "Voice and Tone" section
   const voiceMatch = raw.match(/## Voice and Tone\n([\s\S]*?)(?=\n## |\n---|$)/);
-  const voiceSection = voiceMatch ? voiceMatch[1].trim() : '';
+  const voiceSection = voiceMatch?.[1]?.trim() ?? '';
 
   return voiceSection;
 }

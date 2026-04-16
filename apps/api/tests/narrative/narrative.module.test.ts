@@ -20,30 +20,41 @@ describe('NarrativeModule DI wiring', () => {
     expect(service).toBeInstanceOf(NarrativeService);
   });
 
-  it('generate() rejects with a "03-12" not-implemented error', async () => {
+  it('generate() is callable (no longer a 03-12 stub)', async () => {
     const moduleRef = await buildModule();
     const service = moduleRef.get(NarrativeService);
-    await expect(
-      service.generate({
-        tripId: 'trip-1',
-        guests: [{ ageBracket: '18+' }],
-        budgetTier: 'fairy',
-        days: [],
-      }),
-    ).rejects.toThrow(/03-12/);
+    // With empty days and the default mock fixture, generate should
+    // run the full pipeline (may succeed or fail validation — but it
+    // no longer rejects with the 03-12 marker).
+    const result = await service.generate({
+      tripId: 'trip-1',
+      guests: [{ ageBracket: '18+' }],
+      budgetTier: 'fairy',
+      days: [],
+    });
+    // The mock returns a fixture with days — but our input has no days,
+    // so the fixture's planItemIds won't match. Expect graceful degradation.
+    expect(typeof result.narrativeAvailable).toBe('boolean');
+    expect(result.usage).toBeDefined();
   });
 
-  it('generateRethinkIntro() rejects with a "03-12" not-implemented error', async () => {
+  it('generateRethinkIntro() is callable (no longer a 03-12 stub)', async () => {
     const moduleRef = await buildModule();
     const service = moduleRef.get(NarrativeService);
-    await expect(
-      service.generateRethinkIntro({
+    // The default fixture returns a full narrative (not an intro),
+    // so this may throw a parse error — but NOT a /03-12/ rejection.
+    try {
+      await service.generateRethinkIntro({
         tripId: 'trip-1',
         dayIndex: 0,
         completedItemIds: [],
         remainingItems: [],
-      }),
-    ).rejects.toThrow(/03-12/);
+      });
+    } catch (e) {
+      // Acceptable: parse/validation error from default fixture
+      // Not acceptable: /03-12/ marker
+      expect(String(e)).not.toMatch(/03-12/);
+    }
   });
 
   it('ANTHROPIC_CLIENT_TOKEN resolves to the override-supplied value', async () => {

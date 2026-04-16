@@ -11,7 +11,7 @@ function loadFixtureNarrative(fixtureName: string, planItemMap?: Record<string, 
   const fixturePath = resolve(__dirname, '..', 'fixtures', fixtureName);
   const raw = readFileSync(fixturePath, 'utf-8');
   const fixture = JSON.parse(raw) as { content: Array<{ text: string }> };
-  let text = fixture.content[0].text;
+  let text = fixture.content[0]!.text;
 
   if (planItemMap) {
     for (const [placeholder, id] of Object.entries(planItemMap)) {

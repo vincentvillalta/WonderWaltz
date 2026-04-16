@@ -1,18 +1,25 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ANTHROPIC_CLIENT_TOKEN, type AnthropicLike } from './anthropic.client.js';
+import { buildCachedPrefix, buildDynamicPrompt, buildMessagesPayload } from './prompt.js';
+import {
+  validateNarrative,
+  RethinkIntroSchema,
+  type NarrativeResponse,
+  type ValidationResult,
+} from './schema.js';
 
 /**
- * Scaffold stub for LLM-01.
+ * NarrativeService — Claude-powered narrative generation for trip plans.
  *
- * The real implementation — prompt composition, cache_control breakpoints,
- * Zod validation of the narrative payload, retry-on-parse-failure, Haiku
- * fallback on budget exhaustion — all lands in plan 03-12. This file exists
- * so every downstream plan in Phase 3 can import `NarrativeService` and
- * wire it into its module graph without cycles.
+ * Pipeline: build cached prefix + dynamic suffix -> call Anthropic ->
+ * parse JSON -> Zod validate -> cross-validate ride IDs -> retry once
+ * on failure -> persist with narrative_available:false on 2nd failure.
  *
- * The types here are the load-bearing contract; internal shape may evolve
- * inside 03-12 without breaking the plan-generation module (03-16).
+ * The types here are the load-bearing contract; downstream plans (03-16
+ * plan-generation processor) depend on these interfaces.
  */
+
+// ─── Input/output types (preserved from 03-02 scaffold) ─────────────
 
 export interface NarrativeInputItem {
   planItemId: string;
@@ -52,6 +59,19 @@ export interface NarrativePackingDelta {
   reason: string;
 }
 
+export interface AnthropicUsage {
+  input_tokens: number;
+  output_tokens: number;
+  cache_creation_input_tokens: number;
+  cache_read_input_tokens: number;
+}
+
+export interface GenerateResult {
+  narrative?: NarrativeResponse | undefined;
+  narrativeAvailable: boolean;
+  usage: AnthropicUsage;
+}
+
 export interface NarrativeResult {
   days: NarrativeDay[];
   packingDelta: NarrativePackingDelta[];
@@ -71,33 +91,198 @@ export interface RethinkIntroInput {
   remainingItems: NarrativeInputItem[];
 }
 
+// ─── Usage aggregation helper ────────────────────────────────────────
+
+function sumUsage(a: AnthropicUsage, b: AnthropicUsage): AnthropicUsage {
+  return {
+    input_tokens: a.input_tokens + b.input_tokens,
+    output_tokens: a.output_tokens + b.output_tokens,
+    cache_creation_input_tokens: a.cache_creation_input_tokens + b.cache_creation_input_tokens,
+    cache_read_input_tokens: a.cache_read_input_tokens + b.cache_read_input_tokens,
+  };
+}
+
+function zeroUsage(): AnthropicUsage {
+  return {
+    input_tokens: 0,
+    output_tokens: 0,
+    cache_creation_input_tokens: 0,
+    cache_read_input_tokens: 0,
+  };
+}
+
 @Injectable()
 export class NarrativeService {
+  private readonly logger = new Logger(NarrativeService.name);
+
   constructor(@Inject(ANTHROPIC_CLIENT_TOKEN) private readonly client: AnthropicLike) {}
 
   /**
-   * Generates the initial plan narrative using Sonnet.
-   * Falls back to Haiku mid-generation if the $0.50 per-trip cap is
-   * projected to trip (LLM-07).
+   * Generates the full plan narrative using Sonnet (default).
    *
-   * @throws Not-Implemented in 03-02; real implementation lands in 03-12.
+   * Pipeline:
+   * 1. Build payload (cached prefix + dynamic suffix)
+   * 2. Call Anthropic SDK
+   * 3. Parse response.content[0].text as JSON
+   * 4. Run validateNarrative against solver plan item IDs
+   * 5. On success: return { narrative, narrativeAvailable: true, usage }
+   * 6. On failure: retry ONCE with corrective prompt
+   * 7. On 2nd failure: return { narrativeAvailable: false, usage }
    */
-  generate(_input: NarrativeInput): Promise<NarrativeResult> {
-    return Promise.reject(new Error('NarrativeService.generate — implemented in 03-12'));
+  async generate(
+    input: NarrativeInput,
+    model: string = 'claude-sonnet-4-6',
+  ): Promise<GenerateResult> {
+    const cachedPrefix = buildCachedPrefix();
+    const dynamicPrompt = buildDynamicPrompt(input);
+
+    // Collect all plan item IDs from solver output for cross-validation
+    const solverPlanItemIds = new Set<string>();
+    for (const day of input.days) {
+      for (const item of day.items) {
+        solverPlanItemIds.add(item.planItemId);
+      }
+    }
+
+    let totalUsage = zeroUsage();
+
+    // ─── First attempt ───────────────────────────────────────────
+    const payload = buildMessagesPayload({
+      model,
+      cachedPrefix,
+      dynamicPrompt,
+    });
+
+    const response = await this.client.messages.create(payload);
+    const responseUsage = response.usage as AnthropicUsage;
+    totalUsage = sumUsage(totalUsage, responseUsage);
+
+    const firstResult = this.parseAndValidate(response, solverPlanItemIds);
+    if (firstResult.ok) {
+      return {
+        narrative: firstResult.data,
+        narrativeAvailable: true,
+        usage: totalUsage,
+      };
+    }
+
+    // ─── Retry once with corrective prompt ───────────────────────
+    this.logger.warn(
+      `Narrative validation failed (attempt 1): ${firstResult.error} — ${firstResult.details}`,
+    );
+
+    const retryPayload = buildMessagesPayload({
+      model,
+      cachedPrefix,
+      dynamicPrompt,
+      systemSuffix:
+        `Your previous response failed validation: ${firstResult.details}. ` +
+        `Please retry and ensure your output matches the required JSON schema exactly. ` +
+        `Only reference planItemIds from the solver plan provided.`,
+    });
+
+    const retryResponse = await this.client.messages.create(retryPayload);
+    const retryUsage = retryResponse.usage as AnthropicUsage;
+    totalUsage = sumUsage(totalUsage, retryUsage);
+
+    const secondResult = this.parseAndValidate(retryResponse, solverPlanItemIds);
+    if (secondResult.ok) {
+      return {
+        narrative: secondResult.data,
+        narrativeAvailable: true,
+        usage: totalUsage,
+      };
+    }
+
+    // ─── Second failure: graceful degradation ────────────────────
+    this.logger.warn(
+      `Narrative validation failed (attempt 2): ${secondResult.error} — ${secondResult.details}. ` +
+        `Persisting plan with narrative_available: false.`,
+    );
+
+    return {
+      narrative: undefined,
+      narrativeAvailable: false,
+      usage: totalUsage,
+    };
   }
 
   /**
-   * Generates ONLY the per-day intro for "Rethink my day" (PLAN-04). Uses
-   * Haiku. Per-item tips are preserved from the initial generation; this
-   * call does not re-write them.
-   *
-   * @throws Not-Implemented in 03-02; real implementation lands in 03-12.
+   * Generates ONLY the per-day intro for "Rethink my day" (PLAN-04).
+   * Uses Haiku model. Per-item tips are preserved from the initial
+   * generation; this call does not re-write them.
    */
-  generateRethinkIntro(
-    _input: RethinkIntroInput,
+  async generateRethinkIntro(
+    input: RethinkIntroInput,
   ): Promise<{ intro: string; modelUsed: 'claude-haiku-4-5' }> {
-    return Promise.reject(
-      new Error('NarrativeService.generateRethinkIntro — implemented in 03-12'),
+    const cachedPrefix = buildCachedPrefix();
+
+    const completedList = input.completedItemIds.join(', ') || 'none';
+    const remainingList = input.remainingItems
+      .map((item) => `${item.attractionName} (${item.planItemId})`)
+      .join(', ');
+
+    const dynamicPrompt = [
+      `<RETHINK_CONTEXT>`,
+      `Trip: ${input.tripId}`,
+      `Day: ${input.dayIndex}`,
+      `Completed items: ${completedList}`,
+      `Remaining items: ${remainingList}`,
+      `</RETHINK_CONTEXT>`,
+      ``,
+      `Write a new intro paragraph (20-800 chars) for this day,`,
+      `acknowledging what has been completed and setting up what`,
+      `remains. Do NOT re-write per-item tips.`,
+      ``,
+      `Return valid JSON: { "intro": "your paragraph here" }`,
+    ].join('\n');
+
+    const payload = buildMessagesPayload({
+      model: 'claude-haiku-4-5',
+      cachedPrefix,
+      dynamicPrompt,
+    });
+
+    const response = await this.client.messages.create(payload);
+    const text = this.extractText(response);
+    const parsed = JSON.parse(text) as unknown;
+    const validated = RethinkIntroSchema.parse(parsed);
+
+    return {
+      intro: validated.intro,
+      modelUsed: 'claude-haiku-4-5',
+    };
+  }
+
+  // ─── Private helpers ───────────────────────────────────────────
+
+  private parseAndValidate(
+    response: { content: Array<{ type: string; text?: string }> },
+    solverPlanItemIds: Set<string>,
+  ): ValidationResult {
+    const text = this.extractText(response);
+
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      return {
+        ok: false,
+        error: 'parse_error',
+        details: 'Response is not valid JSON',
+      };
+    }
+
+    return validateNarrative(parsed, solverPlanItemIds);
+  }
+
+  private extractText(response: { content: Array<{ type: string; text?: string }> }): string {
+    const textBlock = response.content.find(
+      (b): b is { type: string; text: string } => b.type === 'text' && typeof b.text === 'string',
     );
+    if (!textBlock) {
+      throw new Error('Anthropic response has no text content block');
+    }
+    return textBlock.text;
   }
 }
