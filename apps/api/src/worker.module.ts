@@ -5,6 +5,7 @@ import { SharedInfraModule } from './shared-infra.module.js';
 import { IngestionModule } from './ingestion/ingestion.module.js';
 import { RollupModule } from './rollup/rollup.module.js';
 import { CrowdIndexModule } from './crowd-index/crowd-index.module.js';
+import { PlanGenerationModule } from './plan-generation/plan-generation.module.js';
 
 /**
  * Parse the REDIS_URL env var into an ioredis connection config.
@@ -47,6 +48,7 @@ function buildRedisConfig() {
     IngestionModule,
     RollupModule,
     CrowdIndexModule,
+    PlanGenerationModule,
   ],
 })
 export class WorkerModule {}
