@@ -8,7 +8,7 @@
   "content": [
     {
       "type": "text",
-      "text": "{\n  \"days\": [\n    {\n      \"dayIndex\": 0,\n      \"intro\": \"Start at Magic Kingdom with a secret headliner.\",\n      \"items\": [\n        { \"planItemId\": \"00000000-dead-beef-0000-000000000042\", \"tip\": \"Ride this phantom attraction that does not exist in the solver output — the Zod contract check must reject this narrative.\" }\n      ]\n    }\n  ],\n  \"packingDelta\": [],\n  \"budgetHacks\": []\n}"
+      "text": "{\n  \"days\": [\n    {\n      \"dayIndex\": 0,\n      \"intro\": \"Start at Magic Kingdom with a secret headliner that nobody has ever ridden before today.\",\n      \"items\": [\n        { \"planItemId\": \"00000000-dead-beef-0000-000000000042\", \"tip\": \"Ride this phantom attraction that does not exist in the solver output — the Zod contract check must reject this narrative.\" }\n      ]\n    }\n  ],\n  \"packingDelta\": [],\n  \"budgetHacks\": []\n}"
     }
   ],
   "usage": {
