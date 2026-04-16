@@ -15,6 +15,9 @@ import type {
 import { PersistPlanService } from './persist-plan.service.js';
 import type { PersistInput } from './persist-plan.service.js';
 import { SolverLoader } from './solver.loader.js';
+import { PackingListService } from '../packing-list/packing-list.service.js';
+import type { PackingGuest } from '../packing-list/packing-list.service.js';
+import { WeatherService } from '../weather/weather.service.js';
 
 /**
  * PlanGenerationService -- orchestrator for the full plan pipeline.
@@ -154,6 +157,8 @@ export class PlanGenerationService {
     private readonly narrativeService: NarrativeService,
     private readonly solverLoader: SolverLoader,
     @Optional() private readonly persistPlanService?: PersistPlanService,
+    @Optional() private readonly packingListService?: PackingListService,
+    @Optional() private readonly weatherService?: WeatherService,
   ) {}
 
   async generate(tripId: string): Promise<GeneratePlanResult> {
@@ -281,6 +286,70 @@ export class PlanGenerationService {
 
       const { planId } = await this.persistPlanService.persist(persistInput);
 
+      // ─── 7b. Generate packing list (PLAN-06) ────────────────────
+      if (this.packingListService) {
+        try {
+          const planItems = solverOutput.flatMap((day) =>
+            day.items.map((item) => ({
+              name: item.name,
+              type: item.type,
+              ...(item.refId != null ? { refId: item.refId } : {}),
+            })),
+          );
+
+          // Collect weather for each trip date (reuse WeatherService)
+          const packingWeather: Array<{
+            date: string;
+            highF: number;
+            precipitationProbability: number;
+            uvIndex?: number;
+          }> = [];
+          if (this.weatherService) {
+            const start = new Date(trip.start_date + 'T00:00:00Z');
+            const end = new Date(trip.end_date + 'T00:00:00Z');
+            for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+              const dateStr = d.toISOString().slice(0, 10);
+              const forecast = await this.weatherService.getForecast(dateStr);
+              if (forecast) {
+                packingWeather.push({
+                  date: dateStr,
+                  highF: forecast.high_f,
+                  precipitationProbability: forecast.precipitation_pct / 100,
+                  uvIndex: forecast.uv_index,
+                });
+              }
+            }
+          }
+
+          const packingGuests: PackingGuest[] = solverGuests.map((g) => ({
+            id: g.id,
+            ageBracket: g.ageBracket as PackingGuest['ageBracket'],
+            mobility: g.mobility as PackingGuest['mobility'],
+          }));
+
+          const packingItems = this.packingListService.generate({
+            tripId,
+            planItems,
+            weatherByDate: packingWeather,
+            guests: packingGuests,
+          });
+
+          // Persist packing list items to DB
+          for (let i = 0; i < packingItems.length; i++) {
+            const item = packingItems[i]!;
+            await this.db.execute(sql`
+              INSERT INTO packing_list_items (plan_id, category, name, is_affiliate, affiliate_item_id, sort_index)
+              VALUES (${planId}, ${item.category}, ${item.name}, ${!!item.recommendedAmazonUrl}, NULL, ${String(i)})
+            `);
+          }
+
+          this.logger.log(`Generated ${packingItems.length} packing list items for plan ${planId}`);
+        } catch (err) {
+          // Packing list is best-effort — never fail plan generation
+          this.logger.error('Packing list generation failed (non-fatal)', err);
+        }
+      }
+
       // ─── 8. Update trip status ────────────────────────────────
       await this.db.execute(
         sql`UPDATE trips SET current_plan_id = ${planId}, plan_status = 'ready', updated_at = NOW() WHERE id = ${tripId}`,
@@ -382,6 +451,82 @@ export class PlanGenerationService {
       royal_treatment: 'royal',
     };
 
+    // ─── Forecast hydration (FC-01..FC-05) ─────────────────────
+    const forecastBuckets: Array<{
+      rideId: string;
+      slot: string;
+      minutes: number;
+      confidence: string;
+    }> = [];
+    try {
+      for (const attraction of attractionRows) {
+        const start = new Date(trip.start_date + 'T00:00:00Z');
+        const end = new Date(trip.end_date + 'T00:00:00Z');
+        for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+          for (const hour of [9, 12, 15, 18]) {
+            const targetTs = new Date(d);
+            targetTs.setUTCHours(hour, 0, 0, 0);
+            try {
+              const result = await this.forecastService.predictWait(attraction.id, targetTs);
+              forecastBuckets.push({
+                rideId: attraction.id,
+                slot: targetTs.toISOString(),
+                minutes: result.minutes,
+                confidence: result.confidence,
+              });
+            } catch {
+              // Forecast failure is non-fatal — solver uses baseline
+            }
+          }
+        }
+      }
+    } catch {
+      this.logger.warn('Forecast hydration failed (non-fatal) — solver uses baseline');
+    }
+
+    // ─── Weather hydration ─────────────────────────────────────
+    const weatherDays: Array<{
+      date: string;
+      highF: number;
+      lowF: number;
+      condition: string;
+      precipitationProbability: number;
+    }> = [];
+    if (this.weatherService) {
+      try {
+        const start = new Date(trip.start_date + 'T00:00:00Z');
+        const end = new Date(trip.end_date + 'T00:00:00Z');
+        for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+          const dateStr = d.toISOString().slice(0, 10);
+          const forecast = await this.weatherService.getForecast(dateStr);
+          if (forecast) {
+            weatherDays.push({
+              date: dateStr,
+              highF: forecast.high_f,
+              lowF: forecast.low_f,
+              condition: forecast.condition,
+              precipitationProbability: forecast.precipitation_pct,
+            });
+          }
+        }
+      } catch {
+        this.logger.warn('Weather hydration failed (non-fatal)');
+      }
+    }
+
+    // ─── Crowd calendar hydration ──────────────────────────────
+    const calendarEntries: Array<{ date: string; bucket: string }> = [];
+    try {
+      const start = new Date(trip.start_date + 'T00:00:00Z');
+      const end = new Date(trip.end_date + 'T00:00:00Z');
+      for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+        const bucket = await this.calendarService.getBucket(d);
+        calendarEntries.push({ date: d.toISOString().slice(0, 10), bucket });
+      }
+    } catch {
+      this.logger.warn('Crowd calendar hydration failed (non-fatal)');
+    }
+
     return {
       trip: {
         id: trip.id,
@@ -398,9 +543,9 @@ export class PlanGenerationService {
       dateStart: trip.start_date,
       dateEnd: trip.end_date,
       catalog,
-      forecasts: { buckets: [] },
-      weather: { days: [] },
-      crowdCalendar: { entries: [] },
+      forecasts: { buckets: forecastBuckets },
+      weather: { days: weatherDays },
+      crowdCalendar: { entries: calendarEntries },
     };
   }
 

@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { AlertingModule } from '../alerting/alerting.module.js';
 import { ForecastModule } from '../forecast/forecast.module.js';
 import { NarrativeModule } from '../narrative/narrative.module.js';
+import { PackingListModule } from '../packing-list/packing-list.module.js';
+import { WeatherModule } from '../weather/weather.module.js';
 import { WalkingGraphLoader } from './walking-graph.loader.js';
 import { CircuitBreakerService } from './circuit-breaker.service.js';
 import { RateLimitService } from './rate-limit.service.js';
@@ -24,7 +26,7 @@ import { SolverLoader } from './solver.loader.js';
  * so both processes keep an in-memory precomputed walking graph.
  */
 @Module({
-  imports: [AlertingModule, ForecastModule, NarrativeModule],
+  imports: [AlertingModule, ForecastModule, NarrativeModule, PackingListModule, WeatherModule],
   providers: [
     WalkingGraphLoader,
     CircuitBreakerService,
