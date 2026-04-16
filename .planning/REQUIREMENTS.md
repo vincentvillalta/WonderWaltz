@@ -95,8 +95,8 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **LLM-02**: Anthropic prompt caching is used with the static catalog context before the cache boundary, dynamic trip context after; cache header set correctly
 - [ ] **LLM-03**: Claude Sonnet (pinned model ID) runs initial generation; Claude Haiku (pinned model ID) runs "Rethink my day" and free-tier teaser narration
 - [x] **LLM-04**: Structured output parsing validates LLM output against a Zod schema; narrative never references a ride not in the solver output (contract test)
-- [ ] **LLM-05**: `llm_costs` table records every LLM call with `trip_id`, `plan_id`, `model`, `input_tok`, `cached_read_tok`, `output_tok`, `usd_cents`, `created_at`
-- [ ] **LLM-06**: Sentry alert fires when cache hit rate (`cached_read_tok / input_tok`) drops below 70% over a 1-hour window
+- [x] **LLM-05**: `llm_costs` table records every LLM call with `trip_id`, `plan_id`, `model`, `input_tok`, `cached_read_tok`, `output_tok`, `usd_cents`, `created_at`
+- [x] **LLM-06**: Sentry alert fires when cache hit rate (`cached_read_tok / input_tok`) drops below 70% over a 1-hour window
 - [ ] **LLM-07**: Per-trip LLM cost circuit breaker halts generation at $0.50 accumulated spend and logs incident
 - [ ] **LLM-08**: Per-user daily rethink cap: 15/day for unlocked trips, 5/day for free-tier teaser
 
@@ -308,8 +308,8 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | LLM-02 | Phase 3 | Complete |
 | LLM-03 | Phase 3 | Pending |
 | LLM-04 | Phase 3 | Complete |
-| LLM-05 | Phase 3 | Pending |
-| LLM-06 | Phase 3 | Pending |
+| LLM-05 | Phase 3 | Complete |
+| LLM-06 | Phase 3 | Complete |
 | LLM-07 | Phase 3 | Pending |
 | LLM-08 | Phase 3 | Pending |
 | PLAN-01 | Phase 3 | Pending |

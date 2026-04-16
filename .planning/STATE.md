@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-07-PLAN.md
-last_updated: "2026-04-16T10:14:29.179Z"
-last_activity: "2026-04-16 — Completed Plan 03-12: Narrative Generation Pipeline (LLM-02, LLM-04) — byte-stable cached prefix, Zod-validated output, retry-once + fallback, Haiku rethink intro"
+stopped_at: Completed 03-13-PLAN.md
+last_updated: "2026-04-16T10:39:00.000Z"
+last_activity: "2026-04-16 — Completed Plan 03-13: LLM Cost Tracking + Cache Hit Rate Alert (LLM-05, LLM-06)"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 33
-  percent: 71
+  completed_plans: 34
+  percent: 73
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 12 of 18 in current phase
+Plan: 13 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-16 — Completed Plan 03-12: Narrative Generation Pipeline (LLM-02, LLM-04) — byte-stable cached prefix, Zod-validated output, retry-once + fallback, Haiku rethink intro
+Last activity: 2026-04-16 — Completed Plan 03-13: LLM Cost Tracking + Cache Hit Rate Alert (LLM-05, LLM-06) — frozen rate card cost calculation, recordLlmCost after every Anthropic call, rolling 1-hour cache hit rate alerting via Sentry + Slack
 
-Progress: [████████░░] 71%
+Progress: [███████░░░] 73%
 
 ## Performance Metrics
 
@@ -81,6 +81,7 @@ Progress: [████████░░] 71%
 | Phase 03-engine P06 | 5 min | 2 tasks | 7 files |
 | Phase 03-engine P12 | 34 min | 3 tasks | 9 files |
 | Phase 03-engine P07 | 15 | 3 tasks | 9 files |
+| Phase 03-engine P13 | 7 min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -174,6 +175,11 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-12: Retry corrective prompt appended as systemSuffix (not replacing system) — preserves cache_control on the original cached block for cache hit on retry
 - [Phase 03-engine]: 03-12: GenerateResult.narrative typed as NarrativeResponse | undefined — exactOptionalPropertyTypes tsconfig requires explicit undefined
 - [Phase 03-engine]: 03-07: deriveEnjoymentWeight bridges isHeadliner boolean to numeric score (85/50) since CatalogAttraction lacks enjoymentScore field
+- [Phase 03-engine]: 03-13: Frozen rate card with Object.freeze — Sonnet $3/$15 input/output, Haiku $0.80/$4.00, cache_read 10% of input, cache_write 125% of input
+- [Phase 03-engine]: 03-13: CostAlertService deps all @Optional() — NarrativeModule resolves without SharedInfraModule/AlertingModule in tests; degrades gracefully
+- [Phase 03-engine]: 03-13: SlackAlerterService accessed via string token 'SlackAlerterService' to avoid AlertingModule import cycle in NarrativeModule
+- [Phase 03-engine]: 03-13: Cost write is best-effort (try/catch) — telemetry must never crash narrative pipeline
+- [Phase 03-engine]: 03-13: Hit rate = cached_read_tok / (cached_read_tok + input_tok), minimum 5 rows for signal, Redis dedup 1h TTL
 - [Phase 03-engine]: 03-07: Timezone-naive arithmetic (minutes since midnight + date prefix) instead of Date objects — prevents TZ conversion bugs in solver time calculations
 - [Phase 03-engine]: 03-07: Fixed displacement cost model for show insertion (60 show score vs 40 per displaced item) — avoids requiring full scoring context in show pass; local search in 03-08 can refine
 
@@ -191,6 +197,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T10:14:29.176Z
-Stopped at: Completed 03-07-PLAN.md
+Last session: 2026-04-16T10:39:00Z
+Stopped at: Completed 03-13-PLAN.md
 Resume file: None
