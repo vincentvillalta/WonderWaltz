@@ -11,6 +11,8 @@ export * from './construct.js';
 export * from './meals.js';
 export * from './shows.js';
 export * from './localSearch.js';
+export * from './resources.js';
+export * from './lightningLane.js';
 
 import type { SolverInput, DayPlan } from './types.js';
 
