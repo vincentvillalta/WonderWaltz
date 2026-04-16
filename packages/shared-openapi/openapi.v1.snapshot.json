@@ -216,6 +216,9 @@
               }
             }
           },
+          "403": {
+            "description": "Anonymous users limited to 1 trip"
+          },
           "501": {
             "description": "Not implemented until Phase 3"
           }
@@ -280,7 +283,7 @@
     },
     "/v1/trips/{id}/generate-plan": {
       "post": {
-        "description": "Enqueues a plan generation job for the trip. Returns a job_id to poll GET /v1/plans/:id for status. Returns 501 until Phase 3.",
+        "description": "Enqueues a plan generation job for the trip. Returns a job_id to poll GET /v1/plans/:id for status.",
         "operationId": "TripsController_generatePlan",
         "parameters": [
           {
@@ -329,12 +332,9 @@
                 }
               }
             }
-          },
-          "501": {
-            "description": "Not implemented until Phase 3"
           }
         },
-        "summary": "Generate an itinerary plan (Phase 3)",
+        "summary": "Generate an itinerary plan",
         "tags": [
           "trips"
         ]
@@ -342,7 +342,7 @@
     },
     "/v1/trips/{id}/rethink-today": {
       "post": {
-        "description": "Enqueues a re-planning job for the remaining items today. Returns a job_id to poll GET /v1/plans/:id for status. Returns 501 until Phase 3.",
+        "description": "Enqueues a re-planning job for the remaining items today. Returns a job_id to poll GET /v1/plans/:id for status.",
         "operationId": "TripsController_rethinkToday",
         "parameters": [
           {
@@ -401,20 +401,213 @@
                 }
               }
             }
-          },
-          "501": {
-            "description": "Not implemented until Phase 3"
           }
         },
-        "summary": "Rethink today's remaining itinerary (Phase 3)",
+        "summary": "Rethink today's remaining itinerary",
         "tags": [
           "trips"
         ]
       }
     },
+    "/v1/auth/anonymous": {
+      "post": {
+        "description": "Creates an anonymous user account and returns a JWT access token. Anonymous users can create and view trips but cannot purchase entitlements.",
+        "operationId": "AuthController_anonymousAuth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AnonymousAuthResponseDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Anonymous user created"
+          },
+          "500": {
+            "description": "Failed to create anonymous user"
+          }
+        },
+        "summary": "Create anonymous user session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/upgrade": {
+      "post": {
+        "description": "Called after the client completes the OAuth merge via Supabase linkIdentity. The backend validates the new merged JWT, then syncs is_anonymous=false and email to public.users. Idempotent — calling on an already-upgraded user returns 200.",
+        "operationId": "AuthController_upgrade",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/UpgradeResponseDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Sync account upgrade to public.users",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/users/me": {
+      "get": {
+        "description": "Returns the profile for the authenticated user including is_anonymous status, email (if registered), and account creation date. Requires a valid JWT bearer token.",
+        "operationId": "UsersController_getMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/UserMeDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid token"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user profile",
+        "tags": [
+          "users"
+        ]
+      },
+      "delete": {
+        "description": "Soft-deletes the authenticated user account, revokes all active entitlements, and schedules a 30-day data purge. Requires confirmed:true in the request body (double-tap confirmation). After deletion, the user will be blocked from all API access.",
+        "operationId": "UsersController_deleteMe",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteAccountDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DeleteAccountResponseDto"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/ApiMetaDto"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "meta"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing confirmed:true in request body"
+          },
+          "401": {
+            "description": "Missing or invalid token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete current user account",
+        "tags": [
+          "users"
+        ]
+      }
+    },
     "/v1/plans/{id}": {
       "get": {
-        "description": "Returns the plan with day_plans. Poll this endpoint after POST /v1/trips/:id/generate-plan or rethink-today. status=\"generating\" while the job is in progress, \"ready\" when complete. Returns 501 until Phase 3.",
+        "description": "Returns the plan with day_plans projected by entitlement. Poll this endpoint after POST /v1/trips/:id/generate-plan or rethink-today. status=\"generating\" while the job is in progress, \"ready\" when complete.",
         "operationId": "PlansController_getPlan",
         "parameters": [
           {
@@ -454,90 +647,30 @@
               }
             }
           },
-          "501": {
-            "description": "Not implemented until Phase 3"
+          "404": {
+            "description": "Plan not found"
           }
         },
-        "summary": "Get a plan by ID (Phase 3)",
+        "summary": "Get a plan by ID",
         "tags": [
           "plans"
         ]
       }
     },
-    "/v1/auth/anonymous": {
+    "/v1/purchases/restore": {
       "post": {
-        "description": "Creates an anonymous user account and returns a JWT access token. Anonymous users can create and view trips but cannot purchase entitlements. Returns 501 until Phase 4 auth implementation.",
-        "operationId": "AuthController_anonymousAuth",
+        "description": "Queries RevenueCat for the authenticated user's purchase history and reconciles the entitlements table. Returns the list of active trip entitlements. Requires authenticated non-anonymous user.",
+        "operationId": "PurchasesController_restore",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "properties": {
-                        "data": {
-                          "$ref": "#/components/schemas/AnonymousAuthResponseDto"
-                        },
-                        "meta": {
-                          "$ref": "#/components/schemas/ApiMetaDto"
-                        }
-                      },
-                      "required": [
-                        "data",
-                        "meta"
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
+            "description": "Purchases restored successfully"
           },
-          "501": {
-            "description": "Not implemented until Phase 4"
-          }
-        },
-        "summary": "Create anonymous user session (Phase 4)",
-        "tags": [
-          "auth"
-        ]
-      }
-    },
-    "/v1/users/me": {
-      "get": {
-        "description": "Returns the profile for the authenticated user. Requires a valid JWT bearer token from POST /v1/auth/anonymous or a registered login. Returns 501 until Phase 4 auth implementation.",
-        "operationId": "UsersController_getMe",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "properties": {
-                        "data": {
-                          "$ref": "#/components/schemas/UserMeDto"
-                        },
-                        "meta": {
-                          "$ref": "#/components/schemas/ApiMetaDto"
-                        }
-                      },
-                      "required": [
-                        "data",
-                        "meta"
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
+          "401": {
+            "description": "Missing or invalid token"
           },
-          "501": {
-            "description": "Not implemented until Phase 4"
+          "403": {
+            "description": "Anonymous users cannot restore purchases"
           }
         },
         "security": [
@@ -545,9 +678,23 @@
             "bearer": []
           }
         ],
-        "summary": "Get current user profile (Phase 4)",
+        "summary": "Restore purchases",
         "tags": [
-          "users"
+          "purchases"
+        ]
+      }
+    },
+    "/v1/webhooks/revenuecat": {
+      "post": {
+        "operationId": "WebhookController_handleRevenuecat",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "webhooks"
         ]
       }
     }
@@ -1063,6 +1210,112 @@
           "active_ll_bookings"
         ]
       },
+      "AnonymousAuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "JWT bearer token for authenticating subsequent requests. Pass in Authorization: Bearer header.",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User UUID for the newly-created anonymous user",
+            "example": "user-uuid-here"
+          },
+          "expires_at": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when the access token expires",
+            "example": "2026-05-14T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "access_token",
+          "user_id",
+          "expires_at"
+        ]
+      },
+      "UpgradeResponseDto": {
+        "type": "object",
+        "properties": {
+          "upgraded": {
+            "type": "boolean",
+            "description": "Whether the upgrade was applied (always true on success)",
+            "example": true
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User UUID of the upgraded account",
+            "example": "user-uuid-here"
+          }
+        },
+        "required": [
+          "upgraded",
+          "user_id"
+        ]
+      },
+      "UserMeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User UUID",
+            "example": "user-uuid-here"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address — present only for registered (non-anonymous) users. Omitted for anonymous users.",
+            "example": "user@example.com"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "ISO 8601 account creation timestamp",
+            "example": "2026-04-14T10:00:00.000Z"
+          },
+          "is_anonymous": {
+            "type": "boolean",
+            "description": "True if the user account is anonymous (created via POST /v1/auth/anonymous). False if the user has registered with an email.",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "is_anonymous"
+        ]
+      },
+      "DeleteAccountResponseDto": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean",
+            "description": "Whether the account was marked for deletion",
+            "example": true
+          },
+          "purge_scheduled_at": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when the account data will be permanently purged (30 days)",
+            "example": "2026-05-16T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "deleted",
+          "purge_scheduled_at"
+        ]
+      },
+      "DeleteAccountDto": {
+        "type": "object",
+        "properties": {
+          "confirmed": {
+            "type": "boolean",
+            "description": "Must be true to confirm account deletion (double-tap confirm). Prevents accidental deletions.",
+            "example": true
+          }
+        },
+        "required": [
+          "confirmed"
+        ]
+      },
       "PlanItemDto": {
         "type": "object",
         "properties": {
@@ -1311,6 +1564,10 @@
               }
             ]
           },
+          "packing_list": {
+            "type": "object",
+            "description": "Packing list items generated from solver output + weather + guest ages"
+          },
           "created_at": {
             "type": "string",
             "description": "ISO 8601 creation timestamp",
@@ -1325,61 +1582,6 @@
           "days",
           "warnings",
           "created_at"
-        ]
-      },
-      "AnonymousAuthResponseDto": {
-        "type": "object",
-        "properties": {
-          "access_token": {
-            "type": "string",
-            "description": "JWT bearer token for authenticating subsequent requests. Pass in Authorization: Bearer header.",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-          },
-          "user_id": {
-            "type": "string",
-            "description": "User UUID for the newly-created anonymous user",
-            "example": "user-uuid-here"
-          },
-          "expires_at": {
-            "type": "string",
-            "description": "ISO 8601 timestamp when the access token expires",
-            "example": "2026-05-14T10:00:00.000Z"
-          }
-        },
-        "required": [
-          "access_token",
-          "user_id",
-          "expires_at"
-        ]
-      },
-      "UserMeDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "User UUID",
-            "example": "user-uuid-here"
-          },
-          "email": {
-            "type": "string",
-            "description": "Email address — present only for registered (non-anonymous) users. Omitted for anonymous users.",
-            "example": "user@example.com"
-          },
-          "created_at": {
-            "type": "string",
-            "description": "ISO 8601 account creation timestamp",
-            "example": "2026-04-14T10:00:00.000Z"
-          },
-          "is_anonymous": {
-            "type": "boolean",
-            "description": "True if the user account is anonymous (created via POST /v1/auth/anonymous). False if the user has registered with an email.",
-            "example": true
-          }
-        },
-        "required": [
-          "id",
-          "created_at",
-          "is_anonymous"
         ]
       }
     }
