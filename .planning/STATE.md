@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-09-PLAN.md
-last_updated: "2026-04-16T13:10:37.805Z"
-last_activity: "2026-04-16 — Completed Plan 03-13: LLM Cost Tracking + Cache Hit Rate Alert (LLM-05, LLM-06) — frozen rate card cost calculation, recordLlmCost after every Anthropic call, rolling 1-hour cache hit rate alerting via Sentry + Slack"
+stopped_at: Completed 03-14-PLAN.md
+last_updated: "2026-04-16T13:25:00.000Z"
+last_activity: "2026-04-16 — Completed Plan 03-14: Model ID Pinning + Per-Trip Circuit Breaker (LLM-03, LLM-07) — env-var-pinned Sonnet/Haiku model IDs, per-trip $0.50 circuit breaker, 3-sink telemetry"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 36
-  percent: 73
+  completed_plans: 37
+  percent: 76
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 13 of 18 in current phase
+Plan: 14 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-16 — Completed Plan 03-13: LLM Cost Tracking + Cache Hit Rate Alert (LLM-05, LLM-06) — frozen rate card cost calculation, recordLlmCost after every Anthropic call, rolling 1-hour cache hit rate alerting via Sentry + Slack
+Last activity: 2026-04-16 — Completed Plan 03-14: Model ID Pinning + Per-Trip Circuit Breaker (LLM-03, LLM-07) — env-var-pinned Sonnet/Haiku model IDs, per-trip $0.50 circuit breaker with Sonnet-to-Haiku swap, 402 exhaustion contract, 3-sink telemetry
 
-Progress: [███████░░░] 73%
+Progress: [████████░░] 76%
 
 ## Performance Metrics
 
@@ -84,6 +84,7 @@ Progress: [███████░░░] 73%
 | Phase 03-engine P13 | 7 min | 2 tasks | 9 files |
 | Phase 03-engine P08 | 14 min | 3 tasks | 9 files |
 | Phase 03-engine P09 | 6 | 2 tasks | 5 files |
+| Phase 03-engine P14 | 12 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -189,6 +190,10 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-08: LL allocation uses wait-time-descending as scoring proxy for top-N selection — matches CONTEXT.md longest-wait-first rule
 - [Phase 03-engine]: 03-09: BUDGET_TIER_RULES frozen constant table in solver (not content) — LL caps, rest frequency, dining tier per tier
 - [Phase 03-engine]: 03-09: Peak fatigue windows fixed (toddler 12:30-13:30, young kid 13:00-14:00, both merge to 12:30-14:00); rest blocks are soft constraints never displacing must-do items
+- [Phase 03-engine]: 03-14: CircuitBreakerService injected via string token 'CircuitBreakerService' with @Optional() — avoids circular import between NarrativeModule and PlanGenerationModule
+- [Phase 03-engine]: 03-14: BudgetExhaustedError is typed Error subclass (not HttpException) — plan-generation orchestrator maps to 402 at controller layer
+- [Phase 03-engine]: 03-14: Budget check runs once per generate() call; retry reuses same model decision — avoids double DB query
+- [Phase 03-engine]: 03-14: Slack dedup key 'circuit-breaker:slack-dedup' separate from cost-alert dedup — independent hourly rate limits
 
 ### Pending Todos
 
@@ -204,6 +209,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T13:10:37.802Z
-Stopped at: Completed 03-09-PLAN.md
+Last session: 2026-04-16T13:25:00.000Z
+Stopped at: Completed 03-14-PLAN.md
 Resume file: None
