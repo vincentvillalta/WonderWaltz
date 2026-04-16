@@ -81,7 +81,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **SOLV-04**: Solver allocates Lightning Lane Multi Pass bookings (up to ~3/day default) and Lightning Lane Single Pass (0-2/day scaled to budget tier)
 - [x] **SOLV-05**: Solver schedules meals: table-service as hard constraints if user supplied them, quick-service in rides-free windows tagged for mobile order
 - [x] **SOLV-06**: Solver pins preferred parades, fireworks, and shows as optional blocks with scoring
-- [ ] **SOLV-07**: Solver encodes **child fatigue model**: toddlers (0-2 bracket) peak fatigue 12:30-14:00, young kids (3-6) peak 13:00-15:00; rest/resort-return blocks inserted proportionally to age distribution and budget tier
+- [x] **SOLV-07**: Solver encodes **child fatigue model**: toddlers (0-2 bracket) peak fatigue 12:30-14:00, young kids (3-6) peak 13:00-15:00; rest/resort-return blocks inserted proportionally to age distribution and budget tier
 - [x] **SOLV-08**: Solver encodes **DAS constraint**: when `trip.das_flag === true`, DAS return windows are modeled as LL-equivalent resource (same per-day budget math) with narrative explaining DAS application via Disney's video chat
 - [x] **SOLV-09**: Solver encodes **on-property advantages**: Early Entry (+30 min) for any on-property hotel; Extended Evening Hours on eligible nights for Deluxe / Deluxe Villa
 - [x] **SOLV-10**: Solver encodes **budget tier rules**: Pixie Dust = 0 LL + 1 rest/3hr + value dining; Fairy Tale = LLMP + 0-1 LLSP + 1 rest/2hr + moderate dining; Royal Treatment = LLMP + up to 2 LLSP + resort mid-day break + signature dining
@@ -297,7 +297,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | SOLV-04 | Phase 3 | Complete |
 | SOLV-05 | Phase 3 | Complete |
 | SOLV-06 | Phase 3 | Complete |
-| SOLV-07 | Phase 3 | Pending |
+| SOLV-07 | Phase 3 | Complete |
 | SOLV-08 | Phase 3 | Complete |
 | SOLV-09 | Phase 3 | Complete |
 | SOLV-10 | Phase 3 | Complete |
