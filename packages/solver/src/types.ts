@@ -90,6 +90,8 @@ export type CatalogDining = {
   cuisineTags: string[];
   tableService: boolean;
   durationMinutes: number;
+  /** Dietary accommodations this venue supports (e.g., 'vegetarian', 'vegan', 'gluten_free', 'nut_free'). */
+  accommodates?: string[];
 };
 
 export type CatalogShow = {
