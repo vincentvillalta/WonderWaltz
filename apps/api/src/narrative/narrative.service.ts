@@ -10,6 +10,7 @@ import {
 import { calculateUsdCents, recordLlmCost } from './cost.js';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
 import type { CircuitBreakerService } from '../plan-generation/circuit-breaker.service.js';
+import { CostAlertService } from './cost-alert.service.js';
 
 /**
  * NarrativeService — Claude-powered narrative generation for trip plans.
@@ -171,6 +172,7 @@ export class NarrativeService {
     @Optional()
     @Inject(CIRCUIT_BREAKER_TOKEN)
     private readonly circuitBreaker?: CircuitBreakerService,
+    @Optional() private readonly costAlertService?: CostAlertService,
   ) {}
 
   /**
@@ -415,6 +417,13 @@ export class NarrativeService {
       });
     } catch (err) {
       this.logger.error('Failed to record LLM cost row', err);
+    }
+
+    // LLM-06: check cache hit rate after every cost write (deduped to 1h by Redis)
+    if (this.costAlertService) {
+      this.costAlertService.checkHitRate().catch((err) => {
+        this.logger.error('checkHitRate failed (non-fatal)', err);
+      });
     }
   }
 

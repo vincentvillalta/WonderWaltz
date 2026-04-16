@@ -7,6 +7,7 @@ import {
   Inject,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -15,6 +16,7 @@ import type { Queue } from 'bullmq';
 import { ApiEnvelopedResponse } from '../common/decorators/api-enveloped-response.decorator.js';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
 import { CircuitBreakerService } from '../plan-generation/circuit-breaker.service.js';
+import { RateLimitGuard, RateLimit } from '../plan-generation/rate-limit.guard.js';
 import { PlanBudgetExhaustedDto } from '../shared/dto/plan-budget-exhausted.dto.js';
 import { RethinkRequestDto } from '../shared/dto/rethink.dto.js';
 import { CreateTripDto, GeneratePlanResponseDto, TripDto } from '../shared/dto/trip.dto.js';
@@ -88,10 +90,12 @@ export class TripsController {
    * POST /v1/trips/:id/generate-plan
    * Kick off async plan generation. Returns 202 with job_id.
    *
-   * Guards (applied at NestJS layer in Phase 4 auth):
-   *   - RateLimitGuard with @RateLimit('free-tier-lifetime') for free-tier users
+   * Guards:
+   *   - RateLimitGuard enforces free-tier 3-plans/lifetime limit (PLAN-05)
    *   - CircuitBreakerService.checkBudget for 402 budget enforcement
    */
+  @UseGuards(RateLimitGuard)
+  @RateLimit('free-tier-lifetime')
   @Post(':id/generate-plan')
   @HttpCode(202)
   @ApiOperation({

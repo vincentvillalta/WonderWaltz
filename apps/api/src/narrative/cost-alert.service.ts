@@ -93,7 +93,7 @@ export class CostAlertService {
 
     // Check dedup — skip if we already alerted in the last hour
     try {
-      const lastFired = await this.redis.get(DEDUP_KEY);
+      const lastFired = this.redis ? await this.redis.get(DEDUP_KEY) : null;
       if (lastFired) {
         this.logger.debug(`Cache hit rate alert suppressed (dedup): rate=${rate.toFixed(2)}`);
         return { rate, windowRows, alerted: false };
@@ -119,14 +119,18 @@ export class CostAlertService {
     }
 
     try {
-      await this.slackAlerter.sendAlert(alertMessage);
+      if (this.slackAlerter) {
+        await this.slackAlerter.sendAlert(alertMessage);
+      }
     } catch (err) {
       this.logger.error('Slack alert failed for cache hit rate', err);
     }
 
     // Set dedup key
     try {
-      await this.redis.set(DEDUP_KEY, '1', 'EX', DEDUP_TTL_SECONDS);
+      if (this.redis) {
+        await this.redis.set(DEDUP_KEY, '1', 'EX', DEDUP_TTL_SECONDS);
+      }
     } catch (err) {
       this.logger.error('Redis SET for dedup key failed', err);
     }
