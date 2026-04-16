@@ -13,7 +13,7 @@ WonderWaltz v1 is built in eleven sequential phases — zero parallel platform t
 - [x] **Phase 0: Name Lock** - Trademark search on "WonderWaltz" before any public commitment (completed 2026-04-09)
 - [ ] **Phase 1: Foundation** - Monorepo scaffolding, DB schema, design system, disclaimer architecture
 - [ ] **Phase 2: Data Pipeline** - Ingestion workers live in production; 8-week data accumulation clock starts
-- [x] **Phase 3: Engine** - Solver + LLM narrative layer + async plan generation API (completed 2026-04-16)
+- [ ] **Phase 3: Engine** - Solver + LLM narrative layer + async plan generation API (gap closure in progress)
 - [ ] **Phase 4: Entitlements & Accounts** - Auth, IAP backend, RevenueCat webhook, account deletion
 - [ ] **Phase 5: iOS Core** - Trip wizard, plan view, offline sync, design system integration
 - [ ] **Phase 6: iOS Paywall & Notifications** - StoreKit 2 paywall, countdown widget, push notifications
@@ -85,27 +85,29 @@ Plans:
   3. Free-tier `GET /plans/:id` returns Day 1 fully detailed and Days 2+ as blurred summary cards; `POST /trips/:id/rethink-today` triggers Haiku and re-generates remaining items
   4. Every LLM call writes a row to `llm_costs`; a simulated cache miss drops the hit rate below 70% and triggers the Sentry alert; circuit breaker halts generation at $0.50 accumulated spend
   5. Forecast confidence label (`high` / `medium` / `low`) is present on every forecasted wait returned by `ForecastModule.predictWait()`; "Beta Forecast" framing is returned in the plan response metadata
-**Plans**: 18 plans
+**Plans**: 20 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Schema migrations + YAML schema additions + queue-times catalog ID fix (FC-02, SOLV-04, SOLV-10 support)
-- [ ] 03-02-PLAN.md — @anthropic-ai/sdk install + mock harness + narrative fixtures + NarrativeModule scaffold (LLM-01)
-- [ ] 03-03-PLAN.md — OpenAPI v1 snapshot amendment: FullDayPlan/LockedDayPlan union + warnings + RethinkRequest + PlanBudgetExhausted (PLAN-02)
-- [ ] 03-04-PLAN.md — Solver types + SolverInput/DayPlan contract + deterministic hash + package-boundary test (SOLV-01)
-- [ ] 03-05-PLAN.md — Walking graph preload + Floyd-Warshall + WalkingGraphLoader (SOLV-13)
-- [ ] 03-06-PLAN.md — Solver filtering: height, mobility, sensory, dietary (SOLV-02)
-- [ ] 03-07-PLAN.md — Scoring function + greedy construct + must-do pinning + meals + shows (SOLV-03, SOLV-05, SOLV-06)
-- [ ] 03-08-PLAN.md — Adjacent-pair local search + ResourcePool + LL allocator + DAS + park-hours EE/EEH (SOLV-04, SOLV-08, SOLV-09)
-- [ ] 03-09-PLAN.md — Budget tier rules + age-weighted fatigue rest blocks (SOLV-07, SOLV-10)
-- [ ] 03-10-PLAN.md — solve() orchestration + 6 canonical fixture snapshots + 100-run determinism proof (SOLV-11, SOLV-12)
-- [ ] 03-11-PLAN.md — ForecastModule bucketed median + baseline fallback + calendar rule engine + Beta Forecast framing (FC-01, FC-03, FC-04, FC-05)
-- [ ] 03-12-PLAN.md — Narrative prompt + byte-stable CACHED_PREFIX + Zod schema + ride-ID contract (LLM-02, LLM-04)
-- [ ] 03-13-PLAN.md — LLM cost telemetry + USD math + cache-hit-rate rolling alert (LLM-05, LLM-06)
-- [ ] 03-14-PLAN.md — Pinned model IDs + circuit breaker + Sonnet→Haiku fallback + 3-sink telemetry + 402 contract (LLM-03, LLM-07)
-- [ ] 03-15-PLAN.md — Rate limits: rethink daily cap + free-tier lifetime cap + Guard (LLM-08, PLAN-05)
-- [ ] 03-16-PLAN.md — PlanGenerationProcessor + orchestrator + PersistPlanService + cache-hit short-circuit (PLAN-01, PLAN-03)
-- [ ] 03-17-PLAN.md — trips.controller endpoints + plans.controller entitlement projection + e2e roundtrip (PLAN-04)
-- [ ] 03-18-PLAN.md — Packing list generator + Amazon Associates affiliate tag injection (PLAN-06)
+- [x] 03-01-PLAN.md — Schema migrations + YAML schema additions + queue-times catalog ID fix (FC-02, SOLV-04, SOLV-10 support)
+- [x] 03-02-PLAN.md — @anthropic-ai/sdk install + mock harness + narrative fixtures + NarrativeModule scaffold (LLM-01)
+- [x] 03-03-PLAN.md — OpenAPI v1 snapshot amendment: FullDayPlan/LockedDayPlan union + warnings + RethinkRequest + PlanBudgetExhausted (PLAN-02)
+- [x] 03-04-PLAN.md — Solver types + SolverInput/DayPlan contract + deterministic hash + package-boundary test (SOLV-01)
+- [x] 03-05-PLAN.md — Walking graph preload + Floyd-Warshall + WalkingGraphLoader (SOLV-13)
+- [x] 03-06-PLAN.md — Solver filtering: height, mobility, sensory, dietary (SOLV-02)
+- [x] 03-07-PLAN.md — Scoring function + greedy construct + must-do pinning + meals + shows (SOLV-03, SOLV-05, SOLV-06)
+- [x] 03-08-PLAN.md — Adjacent-pair local search + ResourcePool + LL allocator + DAS + park-hours EE/EEH (SOLV-04, SOLV-08, SOLV-09)
+- [x] 03-09-PLAN.md — Budget tier rules + age-weighted fatigue rest blocks (SOLV-07, SOLV-10)
+- [x] 03-10-PLAN.md — solve() orchestration + 6 canonical fixture snapshots + 100-run determinism proof (SOLV-11, SOLV-12)
+- [x] 03-11-PLAN.md — ForecastModule bucketed median + baseline fallback + calendar rule engine + Beta Forecast framing (FC-01, FC-03, FC-04, FC-05)
+- [x] 03-12-PLAN.md — Narrative prompt + byte-stable CACHED_PREFIX + Zod schema + ride-ID contract (LLM-02, LLM-04)
+- [x] 03-13-PLAN.md — LLM cost telemetry + USD math + cache-hit-rate rolling alert (LLM-05, LLM-06)
+- [x] 03-14-PLAN.md — Pinned model IDs + circuit breaker + Sonnet→Haiku fallback + 3-sink telemetry + 402 contract (LLM-03, LLM-07)
+- [x] 03-15-PLAN.md — Rate limits: rethink daily cap + free-tier lifetime cap + Guard (LLM-08, PLAN-05)
+- [x] 03-16-PLAN.md — PlanGenerationProcessor + orchestrator + PersistPlanService + cache-hit short-circuit (PLAN-01, PLAN-03)
+- [x] 03-17-PLAN.md — trips.controller endpoints + plans.controller entitlement projection + e2e roundtrip (PLAN-04)
+- [x] 03-18-PLAN.md — Packing list generator + Amazon Associates affiliate tag injection (PLAN-06)
+- [ ] 03-19-PLAN.md — Gap closure: DB schema alignment migration + persist/read path fix (PLAN-02, PLAN-03, FC-05)
+- [ ] 03-20-PLAN.md — Gap closure: Wire CostAlertService + RateLimitGuard + PackingListService + ForecastService (LLM-06, PLAN-05, PLAN-06, FC-01..05)
 
 ### Phase 4: Entitlements & Accounts
 **Goal**: Users can create anonymous accounts, upgrade to Sign in with Apple or Google, purchase a trip unlock, receive refunds, delete their accounts with full data cascade, and restore purchases across devices — all correctly reflected in backend entitlement state.
@@ -188,6 +190,7 @@ Plans:
   3. The Timescale `wait_times_history` hypertable contains ≥ 8 weeks of uninterrupted data; ingestion uptime over the 30 days preceding launch is ≥ 99% (verified from Sentry ingestion health dashboard)
   4. Closed beta with ≥ 20 real WDW trip-planning families completes; NPS is ≥ 40; zero P0 bugs are open; crash-free sessions ≥ 99.5% on both platforms (Sentry release health)
   5. p95 LLM cost per generated plan is ≤ $0.20 (verified from `llm_costs` telemetry over ≥ 100 generated plans); the first 10 paying customers are acquired within 30 days of launch
+
 **Plans**: TBD
 
 ## Progress
@@ -199,7 +202,7 @@ Plans:
 | 0. Name Lock | 1/1 | Complete    | 2026-04-09 |
 | 1. Foundation | 10/11 | In Progress|  |
 | 2. Data Pipeline | 11/12 | In Progress|  |
-| 3. Engine | 18/18 | Complete   | 2026-04-16 |
+| 3. Engine | 18/20 | Gap Closure | - |
 | 4. Entitlements & Accounts | 0/TBD | Not started | - |
 | 5. iOS Core | 0/TBD | Not started | - |
 | 6. iOS Paywall & Notifications | 0/TBD | Not started | - |
