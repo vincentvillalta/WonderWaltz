@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-15-PLAN.md
+stopped_at: Completed 03-16-PLAN.md
 last_updated: "2026-04-16T16:55:14.046Z"
-last_activity: "2026-04-16 — Completed Plan 03-15: Rethink Daily Cap + Free-Tier Lifetime Cap (LLM-08, PLAN-05) — Redis-backed rate limiters with NestJS guard"
+last_activity: "2026-04-16 — Completed Plan 03-16: PlanGenerationProcessor — BullMQ orchestrator with cache-hit short-circuit"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 39
-  percent: 93
+  completed_plans: 40
+  percent: 95
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 16 of 18 in current phase
+Plan: 17 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-16 — Completed Plan 03-15: Rethink Daily Cap + Free-Tier Lifetime Cap (LLM-08, PLAN-05) — Redis-backed rate limiters with NestJS guard
+Last activity: 2026-04-16 — Completed Plan 03-16: PlanGenerationProcessor — BullMQ orchestrator (solver + narrative + persist) with cache-hit short-circuit
 
-Progress: [█████████░] 93%
+Progress: [█████████░] 95%
 
 ## Performance Metrics
 
@@ -87,6 +87,7 @@ Progress: [█████████░] 93%
 | Phase 03-engine P14 | 12 min | 3 tasks | 6 files |
 | Phase 03-engine P10 | 60 min | 2 tasks | 13 files |
 | Phase 03-engine P15 | 8 | 2 tasks | 6 files |
+| Phase 03-engine P16 | 58 min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -202,6 +203,10 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-10: construct.ts buildIso rounds fractional minutes with Math.round — prevents invalid ISO strings from walk-time division
 - [Phase 03-engine]: 03-15: INCR/DECR atomic Redis pattern for rate limiting — avoids TOCTOU race vs GET-then-INCR
 - [Phase 03-engine]: 03-15: Guard defaults to free-tier (isUnlocked=false) when user tier unknown — safer to apply tighter limit
+- [Phase 03-engine]: 03-16: SolverLoader as DI injectable rather than module-level function — enables test mocking without vi.mock on dynamic import boundary
+- [Phase 03-engine]: 03-16: hydrateSolverInput returns Record<string, unknown> to avoid maintaining mirror types; casts at solver call boundary via `as never`
+- [Phase 03-engine]: 03-16: PersistPlanService uses sequential INSERTs (not transaction API) — drizzle-orm postgres-js transaction edge cases with RowList
+- [Phase 03-engine]: 03-16: PlanGenerationModule imports AlertingModule for SlackAlerterService injection into processor dead-letter handler
 
 ### Pending Todos
 
@@ -217,6 +222,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T16:55:14.043Z
-Stopped at: Completed 03-15-PLAN.md
+Last session: 2026-04-16T17:55:00Z
+Stopped at: Completed 03-16-PLAN.md
 Resume file: None
