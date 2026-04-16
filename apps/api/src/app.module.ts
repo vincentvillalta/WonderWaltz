@@ -13,6 +13,7 @@ import { PlansModule } from './plans/plans.module.js';
 import { SharedInfraModule } from './shared-infra.module.js';
 import { TripsModule } from './trips/trips.module.js';
 import { WeatherModule } from './weather/weather.module.js';
+import { WebhookModule } from './webhooks/webhook.module.js';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { WeatherModule } from './weather/weather.module.js';
     PlanGenerationModule,
     PackingListModule,
     PlansModule,
+    WebhookModule,
   ],
   providers: [
     {

@@ -58,7 +58,7 @@ export class EntitlementService {
       return null;
     }
 
-    return rows[0];
+    return rows[0] ?? null;
   }
 
   /**
