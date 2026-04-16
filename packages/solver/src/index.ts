@@ -13,6 +13,7 @@ export * from './shows.js';
 export * from './localSearch.js';
 export * from './resources.js';
 export * from './lightningLane.js';
+export * from './parkHours.js';
 
 import type { SolverInput, DayPlan } from './types.js';
 
