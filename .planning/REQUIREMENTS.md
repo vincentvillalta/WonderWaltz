@@ -111,11 +111,11 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Authentication & Accounts
 
-- [ ] **AUTH-01**: User can create an anonymous device-linked account via Supabase Auth without any input (silent onboarding)
+- [x] **AUTH-01**: User can create an anonymous device-linked account via Supabase Auth without any input (silent onboarding)
 - [ ] **AUTH-02**: User can create a trip, configure guests and preferences, and view the free Day 1 teaser without signing up
 - [ ] **AUTH-03**: User can upgrade anonymous account to Sign in with Apple or Sign in with Google; upgrade merges the anon account preserving all trips and state
 - [ ] **AUTH-04**: Upgrade to a real account is required before IAP purchase (enforced client-side at paywall, server-side on purchase validation)
-- [ ] **AUTH-05**: User can log out and back in on the same device preserving their trips
+- [x] **AUTH-05**: User can log out and back in on the same device preserving their trips
 - [ ] **AUTH-06**: User can sign in on a new device and restore their trips (read-only until device-level entitlement re-validated via RevenueCat)
 - [ ] **AUTH-07**: User can delete their account from Settings; confirmation required; deletion is hard and cascade-removes all data within 30 days (LEGL-06)
 
@@ -318,11 +318,11 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | PLAN-04 | Phase 3 | Complete |
 | PLAN-05 | Phase 3 | Complete |
 | PLAN-06 | Phase 3 | Complete |
-| AUTH-01 | Phase 4 | Pending |
+| AUTH-01 | Phase 4 | Complete |
 | AUTH-02 | Phase 4 | Pending |
 | AUTH-03 | Phase 4 | Pending |
 | AUTH-04 | Phase 4 | Pending |
-| AUTH-05 | Phase 4 | Pending |
+| AUTH-05 | Phase 4 | Complete |
 | AUTH-06 | Phase 4 | Pending |
 | AUTH-07 | Phase 4 | Pending |
 | IAP-01 | Phase 4 | Pending |

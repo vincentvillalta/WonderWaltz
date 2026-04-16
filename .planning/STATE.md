@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Phase 3 Gap Closure
-stopped_at: Phase 4 context gathered
-last_updated: "2026-04-16T20:57:20.361Z"
-last_activity: "2026-04-16 -- Completed Plan 03-20: Wire CostAlert + RateLimit + PackingList + Forecast (Gaps 2-5)"
+status: Phase 4 In Progress
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-04-16T21:36:22Z"
+last_activity: "2026-04-16 -- Completed Plan 04-01: Supabase Auth Foundation"
 progress:
   total_phases: 11
   completed_phases: 4
-  total_plans: 44
-  completed_plans: 44
-  percent: 100
+  total_plans: 49
+  completed_plans: 45
+  percent: 92
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** A first-time Walt Disney World visitor gets a plan that feels like a Disney expert made it for them.
-**Current focus:** Phase 3 — Engine
+**Current focus:** Phase 4 — Entitlements & Accounts
 
 ## Current Position
 
-Phase: 3 of 10 (Engine) -- GAP CLOSURE
-Plan: 20 of 20 in current phase (gap closure plan complete)
-Status: Phase 3 Gap Closure
-Last activity: 2026-04-16 -- Completed Plan 03-20: Wire CostAlert + RateLimit + PackingList + Forecast (Gaps 2-5)
+Phase: 4 of 10 (Entitlements & Accounts)
+Plan: 1 of 5 in current phase (complete)
+Status: Phase 4 In Progress
+Last activity: 2026-04-16 -- Completed Plan 04-01: Supabase Auth Foundation
 
-Progress: [██████████] 100%
+Progress: [█████████▏] 92%
 
 ## Performance Metrics
 
@@ -92,6 +92,7 @@ Progress: [██████████] 100%
 | Phase 03-engine P18 | 6 min | 2 tasks | 8 files |
 | Phase 03-engine P19 | 2 min | 2 tasks | 3 files |
 | Phase 03-engine P20 | 5 | 2 tasks | 5 files |
+| Phase 04-entitlements-accounts P01 | 5 min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -222,6 +223,9 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-19: warnings stored as TEXT with JSON.stringify (not JSONB) — matches plans.service.ts COALESCE pattern
 - [Phase 03-engine]: 03-19: metadata column kept as empty JSONB '{}' for future extensibility
 - [Phase 03-engine]: 03-20: CostAlertService.checkHitRate() wired inline after writeCostRow (fire-and-forget) instead of BullMQ cron — more responsive, Redis dedup prevents noise
+- [Phase 04-entitlements-accounts]: jose used for JWT signing via dynamic import — ESM-only library requires import() in CJS NestJS context
+- [Phase 04-entitlements-accounts]: Custom JWT signed with SUPABASE_JWT_SECRET rather than Supabase admin session API — admin.createUser does not return a session
+- [Phase 04-entitlements-accounts]: SUPABASE_ADMIN_TOKEN factory returns stub when env vars missing — unit tests run without Supabase credentials
 
 ### Pending Todos
 
@@ -237,6 +241,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T20:57:20.358Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-entitlements-accounts/04-CONTEXT.md
+Last session: 2026-04-16T21:36:22Z
+Stopped at: Completed 04-01-PLAN.md
+Resume file: .planning/phases/04-entitlements-accounts/04-02-PLAN.md
