@@ -8,6 +8,8 @@ export * from './walkingGraph.js';
 export * from './filter.js';
 export * from './score.js';
 export * from './construct.js';
+export * from './meals.js';
+export * from './shows.js';
 
 import type { SolverInput, DayPlan } from './types.js';
 
