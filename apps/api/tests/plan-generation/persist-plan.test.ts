@@ -169,7 +169,7 @@ describe('PersistPlanService', () => {
     });
 
     it('starts at version 1 when no prior plans exist', async () => {
-      const db = buildDbMock({ existingVersion: undefined });
+      const db = buildDbMock({});
       const svc = new PersistPlanService(db as never);
 
       const result = await svc.persist(BASE_INPUT);

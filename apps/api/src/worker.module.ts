@@ -44,6 +44,7 @@ function buildRedisConfig() {
     BullModule.forRoot({
       connection: buildRedisConfig(),
     }),
+    BullModule.registerQueue({ name: 'plan-generation' }),
     SharedInfraModule,
     IngestionModule,
     RollupModule,
