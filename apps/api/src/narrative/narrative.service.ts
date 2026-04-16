@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
 import { ANTHROPIC_CLIENT_TOKEN, type AnthropicLike } from './anthropic.client.js';
 import { buildCachedPrefix, buildDynamicPrompt, buildMessagesPayload } from './prompt.js';
 import {
@@ -7,6 +7,8 @@ import {
   type NarrativeResponse,
   type ValidationResult,
 } from './schema.js';
+import { calculateUsdCents, recordLlmCost } from './cost.js';
+import { DB_TOKEN } from '../ingestion/queue-times.service.js';
 
 /**
  * NarrativeService — Claude-powered narrative generation for trip plans.
@@ -111,11 +113,25 @@ function zeroUsage(): AnthropicUsage {
   };
 }
 
+/** Minimal Drizzle-compatible interface for raw SQL execution */
+interface DbExecutable {
+  execute(query: unknown): Promise<unknown>;
+}
+
+/** Context for cost tracking — tripId + planId for the llm_costs row */
+export interface CostContext {
+  tripId: string;
+  planId: string;
+}
+
 @Injectable()
 export class NarrativeService {
   private readonly logger = new Logger(NarrativeService.name);
 
-  constructor(@Inject(ANTHROPIC_CLIENT_TOKEN) private readonly client: AnthropicLike) {}
+  constructor(
+    @Inject(ANTHROPIC_CLIENT_TOKEN) private readonly client: AnthropicLike,
+    @Optional() @Inject(DB_TOKEN) private readonly db?: DbExecutable,
+  ) {}
 
   /**
    * Generates the full plan narrative using Sonnet (default).
@@ -132,6 +148,7 @@ export class NarrativeService {
   async generate(
     input: NarrativeInput,
     model: string = 'claude-sonnet-4-6',
+    costContext?: CostContext,
   ): Promise<GenerateResult> {
     const cachedPrefix = buildCachedPrefix();
     const dynamicPrompt = buildDynamicPrompt(input);
@@ -156,6 +173,8 @@ export class NarrativeService {
     const response = await this.client.messages.create(payload);
     const responseUsage = response.usage as AnthropicUsage;
     totalUsage = sumUsage(totalUsage, responseUsage);
+
+    await this.writeCostRow(model, responseUsage, costContext);
 
     const firstResult = this.parseAndValidate(response, solverPlanItemIds);
     if (firstResult.ok) {
@@ -184,6 +203,8 @@ export class NarrativeService {
     const retryResponse = await this.client.messages.create(retryPayload);
     const retryUsage = retryResponse.usage as AnthropicUsage;
     totalUsage = sumUsage(totalUsage, retryUsage);
+
+    await this.writeCostRow(model, retryUsage, costContext);
 
     const secondResult = this.parseAndValidate(retryResponse, solverPlanItemIds);
     if (secondResult.ok) {
@@ -214,6 +235,7 @@ export class NarrativeService {
    */
   async generateRethinkIntro(
     input: RethinkIntroInput,
+    costContext?: CostContext,
   ): Promise<{ intro: string; modelUsed: 'claude-haiku-4-5' }> {
     const cachedPrefix = buildCachedPrefix();
 
@@ -244,6 +266,10 @@ export class NarrativeService {
     });
 
     const response = await this.client.messages.create(payload);
+    const responseUsage = response.usage as AnthropicUsage;
+
+    await this.writeCostRow('claude-haiku-4-5', responseUsage, costContext);
+
     const text = this.extractText(response);
     const parsed = JSON.parse(text) as unknown;
     const validated = RethinkIntroSchema.parse(parsed);
@@ -274,6 +300,41 @@ export class NarrativeService {
     }
 
     return validateNarrative(parsed, solverPlanItemIds);
+  }
+
+  /**
+   * Writes a cost row to llm_costs after each Anthropic API call.
+   * Best-effort: errors are logged but never thrown (cost tracking
+   * must never crash the narrative pipeline).
+   */
+  private async writeCostRow(
+    model: string,
+    usage: AnthropicUsage,
+    costContext?: CostContext,
+  ): Promise<void> {
+    if (!this.db) return;
+
+    try {
+      const usdCents = calculateUsdCents({
+        model,
+        input_tokens: usage.input_tokens,
+        cache_creation_input_tokens: usage.cache_creation_input_tokens,
+        cache_read_input_tokens: usage.cache_read_input_tokens,
+        output_tokens: usage.output_tokens,
+      });
+
+      await recordLlmCost(this.db, {
+        tripId: costContext?.tripId ?? null,
+        planId: costContext?.planId ?? null,
+        model,
+        inputTok: usage.input_tokens,
+        cachedReadTok: usage.cache_read_input_tokens,
+        outputTok: usage.output_tokens,
+        usdCents,
+      });
+    } catch (err) {
+      this.logger.error('Failed to record LLM cost row', err);
+    }
   }
 
   private extractText(response: { content: Array<{ type: string; text?: string }> }): string {

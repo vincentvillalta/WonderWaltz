@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { describe, expect, it, beforeEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { createAnthropicMock, type AnthropicMock, type MockMessage } from '../anthropic-mock.js';
 import { NarrativeService, type NarrativeInput } from '../../src/narrative/narrative.service.js';
 import type { AnthropicLike } from '../../src/narrative/anthropic.client.js';
@@ -116,13 +116,20 @@ const HIT_USAGE: MockMessage['usage'] = {
   cache_read_input_tokens: 4800,
 };
 
+/** Mock DB that records execute calls for cost row verification */
+function createMockDb() {
+  return { execute: vi.fn().mockResolvedValue([]) };
+}
+
 describe('NarrativeService.generate — full pipeline', () => {
   let mock: AnthropicMock;
+  let mockDb: ReturnType<typeof createMockDb>;
   let service: NarrativeService;
 
   beforeEach(() => {
     mock = createAnthropicMock();
-    service = new NarrativeService(mock as unknown as AnthropicLike);
+    mockDb = createMockDb();
+    service = new NarrativeService(mock as unknown as AnthropicLike, mockDb);
   });
 
   it('happy path: valid fixture returns narrativeAvailable:true', async () => {
@@ -235,13 +242,132 @@ describe('NarrativeService.generate — full pipeline', () => {
   });
 });
 
-describe('NarrativeService.generateRethinkIntro', () => {
+describe('NarrativeService cost tracking', () => {
   let mock: AnthropicMock;
+  let mockDb: ReturnType<typeof createMockDb>;
   let service: NarrativeService;
 
   beforeEach(() => {
     mock = createAnthropicMock();
-    service = new NarrativeService(mock as unknown as AnthropicLike);
+    mockDb = createMockDb();
+    service = new NarrativeService(mock as unknown as AnthropicLike, mockDb);
+  });
+
+  it('writes one cost row on successful generate (single attempt)', async () => {
+    const validText = substituteIds(loadFixtureText('narrative-response.json'));
+    mock.messages.create = (params) => {
+      mock.calls.push(params);
+      return Promise.resolve(makeMockResponse(params.model, validText, BASE_USAGE));
+    };
+
+    await service.generate(makeInput(), 'claude-sonnet-4-6', {
+      tripId: 'trip-uuid-001',
+      planId: 'plan-uuid-001',
+    });
+
+    // One Anthropic call = one cost row
+    expect(mockDb.execute).toHaveBeenCalledTimes(1);
+  });
+
+  it('writes two cost rows on retry (both attempts)', async () => {
+    const invalidText = '{"invalid": "json structure"}';
+    const validText = substituteIds(loadFixtureText('narrative-response.json'));
+    let callCount = 0;
+
+    mock.messages.create = (params) => {
+      mock.calls.push(params);
+      callCount++;
+      const text = callCount === 1 ? invalidText : validText;
+      return Promise.resolve(makeMockResponse(params.model, text, HIT_USAGE));
+    };
+
+    await service.generate(makeInput(), 'claude-sonnet-4-6', {
+      tripId: 'trip-uuid-001',
+      planId: 'plan-uuid-001',
+    });
+
+    // Two Anthropic calls = two cost rows
+    expect(mockDb.execute).toHaveBeenCalledTimes(2);
+  });
+
+  it('writes cost row for rethink intro', async () => {
+    const introJson = JSON.stringify({
+      intro:
+        'Since you have already conquered Space Mountain, the rest of your afternoon shifts to a relaxed Frontierland loop.',
+    });
+    const introUsage: MockMessage['usage'] = {
+      input_tokens: 100,
+      output_tokens: 50,
+      cache_creation_input_tokens: 0,
+      cache_read_input_tokens: 4800,
+    };
+
+    mock.messages.create = (params) => {
+      mock.calls.push(params);
+      return Promise.resolve(makeMockResponse(params.model, introJson, introUsage));
+    };
+
+    await service.generateRethinkIntro(
+      {
+        tripId: 'trip-test-001',
+        dayIndex: 0,
+        completedItemIds: ['plan-item-0-0'],
+        remainingItems: [
+          {
+            planItemId: 'plan-item-0-1',
+            attractionId: 'wdw-mk-space-mountain',
+            attractionName: 'Space Mountain',
+            scheduledStart: '09:45',
+            scheduledEnd: '10:15',
+          },
+        ],
+      },
+      { tripId: 'trip-uuid-001', planId: 'plan-uuid-001' },
+    );
+
+    expect(mockDb.execute).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not crash if DB write fails', async () => {
+    mockDb.execute.mockRejectedValue(new Error('DB down'));
+    const validText = substituteIds(loadFixtureText('narrative-response.json'));
+    mock.messages.create = (params) => {
+      mock.calls.push(params);
+      return Promise.resolve(makeMockResponse(params.model, validText, BASE_USAGE));
+    };
+
+    // Should not throw even though DB is down
+    const result = await service.generate(makeInput(), 'claude-sonnet-4-6', {
+      tripId: 'trip-uuid-001',
+      planId: 'plan-uuid-001',
+    });
+    expect(result.narrativeAvailable).toBe(true);
+  });
+
+  it('works without db injected (no cost tracking)', async () => {
+    const noCostService = new NarrativeService(mock as unknown as AnthropicLike);
+    const validText = substituteIds(loadFixtureText('narrative-response.json'));
+    mock.messages.create = (params) => {
+      mock.calls.push(params);
+      return Promise.resolve(makeMockResponse(params.model, validText, BASE_USAGE));
+    };
+
+    const result = await noCostService.generate(makeInput());
+    expect(result.narrativeAvailable).toBe(true);
+    // No db = no execute calls
+    expect(mockDb.execute).not.toHaveBeenCalled();
+  });
+});
+
+describe('NarrativeService.generateRethinkIntro', () => {
+  let mock: AnthropicMock;
+  let mockDb: ReturnType<typeof createMockDb>;
+  let service: NarrativeService;
+
+  beforeEach(() => {
+    mock = createAnthropicMock();
+    mockDb = createMockDb();
+    service = new NarrativeService(mock as unknown as AnthropicLike, mockDb);
   });
 
   it('returns intro string using haiku model', async () => {
