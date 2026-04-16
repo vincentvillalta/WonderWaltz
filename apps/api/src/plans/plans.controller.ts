@@ -1,11 +1,13 @@
-import { Controller, Get, HttpException, Param } from '@nestjs/common';
+import { Controller, Get, HttpException, Param, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiEnvelopedResponse } from '../common/decorators/api-enveloped-response.decorator.js';
+import { SupabaseAuthGuard } from '../auth/auth.guard.js';
 import { PlanDto } from '../shared/dto/plan.dto.js';
 import { PlansService } from './plans.service.js';
 
 @ApiTags('plans')
 @Controller('plans')
+@UseGuards(SupabaseAuthGuard)
 export class PlansController {
   constructor(private readonly plansService: PlansService) {}
 

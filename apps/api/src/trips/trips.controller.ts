@@ -14,6 +14,8 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/s
 import { sql } from 'drizzle-orm';
 import type { Queue } from 'bullmq';
 import { ApiEnvelopedResponse } from '../common/decorators/api-enveloped-response.decorator.js';
+import { AnonymousTripLimitGuard } from '../auth/anonymous-trip-limit.guard.js';
+import { SupabaseAuthGuard } from '../auth/auth.guard.js';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
 import { CircuitBreakerService } from '../plan-generation/circuit-breaker.service.js';
 import { RateLimitGuard, RateLimit } from '../plan-generation/rate-limit.guard.js';
@@ -38,6 +40,7 @@ interface PlanItemRow extends Record<string, unknown> {
 
 @ApiTags('trips')
 @Controller('trips')
+@UseGuards(SupabaseAuthGuard)
 export class TripsController {
   constructor(
     @InjectQueue('plan-generation') private readonly queue: Queue,
@@ -50,6 +53,7 @@ export class TripsController {
    * Create a new trip. Phase 3 implementation.
    */
   @Post()
+  @UseGuards(SupabaseAuthGuard, AnonymousTripLimitGuard)
   @HttpCode(501)
   @ApiOperation({
     summary: 'Create a trip (Phase 3)',
@@ -60,6 +64,7 @@ export class TripsController {
   @ApiBody({ type: CreateTripDto })
   @ApiEnvelopedResponse(TripDto)
   @ApiResponse({ status: 501, description: 'Not implemented until Phase 3' })
+  @ApiResponse({ status: 403, description: 'Anonymous users limited to 1 trip' })
   createTrip(@Body() _body: CreateTripDto): never {
     throw new HttpException('Not Implemented', 501);
   }
