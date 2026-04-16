@@ -121,13 +121,13 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### Monetization & Entitlements
 
-- [ ] **IAP-01**: Single consumable IAP product `trip_unlock` at $9.99 configured in App Store Connect and Google Play Console
-- [ ] **IAP-02**: iOS uses StoreKit 2 via RevenueCat Purchases SDK; Android uses Google Play Billing via RevenueCat Purchases SDK
-- [ ] **IAP-03**: Purchase flow: user taps "Unlock Trip" → native paywall → transaction committed → RevenueCat receipt validated → webhook to backend → `entitlement` row created → `trips.entitlement_state = unlocked` → UI refreshes
-- [ ] **IAP-04**: RevenueCat webhook handles `INITIAL_PURCHASE`, `REFUND`, `CANCELLATION`, `EXPIRATION`, `NON_RENEWING_PURCHASE`; refund revokes entitlement on the specific trip
+- [x] **IAP-01**: Single consumable IAP product `trip_unlock` at $9.99 configured in App Store Connect and Google Play Console
+- [x] **IAP-02**: iOS uses StoreKit 2 via RevenueCat Purchases SDK; Android uses Google Play Billing via RevenueCat Purchases SDK
+- [x] **IAP-03**: Purchase flow: user taps "Unlock Trip" → native paywall → transaction committed → RevenueCat receipt validated → webhook to backend → `entitlement` row created → `trips.entitlement_state = unlocked` → UI refreshes
+- [x] **IAP-04**: RevenueCat webhook handles `INITIAL_PURCHASE`, `REFUND`, `CANCELLATION`, `EXPIRATION`, `NON_RENEWING_PURCHASE`; refund revokes entitlement on the specific trip
 - [ ] **IAP-05**: User can restore purchases from Settings; RevenueCat SDK `restorePurchases()` is the canonical path; backend entitlements are the source of truth
 - [ ] **IAP-06**: App Store review notes explicitly explain the consumable model: "each $9.99 unlock applies to one trip; once applied, the credit is consumed and cannot be reused" (Phase 10 submission asset)
-- [ ] **IAP-07**: Affiliate links (Amazon Associates) in packing list are rewritten server-side with the affiliate tag at read time; no client knowledge of the tag
+- [x] **IAP-07**: Affiliate links (Amazon Associates) in packing list are rewritten server-side with the affiliate tag at read time; no client knowledge of the tag
 
 ### iOS App (Phase 5 + Phase 6 + Phase 9)
 
@@ -325,13 +325,13 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | AUTH-05 | Phase 4 | Complete |
 | AUTH-06 | Phase 4 | Complete |
 | AUTH-07 | Phase 4 | Pending |
-| IAP-01 | Phase 4 | Pending |
-| IAP-02 | Phase 4 | Pending |
-| IAP-03 | Phase 4 | Pending |
-| IAP-04 | Phase 4 | Pending |
+| IAP-01 | Phase 4 | Complete |
+| IAP-02 | Phase 4 | Complete |
+| IAP-03 | Phase 4 | Complete |
+| IAP-04 | Phase 4 | Complete |
 | IAP-05 | Phase 4 | Pending |
 | IAP-06 | Phase 4 | Pending |
-| IAP-07 | Phase 4 | Pending |
+| IAP-07 | Phase 4 | Complete |
 | IOS-01 | Phase 5 | Pending |
 | IOS-02 | Phase 5 | Pending |
 | IOS-03 | Phase 5 | Pending |

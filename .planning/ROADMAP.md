@@ -210,7 +210,7 @@ Plans:
 | 1. Foundation | 10/11 | In Progress|  |
 | 2. Data Pipeline | 11/12 | In Progress|  |
 | 3. Engine | 20/20 | Complete   | 2026-04-16 |
-| 4. Entitlements & Accounts | 2/5 | In Progress|  |
+| 4. Entitlements & Accounts | 3/5 | In Progress|  |
 | 5. iOS Core | 0/TBD | Not started | - |
 | 6. iOS Paywall & Notifications | 0/TBD | Not started | - |
 | 7. Android | 0/TBD | Not started | - |

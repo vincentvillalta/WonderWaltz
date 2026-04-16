@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Phase 4 In Progress
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-04-16T21:42:01Z"
-last_activity: "2026-04-16 -- Completed Plan 04-02: Account Upgrade Flow and User Profile"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-04-16T21:48:23Z"
+last_activity: "2026-04-16 -- Completed Plan 04-03: RevenueCat Webhook Handler"
 progress:
   total_phases: 11
   completed_phases: 4
   total_plans: 49
-  completed_plans: 46
-  percent: 94
+  completed_plans: 47
+  percent: 95
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 4 of 10 (Entitlements & Accounts)
-Plan: 2 of 5 in current phase (complete)
+Plan: 3 of 5 in current phase (complete)
 Status: Phase 4 In Progress
-Last activity: 2026-04-16 -- Completed Plan 04-02: Account Upgrade Flow and User Profile
+Last activity: 2026-04-16 -- Completed Plan 04-03: RevenueCat Webhook Handler
 
-Progress: [█████████▍] 94%
+Progress: [█████████▌] 95%
 
 ## Performance Metrics
 
@@ -94,6 +94,7 @@ Progress: [█████████▍] 94%
 | Phase 03-engine P20 | 5 | 2 tasks | 5 files |
 | Phase 04-entitlements-accounts P01 | 5 min | 2 tasks | 7 files |
 | Phase 04-entitlements-accounts P02 | 3 min | 2 tasks | 9 files |
+| Phase 04-entitlements-accounts P03 | 5 min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -229,6 +230,9 @@ Recent decisions affecting current work:
 - [Phase 04-entitlements-accounts]: SUPABASE_ADMIN_TOKEN factory returns stub when env vars missing — unit tests run without Supabase credentials
 - [Phase 04-entitlements-accounts]: exactOptionalPropertyTypes-safe DTO construction — conditional assignment instead of ?? undefined for optional fields
 - [Phase 04-entitlements-accounts]: AnonymousPurchaseGuard is synchronous CanActivate (no async) — reads request.user set by prior SupabaseAuthGuard
+- [Phase 04-entitlements-accounts]: WebhookAuthGuard synchronous CanActivate reading REVENUECAT_WEBHOOK_AUTH_KEY from env — no Supabase auth for server-to-server webhooks
+- [Phase 04-entitlements-accounts]: createEntitlement uses ON CONFLICT (revenuecat_id) DO NOTHING — duplicate purchase events are idempotent no-ops
+- [Phase 04-entitlements-accounts]: REFUND falls back to entitlement record lookup if trip_id missing from subscriber_attributes
 
 ### Pending Todos
 
@@ -244,6 +248,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T21:42:01Z
-Stopped at: Completed 04-02-PLAN.md
-Resume file: .planning/phases/04-entitlements-accounts/04-03-PLAN.md
+Last session: 2026-04-16T21:48:23Z
+Stopped at: Completed 04-03-PLAN.md
+Resume file: .planning/phases/04-entitlements-accounts/04-04-PLAN.md
