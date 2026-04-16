@@ -10,6 +10,7 @@ export * from './score.js';
 export * from './construct.js';
 export * from './meals.js';
 export * from './shows.js';
+export * from './localSearch.js';
 
 import type { SolverInput, DayPlan } from './types.js';
 
