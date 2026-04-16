@@ -13,7 +13,7 @@ WonderWaltz v1 is built in eleven sequential phases — zero parallel platform t
 - [x] **Phase 0: Name Lock** - Trademark search on "WonderWaltz" before any public commitment (completed 2026-04-09)
 - [ ] **Phase 1: Foundation** - Monorepo scaffolding, DB schema, design system, disclaimer architecture
 - [ ] **Phase 2: Data Pipeline** - Ingestion workers live in production; 8-week data accumulation clock starts
-- [ ] **Phase 3: Engine** - Solver + LLM narrative layer + async plan generation API (gap closure in progress)
+- [x] **Phase 3: Engine** - Solver + LLM narrative layer + async plan generation API (gap closure in progress) (completed 2026-04-16)
 - [ ] **Phase 4: Entitlements & Accounts** - Auth, IAP backend, RevenueCat webhook, account deletion
 - [ ] **Phase 5: iOS Core** - Trip wizard, plan view, offline sync, design system integration
 - [ ] **Phase 6: iOS Paywall & Notifications** - StoreKit 2 paywall, countdown widget, push notifications
@@ -202,7 +202,7 @@ Plans:
 | 0. Name Lock | 1/1 | Complete    | 2026-04-09 |
 | 1. Foundation | 10/11 | In Progress|  |
 | 2. Data Pipeline | 11/12 | In Progress|  |
-| 3. Engine | 19/20 | In Progress|  |
+| 3. Engine | 20/20 | Complete   | 2026-04-16 |
 | 4. Entitlements & Accounts | 0/TBD | Not started | - |
 | 5. iOS Core | 0/TBD | Not started | - |
 | 6. iOS Paywall & Notifications | 0/TBD | Not started | - |

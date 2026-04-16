@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 03-17-PLAN.md
-last_updated: "2026-04-16T16:55:14.046Z"
-last_activity: "2026-04-16 — Completed Plan 03-16: PlanGenerationProcessor — BullMQ orchestrator with cache-hit short-circuit"
+status: Phase 3 Gap Closure
+stopped_at: "Completed 03-20-PLAN.md (Gap closure: wire CostAlert + RateLimit + PackingList + Forecast)"
+last_updated: "2026-04-16T19:42:12.420Z"
+last_activity: "2026-04-16 -- Completed Plan 03-19: DB schema alignment (8 missing columns)"
 progress:
   total_phases: 11
-  completed_phases: 3
-  total_plans: 42
-  completed_plans: 42
+  completed_phases: 4
+  total_plans: 44
+  completed_plans: 44
   percent: 100
 ---
 
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine) -- GAP CLOSURE
-Plan: 19 of 19 in current phase (gap closure plan complete)
+Plan: 20 of 20 in current phase (gap closure plan complete)
 Status: Phase 3 Gap Closure
-Last activity: 2026-04-16 -- Completed Plan 03-19: DB schema alignment (8 missing columns)
+Last activity: 2026-04-16 -- Completed Plan 03-20: Wire CostAlert + RateLimit + PackingList + Forecast (Gaps 2-5)
 
 Progress: [██████████] 100%
 
@@ -91,6 +91,7 @@ Progress: [██████████] 100%
 | Phase 03-engine P17 | 31 min | 3 tasks | 10 files |
 | Phase 03-engine P18 | 6 min | 2 tasks | 8 files |
 | Phase 03-engine P19 | 2 min | 2 tasks | 3 files |
+| Phase 03-engine P20 | 5 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -220,6 +221,7 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-19: RENAME COLUMN (narrative -> narrative_intro/narrative_tip) instead of adding alias columns — Postgres lacks aliases; safe since only persist-plan + plans.service touch these tables
 - [Phase 03-engine]: 03-19: warnings stored as TEXT with JSON.stringify (not JSONB) — matches plans.service.ts COALESCE pattern
 - [Phase 03-engine]: 03-19: metadata column kept as empty JSONB '{}' for future extensibility
+- [Phase 03-engine]: 03-20: CostAlertService.checkHitRate() wired inline after writeCostRow (fire-and-forget) instead of BullMQ cron — more responsive, Redis dedup prevents noise
 
 ### Pending Todos
 
@@ -235,6 +237,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T19:35:00Z
-Stopped at: Completed 03-19-PLAN.md (Gap closure: DB schema alignment)
+Last session: 2026-04-16T19:42:12.418Z
+Stopped at: Completed 03-20-PLAN.md (Gap closure: wire CostAlert + RateLimit + PackingList + Forecast)
 Resume file: None
