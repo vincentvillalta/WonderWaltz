@@ -9,8 +9,8 @@ import type { NarrativeResponse } from '../narrative/schema.js';
  *
  * Inserts into:
  *   1. plans (trip_id, solver_input_hash, version, status, generated_at)
- *   2. plan_days (plan_id, day_index, park_id, date, narrative)
- *   3. plan_items (plan_day_id, item_type, ref_id, start_time, end_time, sort_index, narrative, metadata)
+ *   2. plan_days (plan_id, day_index, park_id, date, narrative_intro, forecast_confidence)
+ *   3. plan_items (plan_day_id, item_type, ref_id, name, start_time, end_time, wait_minutes, sort_index, lightning_lane_type, notes, narrative_tip, metadata)
  *
  * LLM costs are written by NarrativeService inline (best-effort).
  *
@@ -81,10 +81,14 @@ export class PersistPlanService {
     const currentMax = Number(versionRows[0]?.max_version) || 0;
     const nextVersion = currentMax + 1;
 
+    // Collect all warnings across days
+    const allWarnings = input.solverOutput.flatMap((d) => d.warnings);
+    const warningsJson = JSON.stringify(allWarnings);
+
     // 1. INSERT plan
     const planRows = await this.queryRows<PlanIdRow>(sql`
-      INSERT INTO plans (trip_id, solver_input_hash, version, status, generated_at)
-      VALUES (${input.tripId}, ${input.solverInputHash}, ${nextVersion}, 'ready', NOW())
+      INSERT INTO plans (trip_id, solver_input_hash, version, status, warnings, generated_at)
+      VALUES (${input.tripId}, ${input.solverInputHash}, ${nextVersion}, 'ready', ${warningsJson}, NOW())
       RETURNING id
     `);
 
@@ -100,7 +104,7 @@ export class PersistPlanService {
       const dayNarrative = narrativeDay?.intro ?? null;
 
       const dayRows = await this.queryRows<PlanDayIdRow>(sql`
-        INSERT INTO plan_days (plan_id, day_index, park_id, date, narrative)
+        INSERT INTO plan_days (plan_id, day_index, park_id, date, narrative_intro)
         VALUES (${planId}, ${day.dayIndex}, ${day.parkId}, ${day.date}, ${dayNarrative})
         RETURNING id
       `);
@@ -118,22 +122,13 @@ export class PersistPlanService {
         );
         const itemNarrative = narrativeItem?.tip ?? null;
 
-        // Build metadata JSON
-        const metadata: Record<string, unknown> = {};
-        if (item.lightningLaneType) {
-          metadata['lightning_lane_type'] = item.lightningLaneType;
-        }
-        if (item.waitMinutes !== undefined) {
-          metadata['wait_minutes'] = item.waitMinutes;
-        }
-
         // Extract HH:MM from ISO or full time strings
         const startTime = this.extractTime(item.startTime);
         const endTime = this.extractTime(item.endTime);
 
         await this.db.execute(sql`
-          INSERT INTO plan_items (plan_day_id, item_type, ref_id, start_time, end_time, sort_index, narrative, metadata)
-          VALUES (${planDayId}, ${item.type}, ${item.refId ?? null}, ${startTime}, ${endTime}, ${sortIndex}, ${itemNarrative}, ${JSON.stringify(metadata)}::jsonb)
+          INSERT INTO plan_items (plan_day_id, item_type, ref_id, name, start_time, end_time, wait_minutes, sort_index, lightning_lane_type, notes, narrative_tip, metadata)
+          VALUES (${planDayId}, ${item.type}, ${item.refId ?? null}, ${item.name}, ${startTime}, ${endTime}, ${item.waitMinutes ?? null}, ${sortIndex}, ${item.lightningLaneType ?? null}, ${item.notes ?? null}, ${itemNarrative}, '{}'::jsonb)
         `);
       }
     }
