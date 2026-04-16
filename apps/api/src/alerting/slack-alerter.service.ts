@@ -74,6 +74,15 @@ export class SlackAlerterService {
   }
 
   /**
+   * Sends a generic alert to Slack. Used by CostAlertService (LLM-06)
+   * and any other service that needs a simple Slack notification.
+   * Best-effort — errors are logged but never thrown.
+   */
+  async sendAlert(message: string): Promise<void> {
+    await this.postToSlack(`:warning: ${message}`);
+  }
+
+  /**
    * Internal helper: POST a message to the Slack incoming webhook.
    * Best-effort — errors are logged but never thrown.
    */
