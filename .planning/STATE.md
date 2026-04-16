@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-14-PLAN.md
-last_updated: "2026-04-16T13:25:00.000Z"
-last_activity: "2026-04-16 — Completed Plan 03-14: Model ID Pinning + Per-Trip Circuit Breaker (LLM-03, LLM-07) — env-var-pinned Sonnet/Haiku model IDs, per-trip $0.50 circuit breaker, 3-sink telemetry"
+stopped_at: Completed 03-10-PLAN.md
+last_updated: "2026-04-16T14:50:00.000Z"
+last_activity: "2026-04-16 — Completed Plan 03-10: Solver Pipeline Orchestration + Determinism Gate (SOLV-11, SOLV-12)"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 37
-  percent: 76
+  completed_plans: 38
+  percent: 79
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 14 of 18 in current phase
+Plan: 15 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-16 — Completed Plan 03-14: Model ID Pinning + Per-Trip Circuit Breaker (LLM-03, LLM-07) — env-var-pinned Sonnet/Haiku model IDs, per-trip $0.50 circuit breaker with Sonnet-to-Haiku swap, 402 exhaustion contract, 3-sink telemetry
+Last activity: 2026-04-16 — Completed Plan 03-10: Solver Pipeline Orchestration + Determinism Gate (SOLV-11, SOLV-12) — solve() wired end-to-end, 6 canonical snapshots, 100-run determinism proven
 
-Progress: [████████░░] 76%
+Progress: [█████████░] 79%
 
 ## Performance Metrics
 
@@ -85,6 +85,7 @@ Progress: [████████░░] 76%
 | Phase 03-engine P08 | 14 min | 3 tasks | 9 files |
 | Phase 03-engine P09 | 6 | 2 tasks | 5 files |
 | Phase 03-engine P14 | 12 min | 3 tasks | 6 files |
+| Phase 03-engine P10 | 60 min | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -194,6 +195,10 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-14: BudgetExhaustedError is typed Error subclass (not HttpException) — plan-generation orchestrator maps to 402 at controller layer
 - [Phase 03-engine]: 03-14: Budget check runs once per generate() call; retry reuses same model decision — avoids double DB query
 - [Phase 03-engine]: 03-14: Slack dedup key 'circuit-breaker:slack-dedup' separate from cost-alert dedup — independent hourly rate limits
+- [Phase 03-engine]: 03-10: Round-robin park assignment across trip dates using sorted unique parkIds — deterministic, simple
+- [Phase 03-engine]: 03-10: Hash-based forecast fallback SHA-256(rideId+slot)[0]%60+baseline/2 when no real buckets exist
+- [Phase 03-engine]: 03-10: Multi-day dedup via sorting (visited rides after unvisited) not exclusion — allows re-rides if needed
+- [Phase 03-engine]: 03-10: construct.ts buildIso rounds fractional minutes with Math.round — prevents invalid ISO strings from walk-time division
 
 ### Pending Todos
 
@@ -209,6 +214,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T13:25:00.000Z
-Stopped at: Completed 03-14-PLAN.md
+Last session: 2026-04-16T14:50:00.000Z
+Stopped at: Completed 03-10-PLAN.md
 Resume file: None

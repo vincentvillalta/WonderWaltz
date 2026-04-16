@@ -199,7 +199,7 @@ Plans:
 | 0. Name Lock | 1/1 | Complete    | 2026-04-09 |
 | 1. Foundation | 10/11 | In Progress|  |
 | 2. Data Pipeline | 11/12 | In Progress|  |
-| 3. Engine | 13/18 | In Progress|  |
+| 3. Engine | 14/18 | In Progress|  |
 | 4. Entitlements & Accounts | 0/TBD | Not started | - |
 | 5. iOS Core | 0/TBD | Not started | - |
 | 6. iOS Paywall & Notifications | 0/TBD | Not started | - |

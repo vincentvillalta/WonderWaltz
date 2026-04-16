@@ -85,8 +85,8 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **SOLV-08**: Solver encodes **DAS constraint**: when `trip.das_flag === true`, DAS return windows are modeled as LL-equivalent resource (same per-day budget math) with narrative explaining DAS application via Disney's video chat
 - [x] **SOLV-09**: Solver encodes **on-property advantages**: Early Entry (+30 min) for any on-property hotel; Extended Evening Hours on eligible nights for Deluxe / Deluxe Villa
 - [x] **SOLV-10**: Solver encodes **budget tier rules**: Pixie Dust = 0 LL + 1 rest/3hr + value dining; Fairy Tale = LLMP + 0-1 LLSP + 1 rest/2hr + moderate dining; Royal Treatment = LLMP + up to 2 LLSP + resort mid-day break + signature dining
-- [ ] **SOLV-11**: Solver output is deterministic: same `SolverInput` produces identical `DayPlan[]`; `solver_input_hash` used to cache results
-- [ ] **SOLV-12**: Solver snapshot test suite covers six fixture trips: single-day MK with toddler, 3-day all-parks family, adult thrill-day, mobility-constrained multi-day, ECV guest with DAS flag, 5-day Royal Treatment trip
+- [x] **SOLV-11**: Solver output is deterministic: same `SolverInput` produces identical `DayPlan[]`; `solver_input_hash` used to cache results
+- [x] **SOLV-12**: Solver snapshot test suite covers six fixture trips: single-day MK with toddler, 3-day all-parks family, adult thrill-day, mobility-constrained multi-day, ECV guest with DAS flag, 5-day Royal Treatment trip
 - [x] **SOLV-13**: Solver walking graph preloaded from Postgres + PostGIS into process memory at worker startup (not queried per job)
 
 ### LLM Narrative Layer
@@ -301,8 +301,8 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | SOLV-08 | Phase 3 | Complete |
 | SOLV-09 | Phase 3 | Complete |
 | SOLV-10 | Phase 3 | Complete |
-| SOLV-11 | Phase 3 | Pending |
-| SOLV-12 | Phase 3 | Pending |
+| SOLV-11 | Phase 3 | Complete |
+| SOLV-12 | Phase 3 | Complete |
 | SOLV-13 | Phase 3 | Complete |
 | LLM-01 | Phase 3 | Complete |
 | LLM-02 | Phase 3 | Complete |
