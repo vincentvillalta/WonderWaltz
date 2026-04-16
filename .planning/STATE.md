@@ -10,8 +10,8 @@ progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 41
-  percent: 97
+  completed_plans: 42
+  percent: 100
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 
 ## Current Position
 
-Phase: 3 of 10 (Engine)
-Plan: 18 of 18 in current phase
-Status: In Progress
-Last activity: 2026-04-16 — Completed Plan 03-17: HTTP endpoints (generate-plan, rethink-today, getPlan) with entitlement projection
+Phase: 3 of 10 (Engine) -- COMPLETE
+Plan: 18 of 18 in current phase (ALL COMPLETE)
+Status: Phase 3 Complete
+Last activity: 2026-04-16 -- Completed Plan 03-18: Packing list generator + affiliate tag injection (LAST PLAN)
 
-Progress: [█████████░] 97%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -89,6 +89,7 @@ Progress: [█████████░] 97%
 | Phase 03-engine P15 | 8 | 2 tasks | 6 files |
 | Phase 03-engine P16 | 58 min | 3 tasks | 9 files |
 | Phase 03-engine P17 | 31 min | 3 tasks | 10 files |
+| Phase 03-engine P18 | 6 min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -212,6 +213,9 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-17: Budget check at controller layer before BullMQ enqueue — fail fast on 402 without entering queue
 - [Phase 03-engine]: 03-17: In-progress inference uses UTC minutes-since-midnight — matches solver timezone-naive convention from 03-07
 - [Phase 03-engine]: 03-17: PlansService.getPlan returns null for missing plans — controller maps to 404, keeps service testable without HTTP exceptions
+- [Phase 03-engine]: 03-18: Water rides hardcoded as Set (not tagged in attractions.yaml) — YAML has no gets_wet field; Set is simpler for handful of known rides
+- [Phase 03-engine]: 03-18: AffiliateService uses @Optional() injection in PlansService — backwards-compatible with existing tests
+- [Phase 03-engine]: 03-18: Amazon Associates tag sourced from AMAZON_ASSOCIATES_TAG env var, default wonderwaltz-20 — configurable without code change
 
 ### Pending Todos
 
@@ -227,6 +231,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T18:31:00Z
-Stopped at: Completed 03-17-PLAN.md
+Last session: 2026-04-16T18:42:00Z
+Stopped at: Completed 03-18-PLAN.md (Phase 3 COMPLETE)
 Resume file: None

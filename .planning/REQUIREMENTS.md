@@ -107,7 +107,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **PLAN-03**: Plan generation job: load trip → hydrate solver input (catalog, walking graph, forecasts, weather) → run solver → run NarrativeModule → persist `plans` + `plan_days` + `plan_items` + `llm_costs` → update `trips.plan_status`
 - [x] **PLAN-04**: Plan generation supports on-demand re-optimization: `POST /trips/:id/rethink-today` takes `{ current_time, completed_item_ids }` and regenerates the remaining day with Haiku
 - [x] **PLAN-05**: Free-tier plan generation is rate-limited per device: 3 free plans/lifetime per anonymous user; enforced in middleware
-- [ ] **PLAN-06**: Packing list is generated per plan: solver + weather + temperature + guest ages drive item selection; items rewritten with Amazon Associates affiliate tag at read time
+- [x] **PLAN-06**: Packing list is generated per plan: solver + weather + temperature + guest ages drive item selection; items rewritten with Amazon Associates affiliate tag at read time
 
 ### Authentication & Accounts
 
@@ -317,7 +317,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | PLAN-03 | Phase 3 | Complete |
 | PLAN-04 | Phase 3 | Complete |
 | PLAN-05 | Phase 3 | Complete |
-| PLAN-06 | Phase 3 | Pending |
+| PLAN-06 | Phase 3 | Complete |
 | AUTH-01 | Phase 4 | Pending |
 | AUTH-02 | Phase 4 | Pending |
 | AUTH-03 | Phase 4 | Pending |
