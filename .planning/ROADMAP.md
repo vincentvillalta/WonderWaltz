@@ -134,11 +134,20 @@ Plans:
 **Requirements**: IOS-01, IOS-02, IOS-03, IOS-04, IOS-05, IOS-06, IOS-07, IOS-14, IOS-15, IOS-16, IOS-17, IOS-18
 **Success Criteria** (what must be TRUE):
   1. App builds with `xcodebuild` in CI on every PR; Swift OpenAPI Generator regenerates the networking client from `packages/shared-openapi/openapi.json` at build time and the build is clean
-  2. A tester can complete the full trip wizard (dates → guests with DAS flag → budget tier → must-do rides → review) and see a real Day 1 plan on their iPhone
+  2. A tester can complete the full trip wizard (dates -> guests with DAS flag -> budget tier -> must-do rides -> review) and see a real Day 1 plan on their iPhone
   3. Airplane mode engaged after plan sync: all plan items, catalog subset, walking graph, and static maps are readable without network; no spinner or error state appears
   4. VoiceOver navigates all screens without getting stuck; Dynamic Type at `accessibility5` does not clip or truncate any critical text; reduced motion suppresses animations
   5. Sentry Cocoa is initialized before the first screen renders; PostHog tracks `plan_viewed` without including any guest age data in event properties
-**Plans**: TBD
+**Plans**: 7 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Xcode project restructure + SPM deps + OpenAPI client + design system + Sentry/PostHog + String Catalog (IOS-01, IOS-02, IOS-03, IOS-14, IOS-15, IOS-16)
+- [ ] 05-02-PLAN.md — SwiftData models + offline persistence layer + sync coordinator (IOS-04, IOS-18)
+- [ ] 05-03-PLAN.md — App shell + navigation + AuthService + splash + onboarding flow (IOS-05)
+- [ ] 05-04-PLAN.md — Trip wizard: all 8 steps with auto-save + trip submission (IOS-06)
+- [ ] 05-05-PLAN.md — Plan view: day tabs + timeline + item cards + rethink + locked overlay (IOS-07)
+- [ ] 05-06-PLAN.md — Accessibility polish: VoiceOver + Dynamic Type + reduce motion + contrast audit (IOS-17)
+- [ ] 05-07-PLAN.md — Human verification checkpoint: full flow on simulator (all IOS reqs)
 
 ### Phase 6: iOS Paywall & Notifications
 **Goal**: Users can purchase a trip unlock via the native StoreKit 2 paywall, restore purchases from Settings, see a countdown widget on their home screen, and receive push notifications for Lightning Lane booking windows — all working on real devices against the production RevenueCat environment.
@@ -188,21 +197,21 @@ Plans:
 **Plans**: TBD
 
 ### Phase 10: Beta & Launch
-**Goal**: Both apps are live in the App Store and Play Store, the IP lawyer has signed off on all legal surfaces, 8+ weeks of ingestion data exist, a closed beta with real families has achieved NPS ≥ 40 with zero P0 bugs, and the first 10 paying customers have been acquired.
+**Goal**: Both apps are live in the App Store and Play Store, the IP lawyer has signed off on all legal surfaces, 8+ weeks of ingestion data exist, a closed beta with real families has achieved NPS >= 40 with zero P0 bugs, and the first 10 paying customers have been acquired.
 **Depends on**: Phase 9; 8+ weeks of ingestion history (hard gate from Phase 2); IP lawyer sign-off (hard gate from Phase 8 engagement)
 **Requirements**: LNCH-01, LNCH-02, LNCH-03, LNCH-04, LNCH-05, LNCH-06, LNCH-07, LNCH-08
 **Success Criteria** (what must be TRUE):
   1. Both iOS and Android apps are live in their respective stores with first-submission approval (no rejection-and-resubmit cycle); App Store review notes include the consumable IAP framing as drafted in Phase 8
   2. IP lawyer has provided written sign-off on: WonderWaltz trademark posture, all in-app and website disclaimers, the privacy policy and ToS, and both store listings — this sign-off is on file before any submission
-  3. The Timescale `wait_times_history` hypertable contains ≥ 8 weeks of uninterrupted data; ingestion uptime over the 30 days preceding launch is ≥ 99% (verified from Sentry ingestion health dashboard)
-  4. Closed beta with ≥ 20 real WDW trip-planning families completes; NPS is ≥ 40; zero P0 bugs are open; crash-free sessions ≥ 99.5% on both platforms (Sentry release health)
-  5. p95 LLM cost per generated plan is ≤ $0.20 (verified from `llm_costs` telemetry over ≥ 100 generated plans); the first 10 paying customers are acquired within 30 days of launch
+  3. The Timescale `wait_times_history` hypertable contains >= 8 weeks of uninterrupted data; ingestion uptime over the 30 days preceding launch is >= 99% (verified from Sentry ingestion health dashboard)
+  4. Closed beta with >= 20 real WDW trip-planning families completes; NPS is >= 40; zero P0 bugs are open; crash-free sessions >= 99.5% on both platforms (Sentry release health)
+  5. p95 LLM cost per generated plan is <= $0.20 (verified from `llm_costs` telemetry over >= 100 generated plans); the first 10 paying customers are acquired within 30 days of launch
 
 **Plans**: TBD
 
 ## Progress
 
-**Execution Order:** 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
+**Execution Order:** 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -211,7 +220,7 @@ Plans:
 | 2. Data Pipeline | 11/12 | In Progress|  |
 | 3. Engine | 20/20 | Complete   | 2026-04-16 |
 | 4. Entitlements & Accounts | 5/5 | Complete   | 2026-04-16 |
-| 5. iOS Core | 0/TBD | Not started | - |
+| 5. iOS Core | 0/7 | Not started | - |
 | 6. iOS Paywall & Notifications | 0/TBD | Not started | - |
 | 7. Android | 0/TBD | Not started | - |
 | 8. Website & Legal | 0/TBD | Not started | - |
