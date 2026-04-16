@@ -9,6 +9,7 @@ import {
 } from './schema.js';
 import { calculateUsdCents, recordLlmCost } from './cost.js';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
+import type { CircuitBreakerService } from '../plan-generation/circuit-breaker.service.js';
 
 /**
  * NarrativeService — Claude-powered narrative generation for trip plans.
@@ -16,6 +17,11 @@ import { DB_TOKEN } from '../ingestion/queue-times.service.js';
  * Pipeline: build cached prefix + dynamic suffix -> call Anthropic ->
  * parse JSON -> Zod validate -> cross-validate ride IDs -> retry once
  * on failure -> persist with narrative_available:false on 2nd failure.
+ *
+ * When a CircuitBreakerService is injected, each Anthropic call is
+ * preceded by a budget check. If budget is tight, Sonnet downgrades
+ * to Haiku mid-generation. If budget is exhausted, throws
+ * BudgetExhaustedError (caught by orchestrator -> 402 response).
  *
  * The types here are the load-bearing contract; downstream plans (03-16
  * plan-generation processor) depend on these interfaces.
@@ -28,6 +34,23 @@ export const SONNET_MODEL_ID: string = process.env['ANTHROPIC_SONNET_MODEL'] ?? 
 
 /** Haiku model ID for rethink + budget-fallback. Overridable via ANTHROPIC_HAIKU_MODEL env var. */
 export const HAIKU_MODEL_ID: string = process.env['ANTHROPIC_HAIKU_MODEL'] ?? 'claude-haiku-4-5';
+
+// ─── Budget exhausted error ─────────────────────────────────────────
+
+/**
+ * Thrown when the per-trip LLM budget is fully exhausted.
+ * Caught by the plan-generation orchestrator to return 402.
+ */
+export class BudgetExhaustedError extends Error {
+  constructor(
+    public readonly tripId: string,
+    public readonly spentCents: number,
+    public readonly budgetCents: number,
+  ) {
+    super(`Trip ${tripId} budget exhausted: spent=${spentCents}c, budget=${budgetCents}c`);
+    this.name = 'BudgetExhaustedError';
+  }
+}
 
 // ─── Input/output types (preserved from 03-02 scaffold) ─────────────
 
@@ -132,6 +155,12 @@ export interface CostContext {
   planId: string;
 }
 
+/** DI token for the circuit breaker — string token avoids circular import */
+const CIRCUIT_BREAKER_TOKEN = 'CircuitBreakerService';
+
+/** Estimated cost in cents for a Sonnet call (conservative estimate for budget check) */
+const ESTIMATED_SONNET_CENTS = 5;
+
 @Injectable()
 export class NarrativeService {
   private readonly logger = new Logger(NarrativeService.name);
@@ -139,25 +168,69 @@ export class NarrativeService {
   constructor(
     @Inject(ANTHROPIC_CLIENT_TOKEN) private readonly client: AnthropicLike,
     @Optional() @Inject(DB_TOKEN) private readonly db?: DbExecutable,
+    @Optional()
+    @Inject(CIRCUIT_BREAKER_TOKEN)
+    private readonly circuitBreaker?: CircuitBreakerService,
   ) {}
 
   /**
    * Generates the full plan narrative using Sonnet (default).
    *
    * Pipeline:
-   * 1. Build payload (cached prefix + dynamic suffix)
-   * 2. Call Anthropic SDK
-   * 3. Parse response.content[0].text as JSON
-   * 4. Run validateNarrative against solver plan item IDs
-   * 5. On success: return { narrative, narrativeAvailable: true, usage }
-   * 6. On failure: retry ONCE with corrective prompt
-   * 7. On 2nd failure: return { narrativeAvailable: false, usage }
+   * 1. Check budget via CircuitBreakerService (if injected)
+   * 2. Build payload (cached prefix + dynamic suffix)
+   * 3. Call Anthropic SDK
+   * 4. Parse response.content[0].text as JSON
+   * 5. Run validateNarrative against solver plan item IDs
+   * 6. On success: return { narrative, narrativeAvailable: true, usage }
+   * 7. On failure: retry ONCE with corrective prompt
+   * 8. On 2nd failure: return { narrativeAvailable: false, usage }
+   *
+   * Budget enforcement:
+   * - If budget is tight (swapTo:'haiku'): override model to Haiku
+   * - If budget exhausted: throw BudgetExhaustedError (no Anthropic call)
    */
   async generate(
     input: NarrativeInput,
     model: string = SONNET_MODEL_ID,
     costContext?: CostContext,
   ): Promise<GenerateResult> {
+    // ─── Budget check before first Anthropic call ─────────────────
+    let effectiveModel = model;
+
+    if (this.circuitBreaker && costContext) {
+      const budgetCheck = await this.circuitBreaker.checkBudget(
+        costContext.tripId,
+        ESTIMATED_SONNET_CENTS,
+      );
+
+      if (!budgetCheck.allowed) {
+        // Budget fully exhausted — record incident and throw
+        await this.circuitBreaker.recordIncident({
+          tripId: costContext.tripId,
+          event: 'budget_exhausted',
+          model: effectiveModel,
+          spentCents: budgetCheck.spentCents,
+        });
+
+        throw new BudgetExhaustedError(
+          costContext.tripId,
+          budgetCheck.spentCents,
+          budgetCheck.budgetCents,
+        );
+      }
+
+      if (budgetCheck.swapTo === 'haiku') {
+        effectiveModel = HAIKU_MODEL_ID;
+        await this.circuitBreaker.recordIncident({
+          tripId: costContext.tripId,
+          event: 'sonnet_to_haiku_swap',
+          model: HAIKU_MODEL_ID,
+          spentCents: budgetCheck.spentCents,
+        });
+      }
+    }
+
     const cachedPrefix = buildCachedPrefix();
     const dynamicPrompt = buildDynamicPrompt(input);
 
@@ -173,7 +246,7 @@ export class NarrativeService {
 
     // ─── First attempt ───────────────────────────────────────────
     const payload = buildMessagesPayload({
-      model,
+      model: effectiveModel,
       cachedPrefix,
       dynamicPrompt,
     });
@@ -182,7 +255,7 @@ export class NarrativeService {
     const responseUsage = response.usage as AnthropicUsage;
     totalUsage = sumUsage(totalUsage, responseUsage);
 
-    await this.writeCostRow(model, responseUsage, costContext);
+    await this.writeCostRow(effectiveModel, responseUsage, costContext);
 
     const firstResult = this.parseAndValidate(response, solverPlanItemIds);
     if (firstResult.ok) {
@@ -199,7 +272,7 @@ export class NarrativeService {
     );
 
     const retryPayload = buildMessagesPayload({
-      model,
+      model: effectiveModel,
       cachedPrefix,
       dynamicPrompt,
       systemSuffix:
@@ -212,7 +285,7 @@ export class NarrativeService {
     const retryUsage = retryResponse.usage as AnthropicUsage;
     totalUsage = sumUsage(totalUsage, retryUsage);
 
-    await this.writeCostRow(model, retryUsage, costContext);
+    await this.writeCostRow(effectiveModel, retryUsage, costContext);
 
     const secondResult = this.parseAndValidate(retryResponse, solverPlanItemIds);
     if (secondResult.ok) {
