@@ -21,6 +21,14 @@ import { DB_TOKEN } from '../ingestion/queue-times.service.js';
  * plan-generation processor) depend on these interfaces.
  */
 
+// ─── Pinned model IDs (LLM-03) ──────────────────────────────────────
+
+/** Sonnet model ID for initial generation. Overridable via ANTHROPIC_SONNET_MODEL env var. */
+export const SONNET_MODEL_ID: string = process.env['ANTHROPIC_SONNET_MODEL'] ?? 'claude-sonnet-4-6';
+
+/** Haiku model ID for rethink + budget-fallback. Overridable via ANTHROPIC_HAIKU_MODEL env var. */
+export const HAIKU_MODEL_ID: string = process.env['ANTHROPIC_HAIKU_MODEL'] ?? 'claude-haiku-4-5';
+
 // ─── Input/output types (preserved from 03-02 scaffold) ─────────────
 
 export interface NarrativeInputItem {
@@ -147,7 +155,7 @@ export class NarrativeService {
    */
   async generate(
     input: NarrativeInput,
-    model: string = 'claude-sonnet-4-6',
+    model: string = SONNET_MODEL_ID,
     costContext?: CostContext,
   ): Promise<GenerateResult> {
     const cachedPrefix = buildCachedPrefix();
@@ -260,7 +268,7 @@ export class NarrativeService {
     ].join('\n');
 
     const payload = buildMessagesPayload({
-      model: 'claude-haiku-4-5',
+      model: HAIKU_MODEL_ID,
       cachedPrefix,
       dynamicPrompt,
     });
@@ -268,7 +276,7 @@ export class NarrativeService {
     const response = await this.client.messages.create(payload);
     const responseUsage = response.usage as AnthropicUsage;
 
-    await this.writeCostRow('claude-haiku-4-5', responseUsage, costContext);
+    await this.writeCostRow(HAIKU_MODEL_ID, responseUsage, costContext);
 
     const text = this.extractText(response);
     const parsed = JSON.parse(text) as unknown;
@@ -276,7 +284,7 @@ export class NarrativeService {
 
     return {
       intro: validated.intro,
-      modelUsed: 'claude-haiku-4-5',
+      modelUsed: HAIKU_MODEL_ID as 'claude-haiku-4-5',
     };
   }
 
