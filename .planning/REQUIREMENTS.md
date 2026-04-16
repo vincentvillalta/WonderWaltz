@@ -77,10 +77,10 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 - [x] **SOLV-01**: Pure TypeScript package `packages/solver` with `solve(SolverInput): DayPlan[]` signature; zero NestJS dependencies, zero I/O side effects
 - [x] **SOLV-02**: Solver filters attractions per guest constraints: height requirement vs minimum guest height, mobility vs walking budget, sensory tolerance vs tag tolerance, dietary restrictions for dining candidates
-- [ ] **SOLV-03**: Solver greedy + local-search schedules rides using priority function `score = enjoyment_weight / (time_cost + wait_cost + walk_cost)` with must-do pinning as hard constraints
+- [x] **SOLV-03**: Solver greedy + local-search schedules rides using priority function `score = enjoyment_weight / (time_cost + wait_cost + walk_cost)` with must-do pinning as hard constraints
 - [x] **SOLV-04**: Solver allocates Lightning Lane Multi Pass bookings (up to ~3/day default) and Lightning Lane Single Pass (0-2/day scaled to budget tier)
-- [ ] **SOLV-05**: Solver schedules meals: table-service as hard constraints if user supplied them, quick-service in rides-free windows tagged for mobile order
-- [ ] **SOLV-06**: Solver pins preferred parades, fireworks, and shows as optional blocks with scoring
+- [x] **SOLV-05**: Solver schedules meals: table-service as hard constraints if user supplied them, quick-service in rides-free windows tagged for mobile order
+- [x] **SOLV-06**: Solver pins preferred parades, fireworks, and shows as optional blocks with scoring
 - [ ] **SOLV-07**: Solver encodes **child fatigue model**: toddlers (0-2 bracket) peak fatigue 12:30-14:00, young kids (3-6) peak 13:00-15:00; rest/resort-return blocks inserted proportionally to age distribution and budget tier
 - [ ] **SOLV-08**: Solver encodes **DAS constraint**: when `trip.das_flag === true`, DAS return windows are modeled as LL-equivalent resource (same per-day budget math) with narrative explaining DAS application via Disney's video chat
 - [ ] **SOLV-09**: Solver encodes **on-property advantages**: Early Entry (+30 min) for any on-property hotel; Extended Evening Hours on eligible nights for Deluxe / Deluxe Villa
@@ -293,10 +293,10 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | FC-05 | Phase 3 | Complete |
 | SOLV-01 | Phase 3 | Complete |
 | SOLV-02 | Phase 3 | Complete |
-| SOLV-03 | Phase 3 | Pending |
+| SOLV-03 | Phase 3 | Complete |
 | SOLV-04 | Phase 3 | Complete |
-| SOLV-05 | Phase 3 | Pending |
-| SOLV-06 | Phase 3 | Pending |
+| SOLV-05 | Phase 3 | Complete |
+| SOLV-06 | Phase 3 | Complete |
 | SOLV-07 | Phase 3 | Pending |
 | SOLV-08 | Phase 3 | Pending |
 | SOLV-09 | Phase 3 | Pending |
