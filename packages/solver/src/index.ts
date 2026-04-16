@@ -15,6 +15,7 @@ export * from './resources.js';
 export * from './lightningLane.js';
 export * from './parkHours.js';
 export * from './rules.js';
+export * from './fatigue.js';
 
 import type { SolverInput, DayPlan } from './types.js';
 
