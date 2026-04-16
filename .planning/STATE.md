@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-11-PLAN.md
-last_updated: "2026-04-15T23:08:30.387Z"
-last_activity: "2026-04-15 — Completed Plan 03-04: Solver types contract + deterministic hash + package-boundary test (SOLV-01)"
+stopped_at: Completed 03-05-PLAN.md
+last_updated: "2026-04-16T06:56:16.180Z"
+last_activity: "2026-04-15 — Completed Plan 03-11: ForecastModule (FC-01, FC-03, FC-04, FC-05) — bucketed median + baseline fallback + hybrid crowd calendar + Beta Forecast framing"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 29
-  percent: 67
+  completed_plans: 30
+  percent: 69
 ---
 
 # Project State
@@ -77,6 +77,7 @@ Progress: [███████░░░] 69%
 | Phase 03-engine P04 | 6 min | 2 tasks | 9 files |
 | Phase 03-engine P04 | 6 min | 2 tasks | 9 files |
 | Phase 03-engine P11 | 13 min | 3 tasks | 14 files |
+| Phase 03-engine P05 | 8 min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -162,6 +163,8 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-11: Bucket filter intentionally skipped in percentile_cont SQL — baseline-fallback dominates Phase 3 operating mode so bucket-aware median is dead code; Phase 4+ refinement
 - [Phase 03-engine]: 03-11: MIN_SAMPLES_FOR_MEDIAN=5 short-circuit forces baseline even when weeks-of-history qualifies for medium — prevents confident-looking medians over near-empty buckets
 - [Phase 03-engine]: 03-11: postgres-js numeric-as-string normalizer (toNumber) in ForecastService — Math.round on string NaN-bombs silently; explicit test case pins
+- [Phase 03-engine]: 03-05: CatalogWalkingGraph renamed from WalkingGraph in types.ts to free the name for the Floyd-Warshall runtime shape (nodes[] + distances Map)
+- [Phase 03-engine]: 03-05: ESM solver loaded into CJS api via createRequire + pathToFileURL dynamic import; mirror types in loader to avoid TS1541
 
 ### Pending Todos
 
@@ -177,6 +180,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-15T23:08:07.952Z
-Stopped at: Completed 03-11-PLAN.md
+Last session: 2026-04-16T06:56:16.178Z
+Stopped at: Completed 03-05-PLAN.md
 Resume file: None
