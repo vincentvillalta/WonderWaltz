@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-16-PLAN.md
+stopped_at: Completed 03-17-PLAN.md
 last_updated: "2026-04-16T16:55:14.046Z"
 last_activity: "2026-04-16 — Completed Plan 03-16: PlanGenerationProcessor — BullMQ orchestrator with cache-hit short-circuit"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 40
-  percent: 95
+  completed_plans: 41
+  percent: 97
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 3 of 10 (Engine)
-Plan: 17 of 18 in current phase
+Plan: 18 of 18 in current phase
 Status: In Progress
-Last activity: 2026-04-16 — Completed Plan 03-16: PlanGenerationProcessor — BullMQ orchestrator (solver + narrative + persist) with cache-hit short-circuit
+Last activity: 2026-04-16 — Completed Plan 03-17: HTTP endpoints (generate-plan, rethink-today, getPlan) with entitlement projection
 
-Progress: [█████████░] 95%
+Progress: [█████████░] 97%
 
 ## Performance Metrics
 
@@ -88,6 +88,7 @@ Progress: [█████████░] 95%
 | Phase 03-engine P10 | 60 min | 2 tasks | 13 files |
 | Phase 03-engine P15 | 8 | 2 tasks | 6 files |
 | Phase 03-engine P16 | 58 min | 3 tasks | 9 files |
+| Phase 03-engine P17 | 31 min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -207,6 +208,10 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-16: hydrateSolverInput returns Record<string, unknown> to avoid maintaining mirror types; casts at solver call boundary via `as never`
 - [Phase 03-engine]: 03-16: PersistPlanService uses sequential INSERTs (not transaction API) — drizzle-orm postgres-js transaction edge cases with RowList
 - [Phase 03-engine]: 03-16: PlanGenerationModule imports AlertingModule for SlackAlerterService injection into processor dead-letter handler
+- [Phase 03-engine]: 03-17: PlansModule standalone (not inside TripsModule) — clean controller separation; PlansService needs its own DB injection for projection queries
+- [Phase 03-engine]: 03-17: Budget check at controller layer before BullMQ enqueue — fail fast on 402 without entering queue
+- [Phase 03-engine]: 03-17: In-progress inference uses UTC minutes-since-midnight — matches solver timezone-naive convention from 03-07
+- [Phase 03-engine]: 03-17: PlansService.getPlan returns null for missing plans — controller maps to 404, keeps service testable without HTTP exceptions
 
 ### Pending Todos
 
@@ -222,6 +227,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T17:55:00Z
-Stopped at: Completed 03-16-PLAN.md
+Last session: 2026-04-16T18:31:00Z
+Stopped at: Completed 03-17-PLAN.md
 Resume file: None
