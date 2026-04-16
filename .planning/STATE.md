@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-13-PLAN.md
-last_updated: "2026-04-16T10:39:00.000Z"
-last_activity: "2026-04-16 — Completed Plan 03-13: LLM Cost Tracking + Cache Hit Rate Alert (LLM-05, LLM-06)"
+stopped_at: Completed 03-08-PLAN.md
+last_updated: "2026-04-16T13:00:32.645Z"
+last_activity: "2026-04-16 — Completed Plan 03-13: LLM Cost Tracking + Cache Hit Rate Alert (LLM-05, LLM-06) — frozen rate card cost calculation, recordLlmCost after every Anthropic call, rolling 1-hour cache hit rate alerting via Sentry + Slack"
 progress:
   total_phases: 11
   completed_phases: 3
   total_plans: 42
-  completed_plans: 34
+  completed_plans: 35
   percent: 73
 ---
 
@@ -82,6 +82,7 @@ Progress: [███████░░░] 73%
 | Phase 03-engine P12 | 34 min | 3 tasks | 9 files |
 | Phase 03-engine P07 | 15 | 3 tasks | 9 files |
 | Phase 03-engine P13 | 7 min | 2 tasks | 9 files |
+| Phase 03-engine P08 | 14 min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -182,6 +183,9 @@ Recent decisions affecting current work:
 - [Phase 03-engine]: 03-13: Hit rate = cached_read_tok / (cached_read_tok + input_tok), minimum 5 rows for signal, Redis dedup 1h TTL
 - [Phase 03-engine]: 03-07: Timezone-naive arithmetic (minutes since midnight + date prefix) instead of Date objects — prevents TZ conversion bugs in solver time calculations
 - [Phase 03-engine]: 03-07: Fixed displacement cost model for show insertion (60 show score vs 40 per displaced item) — avoids requiring full scoring context in show pass; local search in 03-08 can refine
+- [Phase 03-engine]: 03-08: Adjacent-pair swap is single-pass (no convergence loop) — deterministic by construction per CONTEXT.md Area 1
+- [Phase 03-engine]: 03-08: DAS modeled as separate ResourcePool (capacity 3, any ride) rather than modifying LL math — clean separation of concerns
+- [Phase 03-engine]: 03-08: LL allocation uses wait-time-descending as scoring proxy for top-N selection — matches CONTEXT.md longest-wait-first rule
 
 ### Pending Todos
 
@@ -197,6 +201,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T10:39:00Z
-Stopped at: Completed 03-13-PLAN.md
+Last session: 2026-04-16T13:00:32.642Z
+Stopped at: Completed 03-08-PLAN.md
 Resume file: None
