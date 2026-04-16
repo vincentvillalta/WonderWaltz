@@ -5,6 +5,7 @@
 export * from './types.js';
 export * from './hash.js';
 export * from './walkingGraph.js';
+export * from './filter.js';
 
 import type { SolverInput, DayPlan } from './types.js';
 
