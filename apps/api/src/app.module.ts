@@ -10,6 +10,7 @@ import { PackingListModule } from './packing-list/packing-list.module.js';
 import { ParksModule } from './parks/parks.module.js';
 import { PlanGenerationModule } from './plan-generation/plan-generation.module.js';
 import { PlansModule } from './plans/plans.module.js';
+import { PurchasesModule } from './purchases/purchases.module.js';
 import { SharedInfraModule } from './shared-infra.module.js';
 import { TripsModule } from './trips/trips.module.js';
 import { WeatherModule } from './weather/weather.module.js';
@@ -32,6 +33,7 @@ import { WebhookModule } from './webhooks/webhook.module.js';
     PlanGenerationModule,
     PackingListModule,
     PlansModule,
+    PurchasesModule,
     WebhookModule,
   ],
   providers: [
