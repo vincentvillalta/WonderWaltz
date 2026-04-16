@@ -27,7 +27,7 @@ Not in this phase: mobile UI for paywall (Phase 6), StoreKit 2 / Play Billing cl
 ### RevenueCat webhook handling
 - Process **all IAP-04 events**: INITIAL_PURCHASE, REFUND, CANCELLATION, EXPIRATION, NON_RENEWING_PURCHASE — even if some don't apply to consumables now, handle them for future-proofing
 - All webhook events logged to `iap_events` table with raw payload regardless of whether they trigger an entitlement mutation
-- **HMAC signature verification** on webhook endpoint — compute HMAC-SHA256 of raw body and compare to RevenueCat's signing key header. Stronger than bearer token
+- **Bearer token verification** on webhook endpoint — RevenueCat sends a static Authorization header configured in their dashboard; verify against env var `REVENUECAT_WEBHOOK_AUTH_KEY`. (Originally planned HMAC-SHA256 but RevenueCat does not support it; corrected during plan verification.)
 - **Client polls, webhook is source of truth** for purchase confirmation race condition: client shows optimistic "processing" state after StoreKit confirms, polls `GET /plans/:id` every 2s for up to 15s. If timeout, show "Purchase received, unlocking shortly" with manual retry
 - On **REFUND**: plan is **completely hidden** (not re-locked). Trip wizard data remains but plan view shows "Plan unavailable — purchase required." User can re-purchase to get a new plan
 - Webhook idempotency enforced via `revenuecat_id` unique constraint on `entitlements` table (already in schema)
