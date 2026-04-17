@@ -65,7 +65,7 @@ function forecastFn(
 ): { predictedWaitMinutes: number; confidence: ForecastConfidence } {
   // Parse hour from the ISO string directly (avoid timezone conversion).
   const hourMatch = slotStart.match(/T(\d{2}):/);
-  const hour = hourMatch ? parseInt(hourMatch[1], 10) : 12;
+  const hour = hourMatch ? parseInt(hourMatch[1]!, 10) : 12;
   if (attractionId === 'a-space-mountain') {
     if (hour < 10) return { predictedWaitMinutes: 10, confidence: 'high' };
     if (hour < 14) return { predictedWaitMinutes: 60, confidence: 'medium' };
@@ -112,7 +112,7 @@ describe('constructDay', () => {
     }
     // Items should be sorted by startTime ascending
     for (let i = 1; i < result.length; i++) {
-      expect(result[i].startTime > result[i - 1].startTime).toBe(true);
+      expect(result[i]!.startTime > result[i - 1]!.startTime).toBe(true);
     }
   });
 
@@ -127,8 +127,8 @@ describe('constructDay', () => {
     });
 
     for (let i = 1; i < result.length; i++) {
-      const prevEnd = new Date(result[i - 1].endTime).getTime();
-      const currStart = new Date(result[i].startTime).getTime();
+      const prevEnd = new Date(result[i - 1]!.endTime).getTime();
+      const currStart = new Date(result[i]!.startTime).getTime();
       expect(currStart).toBeGreaterThanOrEqual(prevEnd);
     }
   });
@@ -176,8 +176,8 @@ describe('constructDay', () => {
 
     expect(result.length).toBe(2);
     // a-alpha should come before a-zulu (lex order on tie)
-    expect(result[0].refId).toBe('a-alpha');
-    expect(result[1].refId).toBe('a-zulu');
+    expect(result[0]!.refId).toBe('a-alpha');
+    expect(result[1]!.refId).toBe('a-zulu');
   });
 
   it('empty must-do + empty filtered → empty day plan (no crash)', () => {

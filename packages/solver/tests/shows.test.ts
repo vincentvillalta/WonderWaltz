@@ -170,7 +170,7 @@ describe('insertShows', () => {
     });
 
     for (let i = 1; i < result.length; i++) {
-      expect(result[i].startTime >= result[i - 1].startTime).toBe(true);
+      expect(result[i]!.startTime >= result[i - 1]!.startTime).toBe(true);
     }
   });
 

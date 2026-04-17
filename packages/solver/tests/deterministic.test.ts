@@ -20,7 +20,7 @@ function makeThreeDayFixture(): SolverInput {
   const attractions: CatalogAttraction[] = [];
   for (const parkId of parks) {
     for (let i = 1; i <= 5; i++) {
-      attractions.push({
+      const attraction: CatalogAttraction = {
         id: `${parkId}-ride-${i}`,
         parkId,
         name: `${parkId.toUpperCase()} Ride ${i}`,
@@ -29,8 +29,11 @@ function makeThreeDayFixture(): SolverInput {
         lightningLaneType: i <= 2 ? 'multi_pass' : i === 3 ? 'single_pass' : null,
         isHeadliner: i <= 2,
         durationMinutes: 5 + i,
-        heightRequirementInches: i === 1 ? 44 : undefined,
-      });
+      };
+      if (i === 1) {
+        attraction.heightRequirementInches = 44;
+      }
+      attractions.push(attraction);
     }
   }
 
@@ -60,8 +63,8 @@ function makeThreeDayFixture(): SolverInput {
     trip: {
       id: 'trip-deterministic',
       userId: 'user-1',
-      startDate: dates[0],
-      endDate: dates[2],
+      startDate: dates[0]!,
+      endDate: dates[2]!,
       partySize: 4,
       budgetTier: 'fairy',
       hasDas: false,
@@ -79,8 +82,8 @@ function makeThreeDayFixture(): SolverInput {
       preferredShows: ['mk-show-1'],
       tableServiceReservations: [],
     },
-    dateStart: dates[0],
-    dateEnd: dates[2],
+    dateStart: dates[0]!,
+    dateEnd: dates[2]!,
     catalog: {
       attractions,
       dining: [],
@@ -126,11 +129,11 @@ describe('solve() determinism (SOLV-11)', () => {
     expect(result.length).toBe(3); // 3-day trip
 
     for (let i = 0; i < result.length; i++) {
-      expect(result[i].dayIndex).toBe(i);
-      expect(result[i].date).toBeDefined();
-      expect(result[i].parkId).toBeDefined();
-      expect(Array.isArray(result[i].items)).toBe(true);
-      expect(Array.isArray(result[i].warnings)).toBe(true);
+      expect(result[i]!.dayIndex).toBe(i);
+      expect(result[i]!.date).toBeDefined();
+      expect(result[i]!.parkId).toBeDefined();
+      expect(Array.isArray(result[i]!.items)).toBe(true);
+      expect(Array.isArray(result[i]!.warnings)).toBe(true);
     }
   });
 
@@ -159,7 +162,7 @@ describe('solve() determinism (SOLV-11)', () => {
 
     for (const day of result) {
       for (let i = 1; i < day.items.length; i++) {
-        expect(day.items[i].startTime >= day.items[i - 1].startTime).toBe(true);
+        expect(day.items[i]!.startTime >= day.items[i - 1]!.startTime).toBe(true);
       }
     }
   });
@@ -182,7 +185,7 @@ describe('solve() determinism (SOLV-11)', () => {
       const day1Rides = new Set(ridesByDay[0]);
       const day2Rides = new Set(ridesByDay[1]);
       // Days should have at least some items
-      expect(ridesByDay[0].length).toBeGreaterThan(0);
+      expect(ridesByDay[0]!.length).toBeGreaterThan(0);
       // Since parks differ across days in this fixture,
       // rides should be entirely different park sets
       const overlap = [...day1Rides].filter((r) => day2Rides.has(r));

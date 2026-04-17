@@ -40,7 +40,7 @@ describe('heightOk', () => {
   }> = [
     {
       name: 'no height requirement — always passes',
-      attraction: { heightRequirementInches: undefined },
+      attraction: {},
       guest: { heightInches: 36 },
       expected: true,
     },
@@ -65,19 +65,19 @@ describe('heightOk', () => {
     {
       name: 'adult without heightInches — passes (adults always clear)',
       attraction: { heightRequirementInches: 48 },
-      guest: { ageBracket: '18+', heightInches: undefined },
+      guest: { ageBracket: '18+' },
       expected: true,
     },
     {
       name: 'child without heightInches and ride has requirement — fails conservatively',
       attraction: { heightRequirementInches: 40 },
-      guest: { ageBracket: '3-6', heightInches: undefined },
+      guest: { ageBracket: '3-6' },
       expected: false,
     },
     {
       name: 'child without heightInches and ride has no requirement — passes',
-      attraction: { heightRequirementInches: undefined },
-      guest: { ageBracket: '3-6', heightInches: undefined },
+      attraction: {},
+      guest: { ageBracket: '3-6' },
       expected: true,
     },
   ];

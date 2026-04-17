@@ -230,7 +230,7 @@ describe('output properties', () => {
     const result = insertRestBlocks(items, guests, 'fairy');
 
     for (let i = 1; i < result.length; i++) {
-      expect(result[i].startTime >= result[i - 1].startTime).toBe(true);
+      expect(result[i]!.startTime >= result[i - 1]!.startTime).toBe(true);
     }
   });
 
@@ -294,5 +294,5 @@ describe('edge cases', () => {
 function parseMin(iso: string): number {
   const m = iso.match(/T(\d{2}):(\d{2})/);
   if (!m) throw new Error(`Bad ISO: ${iso}`);
-  return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+  return parseInt(m[1]!, 10) * 60 + parseInt(m[2]!, 10);
 }

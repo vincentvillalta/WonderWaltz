@@ -214,8 +214,8 @@ describe('allocateLL', () => {
 
   it('computes 90-min return window offset from booking time', () => {
     const result = allocateLL({
-      dayItems: [dayItems[0]], // Space Mountain only
-      attractions: [attractions[0]],
+      dayItems: [dayItems[0]!], // Space Mountain only
+      attractions: [attractions[0]!],
       budgetTier: 'fairy',
       dasEnabled: false,
       bookingTime: '2026-06-01T07:00:00',

@@ -24,7 +24,7 @@ function positionalScoreFn(items: PlanItem[]): number {
   let total = 0;
   const n = items.length;
   for (let i = 0; i < n; i++) {
-    const noteScore = parseInt(items[i].notes ?? '1', 10);
+    const noteScore = parseInt(items[i]!.notes ?? '1', 10);
     total += (n - i) * noteScore;
   }
   return total;
@@ -63,9 +63,9 @@ describe('adjacentPairSwap', () => {
 
     const result = adjacentPairSwap(items, positionalScoreFn);
     // After pass: i=0 swaps A,B → [B,A,C] (score 37>28); i=1 swaps A,C → [B,C,A] (score 41>37)
-    expect(result[0].id).toBe('b');
-    expect(result[1].id).toBe('c');
-    expect(result[2].id).toBe('a');
+    expect(result[0]!.id).toBe('b');
+    expect(result[1]!.id).toBe('c');
+    expect(result[2]!.id).toBe('a');
   });
 
   it('does not swap pinned dining items with table service reservations', () => {
@@ -90,8 +90,8 @@ describe('adjacentPairSwap', () => {
 
     const result = adjacentPairSwap(items, positionalScoreFn);
     // Dining stays at index 0 despite swap being "better"
-    expect(result[0].id).toBe('dinner');
-    expect(result[1].id).toBe('ride');
+    expect(result[0]!.id).toBe('dinner');
+    expect(result[1]!.id).toBe('ride');
   });
 
   it('does not swap items when custom isPinned marks them', () => {
@@ -119,8 +119,8 @@ describe('adjacentPairSwap', () => {
     });
 
     // Pinned item must stay at its position
-    expect(result[0].id).toBe('pinned-a');
-    expect(result[1].id).toBe('b');
+    expect(result[0]!.id).toBe('pinned-a');
+    expect(result[1]!.id).toBe('b');
   });
 
   it('produces identical output on repeated calls (determinism)', () => {
@@ -202,7 +202,7 @@ describe('adjacentPairSwap', () => {
     ];
     const result = adjacentPairSwap(items, positionalScoreFn);
     expect(result).toHaveLength(1);
-    expect(result[0].id).toBe('solo');
+    expect(result[0]!.id).toBe('solo');
   });
 
   it('does not mutate the input array', () => {
@@ -252,8 +252,8 @@ describe('adjacentPairSwap', () => {
     });
 
     // Pinned item must not move
-    expect(result[0].id).toBe('pinned');
-    expect(result[1].id).toBe('better');
+    expect(result[0]!.id).toBe('pinned');
+    expect(result[1]!.id).toBe('better');
   });
 
   it('skips swap when either neighbor is pinned (dining)', () => {
@@ -284,6 +284,6 @@ describe('adjacentPairSwap', () => {
 
     const result = adjacentPairSwap(items, positionalScoreFn);
     // Dining at index 1 blocks swap with index 0 and swap with index 2
-    expect(result[1].id).toBe('ts-dinner');
+    expect(result[1]!.id).toBe('ts-dinner');
   });
 });

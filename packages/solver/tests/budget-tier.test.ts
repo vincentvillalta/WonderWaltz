@@ -116,7 +116,6 @@ describe('immutability', () => {
 
   it('rejects mutation at runtime', () => {
     expect(() => {
-      // @ts-expect-error — intentional mutation test
       (BUDGET_TIER_RULES as Record<string, TierRules>).pixie = {} as TierRules;
     }).toThrow();
   });
