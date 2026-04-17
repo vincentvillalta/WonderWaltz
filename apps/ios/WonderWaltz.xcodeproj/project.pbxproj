@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CC0503A10001000100010001 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0503A10001000100010010 /* AppState.swift */; };
+		CC0503A10001000100010002 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0503A10001000100010011 /* AppConfig.swift */; };
+		CC0503A10001000100010003 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0503A10001000100010012 /* AppRouter.swift */; };
+		CC0503A10001000100010004 /* DISetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0503A10001000100010013 /* DISetup.swift */; };
+		CC0503A10001000100010005 /* AnalyticsBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0503A10001000100010014 /* AnalyticsBridge.swift */; };
 		0425CCD317544C45962506DA /* AnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13B34FC710D6141057550A8 /* AnalyticsTests.swift */; };
 		AA11223344556677AABB0001 /* OfflineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11223344556677AABB0010 /* OfflineTests.swift */; };
 		AA11223344556677AABB0002 /* OfflineSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11223344556677AABB0011 /* OfflineSyncTests.swift */; };
@@ -63,6 +68,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CC0503A10001000100010010 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		CC0503A10001000100010011 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		CC0503A10001000100010012 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
+		CC0503A10001000100010013 /* DISetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DISetup.swift; sourceTree = "<group>"; };
+		CC0503A10001000100010014 /* AnalyticsBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsBridge.swift; sourceTree = "<group>"; };
 		0ECDCFB3D274B59B8965D109 /* TuistAssets+WonderWaltz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistAssets+WonderWaltz.swift"; sourceTree = "<group>"; };
 		1F36F23E3C2C86A033A50E10 /* WonderWaltz-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "WonderWaltz-Info.plist"; sourceTree = "<group>"; };
 		42F63DBB6C71D7A60E209B3E /* WWPlanView */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WWPlanView; path = Packages/WWPlanView; sourceTree = "<group>"; };
@@ -203,9 +213,22 @@
 			path = WonderWaltzTests;
 			sourceTree = "<group>";
 		};
+		CC0503A10001000100010020 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				CC0503A10001000100010010 /* AppState.swift */,
+				CC0503A10001000100010011 /* AppConfig.swift */,
+				CC0503A10001000100010012 /* AppRouter.swift */,
+				CC0503A10001000100010013 /* DISetup.swift */,
+				CC0503A10001000100010014 /* AnalyticsBridge.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
 		FC145A46A80DE9B460666E65 /* WonderWaltz */ = {
 			isa = PBXGroup;
 			children = (
+				CC0503A10001000100010020 /* App */,
 				CCFC3F3373D14E0168D2AD90 /* Resources */,
 				A2062C63AE26AC38A9BFB804 /* Assets.xcassets */,
 				92B47A3302DE8A4A992DFB86 /* ContentView.swift */,
@@ -335,6 +358,11 @@
 				613E6BB872C49DC1B295B0EC /* TuistBundle+WonderWaltz.swift in Sources */,
 				7B641F2D79004D18211C47B3 /* ContentView.swift in Sources */,
 				35DE8362169F530741514F3F /* WonderWaltzApp.swift in Sources */,
+				CC0503A10001000100010001 /* AppState.swift in Sources */,
+				CC0503A10001000100010002 /* AppConfig.swift in Sources */,
+				CC0503A10001000100010003 /* AppRouter.swift in Sources */,
+				CC0503A10001000100010004 /* DISetup.swift in Sources */,
+				CC0503A10001000100010005 /* AnalyticsBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
