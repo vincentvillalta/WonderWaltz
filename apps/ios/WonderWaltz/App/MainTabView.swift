@@ -1,24 +1,39 @@
 import SwiftUI
 import WWCore
 import WWDesignSystem
+import WWPlanView
 import WWTripWizard
 
-/// Main tab view that shows either the wizard (if no trip exists) or placeholder plan view.
-/// After plan generation completes, this will transition to the plan view (Plan 05).
+/// Main tab view that routes between: start screen, wizard, and plan view.
+/// After `tripCreated` fires on the wizard VM, the app transitions to the plan view.
 struct MainTabView: View {
 
     @Environment(DependencyContainer.self) private var container
 
-    @State private var viewModel: WizardViewModel?
+    @State private var wizardVM: WizardViewModel?
+    @State private var planVM: PlanViewModel?
+    @State private var currentTripId: String?
     @State private var showWizard: Bool = false
 
     var body: some View {
         Group {
-            if showWizard, let viewModel {
-                WizardContainerView(viewModel: viewModel)
-                    .onChange(of: viewModel.tripCreated) { _, created in
-                        if created {
+            if let tripId = currentTripId, let planVM {
+                PlanContainerView(
+                    viewModel: planVM,
+                    planId: tripId,
+                    onCreatePlan: {
+                        self.currentTripId = nil
+                        self.planVM = nil
+                        self.startWizard()
+                    }
+                )
+            } else if showWizard, let wizardVM {
+                WizardContainerView(viewModel: wizardVM)
+                    .onChange(of: wizardVM.tripCreated) { _, created in
+                        if created, let tripId = wizardVM.generatedTripId {
                             showWizard = false
+                            currentTripId = tripId
+                            planVM = makePlanViewModel()
                         }
                     }
             } else {
@@ -26,6 +41,7 @@ struct MainTabView: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showWizard)
+        .animation(.easeInOut(duration: 0.3), value: currentTripId)
     }
 
     // MARK: - Start View
@@ -54,20 +70,7 @@ struct MainTabView: View {
             WWButton(
                 String(localized: "Start Planning", comment: "CTA to begin trip wizard")
             ) {
-                let draftStore = container.wizardDraftStore as? any WizardDraftStoreProtocol
-                let vm = WizardViewModel(
-                    apiClient: container.apiClient,
-                    draftStore: draftStore
-                )
-                viewModel = vm
-                showWizard = true
-
-                // Load any existing draft in the background.
-                Task {
-                    if let draft = await draftStore?.loadDraft() {
-                        vm.restoreFromSnapshot(draft)
-                    }
-                }
+                startWizard()
             }
             .padding(.horizontal, WWDesignTokens.spacing8)
             .padding(.bottom, WWDesignTokens.spacing12)
@@ -75,5 +78,32 @@ struct MainTabView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(WWTheme.background)
+    }
+
+    // MARK: - Helpers
+
+    private func startWizard() {
+        let draftStore = container.wizardDraftStore as? any WizardDraftStoreProtocol
+        let vm = WizardViewModel(
+            apiClient: container.apiClient,
+            draftStore: draftStore
+        )
+        wizardVM = vm
+        showWizard = true
+
+        Task {
+            if let draft = await draftStore?.loadDraft() {
+                vm.restoreFromSnapshot(draft)
+            }
+        }
+    }
+
+    private func makePlanViewModel() -> PlanViewModel? {
+        guard let offlineStore = container.offlineStore else { return nil }
+        return PlanViewModel(
+            apiClient: container.apiClient,
+            offlineStore: offlineStore,
+            analytics: container.analytics
+        )
     }
 }

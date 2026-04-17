@@ -10,6 +10,9 @@ async function bootstrap() {
     new FastifyAdapter({ logger: true }),
   );
 
+  // Global /v1 prefix matches the OpenAPI spec used by mobile clients.
+  app.setGlobalPrefix('v1', { exclude: ['api/docs', 'api/docs-json'] });
+
   // OpenAPI spec — Phase 2+ controllers will populate this
   const config = new DocumentBuilder()
     .setTitle('WonderWaltz API')

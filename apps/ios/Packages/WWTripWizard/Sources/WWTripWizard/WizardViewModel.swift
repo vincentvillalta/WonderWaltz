@@ -322,6 +322,9 @@ public final class WizardViewModel {
     public var isSubmitting: Bool = false
     public var submissionError: String?
     public var tripCreated: Bool = false
+    /// The trip ID returned by the API after successful submission.
+    /// Consumed by the app target to navigate to the plan view.
+    public var generatedTripId: String?
 
     // MARK: - Dependencies
 
@@ -419,6 +422,7 @@ public final class WizardViewModel {
             // Trigger plan generation
             _ = try await apiClient.generatePlan(tripId: tripId)
 
+            generatedTripId = tripId
             tripCreated = true
             isSubmitting = false
         } catch {

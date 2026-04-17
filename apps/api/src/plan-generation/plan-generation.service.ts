@@ -117,8 +117,7 @@ interface AttractionRow extends Record<string, unknown> {
   baseline_wait_minutes: number;
   lightning_lane_type: string | null;
   is_headliner: boolean;
-  height_requirement_inches: number | null;
-  duration_minutes: number;
+  height_req_cm: number | null;
 }
 
 interface DiningRow extends Record<string, unknown> {
@@ -126,16 +125,13 @@ interface DiningRow extends Record<string, unknown> {
   park_id: string;
   name: string;
   cuisine_tags: string[];
-  table_service: boolean;
-  duration_minutes: number;
+  dining_type: string | null;
 }
 
 interface ShowRow extends Record<string, unknown> {
   id: string;
   park_id: string;
   name: string;
-  duration_minutes: number;
-  showtimes: string[];
 }
 
 interface WalkingEdgeRow extends Record<string, unknown> {
@@ -392,15 +388,16 @@ export class PlanGenerationService {
     },
   ): Promise<Record<string, unknown>> {
     const [attractionRows, diningRows, showRows, walkingEdgeRows] = await Promise.all([
+      // height_req_cm in DB; convert to inches (1 inch = 2.54 cm). No duration_minutes column — default at mapping.
       this.queryRows<AttractionRow>(
-        sql`SELECT id, park_id, name, tags, baseline_wait_minutes, lightning_lane_type, is_headliner, height_requirement_inches, duration_minutes FROM attractions`,
+        sql`SELECT id, park_id, name, tags, baseline_wait_minutes, lightning_lane_type, is_headliner, height_req_cm FROM attractions WHERE is_active = true`,
       ),
+      // dining has no table_service or duration_minutes columns; derive from dining_type.
       this.queryRows<DiningRow>(
-        sql`SELECT id, park_id, name, cuisine_tags, table_service, duration_minutes FROM dining`,
+        sql`SELECT id, park_id, name, cuisine_tags, dining_type FROM dining WHERE is_active = true`,
       ),
-      this.queryRows<ShowRow>(
-        sql`SELECT id, park_id, name, duration_minutes, showtimes FROM shows`,
-      ),
+      // shows has no duration_minutes or showtimes columns yet; defaults applied at mapping.
+      this.queryRows<ShowRow>(sql`SELECT id, park_id, name FROM shows WHERE is_active = true`),
       this.queryRows<WalkingEdgeRow>(
         sql`SELECT from_node_id, to_node_id, park_id, walking_seconds FROM walking_graph`,
       ),
@@ -415,25 +412,25 @@ export class PlanGenerationService {
         baselineWaitMinutes: Number(a.baseline_wait_minutes) || 30,
         lightningLaneType: a.lightning_lane_type,
         isHeadliner: a.is_headliner ?? false,
-        ...(a.height_requirement_inches != null
-          ? { heightRequirementInches: Number(a.height_requirement_inches) }
+        ...(a.height_req_cm != null
+          ? { heightRequirementInches: Math.round(Number(a.height_req_cm) / 2.54) }
           : {}),
-        durationMinutes: Number(a.duration_minutes) || 15,
+        durationMinutes: 15, // default until column added to schema
       })),
       dining: diningRows.map((d) => ({
         id: d.id,
         parkId: d.park_id,
         name: d.name,
         cuisineTags: d.cuisine_tags ?? [],
-        tableService: d.table_service ?? false,
-        durationMinutes: Number(d.duration_minutes) || 45,
+        tableService: d.dining_type === 'table_service',
+        durationMinutes: d.dining_type === 'table_service' ? 60 : 30,
       })),
       shows: showRows.map((s) => ({
         id: s.id,
         parkId: s.park_id,
         name: s.name,
-        durationMinutes: Number(s.duration_minutes) || 30,
-        showtimes: s.showtimes ?? [],
+        durationMinutes: 30, // default until column added to schema
+        showtimes: [] as string[], // default until column added to schema
       })),
       walkingGraph: {
         edges: walkingEdgeRows.map((e) => ({

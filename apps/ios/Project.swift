@@ -34,6 +34,7 @@ let project = Project(
                     "Fraunces-VariableFont.ttf",
                     "Inter-VariableFont.ttf",
                 ]),
+                "API_BASE_URL": "https://wonderwaltz-production.up.railway.app",
             ]),
             sources: ["WonderWaltz/**/*.swift"],
             resources: [
