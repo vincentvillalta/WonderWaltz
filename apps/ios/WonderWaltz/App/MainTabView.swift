@@ -12,17 +12,21 @@ struct MainTabView: View {
 
     @State private var wizardVM: WizardViewModel?
     @State private var planVM: PlanViewModel?
-    @State private var currentTripId: String?
     @State private var showWizard: Bool = false
+
+    /// Persisted tripId so relaunching the app resumes on the plan view.
+    /// Cleared when the user explicitly starts a new plan.
+    @AppStorage("mainTab.currentTripId") private var currentTripId: String = ""
 
     var body: some View {
         Group {
-            if let tripId = currentTripId, let planVM {
+            if !currentTripId.isEmpty, let planVM {
                 PlanContainerView(
                     viewModel: planVM,
-                    planId: tripId,
+                    planId: currentTripId,
                     onCreatePlan: {
-                        self.currentTripId = nil
+                        WWLogger.app.debug("onCreatePlan — clearing stored tripId and restarting wizard")
+                        self.currentTripId = ""
                         self.planVM = nil
                         self.startWizard()
                     }
@@ -39,6 +43,15 @@ struct MainTabView: View {
                     }
             } else {
                 startView
+            }
+        }
+        .task {
+            // On launch, if a tripId was persisted from a previous session,
+            // go straight to the plan view. The view handles the generating
+            // / ready / offline states internally.
+            if !currentTripId.isEmpty && planVM == nil {
+                WWLogger.app.debug("Resuming plan view for stored tripId=\(currentTripId, privacy: .public)")
+                planVM = makePlanViewModel()
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showWizard)
