@@ -15,7 +15,7 @@ WonderWaltz v1 is built in eleven sequential phases — zero parallel platform t
 - [ ] **Phase 2: Data Pipeline** - Ingestion workers live in production; 8-week data accumulation clock starts
 - [x] **Phase 3: Engine** - Solver + LLM narrative layer + async plan generation API (gap closure in progress) (completed 2026-04-16)
 - [x] **Phase 4: Entitlements & Accounts** - Auth, IAP backend, RevenueCat webhook, account deletion (completed 2026-04-16)
-- [ ] **Phase 5: iOS Core** - Trip wizard, plan view, offline sync, design system integration
+- [x] **Phase 5: iOS Core** - Trip wizard, plan view, offline sync, design system integration (completed 2026-04-17)
 - [ ] **Phase 6: iOS Paywall & Notifications** - StoreKit 2 paywall, countdown widget, push notifications
 - [ ] **Phase 7: Android** - Feature-parity Android app with Compose, Room, Play Billing
 - [ ] **Phase 8: Website & Legal** - Marketing site, admin panel, privacy policy, IP lawyer engaged
@@ -224,7 +224,7 @@ Plans:
 | 2. Data Pipeline | 11/12 | In Progress|  |
 | 3. Engine | 20/20 | Complete   | 2026-04-16 |
 | 4. Entitlements & Accounts | 5/5 | Complete   | 2026-04-16 |
-| 5. iOS Core | 10/11 | In Progress|  |
+| 5. iOS Core | 11/11 | Complete   | 2026-04-17 |
 | 6. iOS Paywall & Notifications | 0/TBD | Not started | - |
 | 7. Android | 0/TBD | Not started | - |
 | 8. Website & Legal | 0/TBD | Not started | - |
