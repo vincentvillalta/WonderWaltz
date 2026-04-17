@@ -131,9 +131,9 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 
 ### iOS App (Phase 5 + Phase 6 + Phase 9)
 
-- [ ] **IOS-01**: Xcode project for `apps/ios` targets iOS 17.0 minimum, Swift 6, SwiftUI, Swift Concurrency, Observation framework
-- [ ] **IOS-02**: `WWCore` module with Swift OpenAPI Generator 1.11.1 client generated from `packages/shared-openapi/openapi.json` at build time
-- [ ] **IOS-03**: `WWDesignSystem` module consuming `packages/design-tokens` generated Swift constants
+- [x] **IOS-01**: Xcode project for `apps/ios` targets iOS 17.0 minimum, Swift 6, SwiftUI, Swift Concurrency, Observation framework
+- [x] **IOS-02**: `WWCore` module with Swift OpenAPI Generator 1.11.1 client generated from `packages/shared-openapi/openapi.json` at build time
+- [x] **IOS-03**: `WWDesignSystem` module consuming `packages/design-tokens` generated Swift constants
 - [ ] **IOS-04**: `WWOffline` module with SwiftData persistence and background sync coordinator (fallback to GRDB if SwiftData is unstable on iOS 18.x real devices)
 - [ ] **IOS-05**: Onboarding flow explains the value prop, requests notification permission contextually (not on first launch)
 - [ ] **IOS-06**: Trip wizard: dates → park selection + hopper → guests (with DAS flag, mobility, sensory, diet) → budget tier → lodging + transport → must-do rides → meal preferences → review
@@ -144,9 +144,9 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [ ] **IOS-11**: WidgetKit countdown widget: "X days until your Disney trip" + trip name; small + medium sizes
 - [ ] **IOS-12**: Push notifications for LL booking windows (7am on-property / 7am-3days-out off-property) and "walk to X now" schedule events; capped at 3/day default
 - [ ] **IOS-13**: Live Activity for "next up" during a park day: shows current + next scheduled item with walking time
-- [ ] **IOS-14**: Sentry Cocoa 9.8.0 SDK integrated with release health
-- [ ] **IOS-15**: PostHog iOS SDK integrated with event schema that excludes any guest age data
-- [ ] **IOS-16**: All strings externalized via `String Catalogs` (`.xcstrings`) for future i18n; English at launch
+- [x] **IOS-14**: Sentry Cocoa 9.8.0 SDK integrated with release health
+- [x] **IOS-15**: PostHog iOS SDK integrated with event schema that excludes any guest age data
+- [x] **IOS-16**: All strings externalized via `String Catalogs` (`.xcstrings`) for future i18n; English at launch
 - [ ] **IOS-17**: Dynamic Type up to `accessibility5`, VoiceOver labels, reduce motion, reduce transparency respected
 - [ ] **IOS-18**: Offline mode: trip + plan + catalog subset + walking graph + static maps persisted; full read-only access with no signal; sync when online
 
@@ -332,9 +332,9 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | IAP-05 | Phase 4 | Complete |
 | IAP-06 | Phase 4 | Complete |
 | IAP-07 | Phase 4 | Complete |
-| IOS-01 | Phase 5 | Pending |
-| IOS-02 | Phase 5 | Pending |
-| IOS-03 | Phase 5 | Pending |
+| IOS-01 | Phase 5 | Complete |
+| IOS-02 | Phase 5 | Complete |
+| IOS-03 | Phase 5 | Complete |
 | IOS-04 | Phase 5 | Pending |
 | IOS-05 | Phase 5 | Pending |
 | IOS-06 | Phase 5 | Pending |
@@ -345,9 +345,9 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | IOS-11 | Phase 6 | Pending |
 | IOS-12 | Phase 6 | Pending |
 | IOS-13 | Phase 9 | Pending |
-| IOS-14 | Phase 5 | Pending |
-| IOS-15 | Phase 5 | Pending |
-| IOS-16 | Phase 5 | Pending |
+| IOS-14 | Phase 5 | Complete |
+| IOS-15 | Phase 5 | Complete |
+| IOS-16 | Phase 5 | Complete |
 | IOS-17 | Phase 5 | Pending |
 | IOS-18 | Phase 5 | Pending |
 | AND-01 | Phase 7 | Pending |

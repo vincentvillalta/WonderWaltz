@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 5 context gathered
-last_updated: "2026-04-16T22:42:05.610Z"
-last_activity: "2026-04-17 -- Completed Plan 04-05: Anonymous Trip Limit + Auth Guards + OpenAPI Snapshot"
+status: executing
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-04-17T10:25:23.977Z"
+last_activity: "2026-04-17 -- Completed Plan 05-01: iOS Core Foundation"
 progress:
   total_phases: 11
   completed_phases: 5
-  total_plans: 49
-  completed_plans: 49
-  percent: 100
+  total_plans: 56
+  completed_plans: 50
+  percent: 89
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** A first-time Walt Disney World visitor gets a plan that feels like a Disney expert made it for them.
-**Current focus:** Phase 4 — Entitlements & Accounts
+**Current focus:** Phase 5 — iOS Core
 
 ## Current Position
 
-Phase: 4 of 10 (Entitlements & Accounts)
-Plan: 5 of 5 in current phase (complete)
-Status: Phase 4 Complete
-Last activity: 2026-04-17 -- Completed Plan 04-05: Anonymous Trip Limit + Auth Guards + OpenAPI Snapshot
+Phase: 5 of 10 (iOS Core)
+Plan: 1 of 7 in current phase (complete)
+Status: In Progress
+Last activity: 2026-04-17 -- Completed Plan 05-01: iOS Core Foundation
 
-Progress: [██████████] 100%
+Progress: [█████████░] 89%
 
 ## Performance Metrics
 
@@ -97,6 +97,7 @@ Progress: [██████████] 100%
 | Phase 04-entitlements-accounts P03 | 5 min | 2 tasks | 11 files |
 | Phase 04-entitlements-accounts P04 | 6 min | 2 tasks | 14 files |
 | Phase 04-entitlements-accounts P05 | 5 min | 2 tasks | 8 files |
+| Phase 05-ios-core P01 | 22 | 2 tasks | 52 files |
 
 ## Accumulated Context
 
@@ -240,6 +241,10 @@ Recent decisions affecting current work:
 - [Phase 04-entitlements-accounts]: Purge cascade uses 14 sequential DELETEs in FK-safe order with per-statement try/catch for best-effort execution
 - [Phase 04-entitlements-accounts]: AnonymousTripLimitGuard short-circuits for registered users (no DB call); controller-level SupabaseAuthGuard with method-level compound guard override on POST /trips
 - [Phase 04-entitlements-accounts]: AuthModule imported by TripsModule and PlansModule for guard DI resolution (no circular deps)
+- [Phase 05-ios-core]: Pre-generated OpenAPI client (CLI) instead of build plugin -- Tuist conflicts with Xcode build tool plugin sandbox
+- [Phase 05-ios-core]: sentry-cocoa pinned to exact 8.44.0 -- Swift 6.2 manifest compilation error in newer versions
+- [Phase 05-ios-core]: AuthServiceProtocol @MainActor -- enables @Observable without Sendable crossing isolation
+- [Phase 05-ios-core]: WWDesignTokens rewritten as enum with CGFloat/String types -- auto-generated had invalid Swift
 
 ### Pending Todos
 
@@ -255,6 +260,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-16T22:42:05.605Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-ios-core/05-CONTEXT.md
+Last session: 2026-04-17T10:25:23.974Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: None
