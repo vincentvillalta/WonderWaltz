@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": ["vitest.config.ts", "eslint.config.mjs"],
+  "include": ["vitest.workspace.ts", "eslint.config.mjs"],
   "compilerOptions": {
     "outDir": "dist"
   }
