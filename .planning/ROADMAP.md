@@ -101,7 +101,7 @@ Plans:
 - [x] 03-11-PLAN.md — ForecastModule bucketed median + baseline fallback + calendar rule engine + Beta Forecast framing (FC-01, FC-03, FC-04, FC-05)
 - [x] 03-12-PLAN.md — Narrative prompt + byte-stable CACHED_PREFIX + Zod schema + ride-ID contract (LLM-02, LLM-04)
 - [x] 03-13-PLAN.md — LLM cost telemetry + USD math + cache-hit-rate rolling alert (LLM-05, LLM-06)
-- [x] 03-14-PLAN.md — Pinned model IDs + circuit breaker + Sonnet→Haiku fallback + 3-sink telemetry + 402 contract (LLM-03, LLM-07)
+- [x] 03-14-PLAN.md — Pinned model IDs + circuit breaker + Sonnet->Haiku fallback + 3-sink telemetry + 402 contract (LLM-03, LLM-07)
 - [x] 03-15-PLAN.md — Rate limits: rethink daily cap + free-tier lifetime cap + Guard (LLM-08, PLAN-05)
 - [x] 03-16-PLAN.md — PlanGenerationProcessor + orchestrator + PersistPlanService + cache-hit short-circuit (PLAN-01, PLAN-03)
 - [x] 03-17-PLAN.md — trips.controller endpoints + plans.controller entitlement projection + e2e roundtrip (PLAN-04)
@@ -138,16 +138,20 @@ Plans:
   3. Airplane mode engaged after plan sync: all plan items, catalog subset, walking graph, and static maps are readable without network; no spinner or error state appears
   4. VoiceOver navigates all screens without getting stuck; Dynamic Type at `accessibility5` does not clip or truncate any critical text; reduced motion suppresses animations
   5. Sentry Cocoa is initialized before the first screen renders; PostHog tracks `plan_viewed` without including any guest age data in event properties
-**Plans**: 7 plans
+**Plans**: 11 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Tuist project + 7 SPM package scaffolds + WWCore (OpenAPI networking, auth, DI protocols) + WWDesignSystem (tokens, theme, components) + WWAnalytics (Sentry, PostHog) + String Catalog (IOS-01, IOS-02, IOS-03, IOS-14, IOS-15, IOS-16)
-- [ ] 05-02-PLAN.md — WWOffline: SwiftData models + WizardDraft auto-save + SyncCoordinator + OfflinePackageDownloader (IOS-04, IOS-18)
-- [ ] 05-03-PLAN.md — WWOnboarding: splash with silent auth + onboarding screens + app shell + DI wiring (IOS-05)
-- [ ] 05-04-PLAN.md — WWTripWizard: all 8 wizard steps with auto-save + trip submission (IOS-06)
-- [ ] 05-05-PLAN.md — WWPlanView: day tabs + timeline + item cards + rethink + locked overlay + forecast banner (IOS-07)
-- [ ] 05-06-PLAN.md — Accessibility polish: VoiceOver + Dynamic Type + reduce motion + contrast audit (IOS-17)
+- [x] 05-01-PLAN.md — Tuist project + 7 SPM package scaffolds + WWCore (OpenAPI networking, auth, DI protocols) + WWDesignSystem (tokens, theme, components) + WWAnalytics (Sentry, PostHog) + String Catalog (IOS-01, IOS-02, IOS-03, IOS-14, IOS-15, IOS-16)
+- [x] 05-02-PLAN.md — WWOffline: SwiftData models + WizardDraft auto-save + SyncCoordinator + OfflinePackageDownloader (IOS-04, IOS-18)
+- [x] 05-03-PLAN.md — WWOnboarding: splash with silent auth + onboarding screens + app shell + DI wiring (IOS-05)
+- [x] 05-04-PLAN.md — WWTripWizard: all 8 wizard steps with auto-save + trip submission (IOS-06)
+- [x] 05-05-PLAN.md — WWPlanView: day tabs + timeline + item cards + rethink + locked overlay + forecast banner (IOS-07)
+- [x] 05-06-PLAN.md — Accessibility polish: VoiceOver + Dynamic Type + reduce motion + contrast audit (IOS-17)
 - [ ] 05-07-PLAN.md — Human verification checkpoint: full flow on simulator (all IOS reqs)
+- [ ] 05-08-PLAN.md — Gap closure: WWDesignSystem rewrite (navy button + shimmer, EmptyState, TabBar, ParkColors) (IOS-05, IOS-07, IOS-17)
+- [ ] 05-09-PLAN.md — Gap closure: WWOnboarding rewrite to match React Onboarding.tsx (IOS-05, IOS-17)
+- [ ] 05-10-PLAN.md — Gap closure: WWTripWizard restructure from 8 steps to 4 matching React TripSetup.tsx (IOS-06, IOS-17)
+- [ ] 05-11-PLAN.md — Gap closure: WWPlanView rewrite to match React Itinerary.tsx + StopDetailSheet.tsx (IOS-07, IOS-17)
 
 ### Phase 6: iOS Paywall & Notifications
 **Goal**: Users can purchase a trip unlock via the native StoreKit 2 paywall, restore purchases from Settings, see a countdown widget on their home screen, and receive push notifications for Lightning Lane booking windows — all working on real devices against the production RevenueCat environment.
@@ -220,7 +224,7 @@ Plans:
 | 2. Data Pipeline | 11/12 | In Progress|  |
 | 3. Engine | 20/20 | Complete   | 2026-04-16 |
 | 4. Entitlements & Accounts | 5/5 | Complete   | 2026-04-16 |
-| 5. iOS Core | 6/7 | In Progress|  |
+| 5. iOS Core | 6/11 | In Progress|  |
 | 6. iOS Paywall & Notifications | 0/TBD | Not started | - |
 | 7. Android | 0/TBD | Not started | - |
 | 8. Website & Legal | 0/TBD | Not started | - |
