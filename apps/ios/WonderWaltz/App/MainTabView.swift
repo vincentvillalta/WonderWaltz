@@ -88,6 +88,7 @@ struct MainTabView: View {
         let draftStore = container.wizardDraftStore as? any WizardDraftStoreProtocol
         let vm = WizardViewModel(
             apiClient: container.apiClient,
+            authService: container.authService,
             draftStore: draftStore
         )
         wizardVM = vm

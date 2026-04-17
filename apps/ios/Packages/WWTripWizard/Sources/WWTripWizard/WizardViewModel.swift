@@ -329,16 +329,19 @@ public final class WizardViewModel {
     // MARK: - Dependencies
 
     private let apiClient: any APIClientProtocol
+    private let authService: (any AuthServiceProtocol)?
     private let draftStore: (any WizardDraftStoreProtocol)?
 
     // MARK: - Init
 
     public init(
         apiClient: any APIClientProtocol,
+        authService: (any AuthServiceProtocol)? = nil,
         draftStore: (any WizardDraftStoreProtocol)? = nil,
         draft: WizardDraftSnapshot? = nil
     ) {
         self.apiClient = apiClient
+        self.authService = authService
         self.draftStore = draftStore
 
         if let draft {
@@ -407,6 +410,22 @@ public final class WizardViewModel {
         WWLogger.wizard.debug("submitTrip start (step=\(self.currentStep.rawValue))")
         isSubmitting = true
         submissionError = nil
+
+        // Ensure we have an auth token before submitting. If auth is pending
+        // (e.g. splash-time silent auth failed or never ran), try once more.
+        if let authService, authService.getToken() == nil {
+            WWLogger.wizard.debug("submitTrip: no token, attempting silent auth")
+            await authService.silentAuth()
+            if authService.getToken() == nil {
+                WWLogger.wizard.error("submitTrip: silent auth failed — cannot submit")
+                submissionError = String(
+                    localized: "Can't connect to WonderWaltz. Please check your internet connection and try again.",
+                    comment: "Wizard submission error: auth required"
+                )
+                isSubmitting = false
+                return
+            }
+        }
 
         do {
             let tripBody = try buildTripBody()

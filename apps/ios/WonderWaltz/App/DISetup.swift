@@ -13,10 +13,9 @@ enum DISetup {
     static func makeContainer() -> DependencyContainer {
         let keychainStore = KeychainStore()
 
-        // AuthService needs apiClient for anonymous auth,
-        // but APIClient needs authMiddleware from AuthService.
-        // Resolve with a two-phase setup: create auth first without apiClient,
-        // then wire apiClient after.
+        // Two-phase DI: AuthMiddleware reads tokens from AuthService, and
+        // AuthService needs APIClient for anonymous auth. Create auth first,
+        // then build APIClient, then attach it back to AuthService.
         let authService = AuthService(keychainStore: keychainStore)
 
         let authMiddleware = AuthMiddleware(
@@ -29,10 +28,11 @@ enum DISetup {
             authMiddleware: authMiddleware
         )
 
+        // Close the DI cycle — AuthService can now call anonymousAuth.
+        authService.attachAPIClient(apiClient)
+
         let analytics = PostHogAnalyticsService()
 
-        // OfflineStore is created separately since it needs ModelContainer.
-        // It will be set on the container after ModelContainer is configured.
         return DependencyContainer(
             apiClient: apiClient,
             authService: authService,

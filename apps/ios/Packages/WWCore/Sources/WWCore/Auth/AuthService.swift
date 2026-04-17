@@ -18,7 +18,7 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
     public private(set) var authPending: Bool = false
 
     private let keychainStore: any KeychainStoreProtocol
-    private let apiClient: (any APIClientProtocol)?
+    private var apiClient: (any APIClientProtocol)?
 
     /// Initialize the auth service.
     /// - Parameters:
@@ -31,6 +31,14 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
     ) {
         self.keychainStore = keychainStore
         self.apiClient = apiClient
+    }
+
+    /// Wire the API client after initialization (two-phase DI).
+    /// AuthMiddleware needs AuthService for the token provider, but AuthService
+    /// needs APIClient for anonymous auth — this breaks the cycle.
+    public func attachAPIClient(_ client: any APIClientProtocol) {
+        self.apiClient = client
+        WWLogger.auth.debug("APIClient attached to AuthService")
     }
 
     /// Perform silent authentication.
