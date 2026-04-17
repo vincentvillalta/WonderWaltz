@@ -1,15 +1,16 @@
 import SwiftUI
 import WWDesignSystem
 
-/// Reusable page template for onboarding screens.
-/// Illustration area (top 60%), title + subtitle (bottom 40%).
-/// Uses WWTypography for fonts, WWTheme for colors.
-/// Supports Dynamic Type via `relativeTo:` font scaling.
+/// Single onboarding slide matching Onboarding.tsx slide layout (lines 82-128):
+/// - 96pt rounded-3xl icon container with gradient fill and white SF Symbol
+/// - Fraunces display font title (text-4xl)
+/// - Inter body description with relaxed line spacing, max-w-sm (320pt)
+/// - Spring-in icon animation gated on reduce-motion
 public struct OnboardingPageView: View {
 
-    /// The page data to display.
     let page: OnboardingPage
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     public init(page: OnboardingPage) {
@@ -17,45 +18,70 @@ public struct OnboardingPageView: View {
     }
 
     public var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                // Illustration area
-                Spacer(minLength: 40)
+        VStack(spacing: 0) {
+            Spacer()
 
-                Image(systemName: page.systemImage)
-                    .font(.system(size: illustrationSize))
-                    .foregroundStyle(WWTheme.accent)
-                    .accessibilityHidden(true)
-                    .frame(maxHeight: .infinity)
-
-                Spacer(minLength: 20)
-
-                // Text area
-                VStack(spacing: 12) {
-                    Text(LocalizedStringKey(page.titleKey))
-                        .font(WWTypography.title)
-                        .foregroundStyle(WWTheme.textPrimary)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(nil)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Text(LocalizedStringKey(page.subtitleKey))
-                        .font(WWTypography.body)
-                        .foregroundStyle(WWTheme.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(nil)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.horizontal, 32)
+            // Icon with gradient background -- matches Onboarding.tsx lines 93-105
+            // w-24 h-24 rounded-3xl bg-gradient-to-br shadow-lg
+            RoundedRectangle(cornerRadius: 24)
+                .fill(
+                    LinearGradient(
+                        colors: page.gradientColors,
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .frame(width: 96, height: 96)
+                .shadow(color: .black.opacity(0.15), radius: 12, y: 4)
+                .overlay {
+                    Image(systemName: page.iconSystemName)
+                        .font(.system(size: 48, weight: .regular))
+                        .foregroundStyle(.white)
                 }
-                .padding(.bottom, 80)
-            }
-            .frame(maxWidth: .infinity, minHeight: UIScreen.main.bounds.height - 120)
-        }
-        .background(WWTheme.background)
-    }
+                .padding(.bottom, 32)
+                .transition(
+                    reduceMotion
+                        ? .opacity
+                        : .scale.combined(with: .opacity)
+                            .combined(with: .modifier(
+                                active: RotationModifier(angle: -10),
+                                identity: RotationModifier(angle: 0)
+                            ))
+                )
+                .accessibilityHidden(true)
 
-    /// Adjust illustration size for Dynamic Type accessibility sizes.
-    private var illustrationSize: CGFloat {
-        dynamicTypeSize.isAccessibilitySize ? 48 : 72
+            // Title -- text-4xl, Fraunces display, navy
+            // Matches Onboarding.tsx lines 108-116
+            Text(LocalizedStringKey(page.titleKey))
+                .font(WWTypography.largeTitle)
+                .foregroundStyle(WWTheme.textPrimary)
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.bottom, 16)
+
+            // Description -- text-lg text-muted-foreground max-w-sm leading-relaxed
+            // Matches Onboarding.tsx lines 119-126
+            Text(LocalizedStringKey(page.subtitleKey))
+                .font(WWTypography.body)
+                .foregroundStyle(WWTheme.textSecondary)
+                .multilineTextAlignment(.center)
+                .lineSpacing(6) // leading-relaxed equivalent
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: 320)
+
+            Spacer()
+        }
+        .padding(.horizontal, 32)
+    }
+}
+
+/// Rotation transition modifier for icon spring-in animation.
+private struct RotationModifier: ViewModifier {
+    let angle: Double
+
+    func body(content: Content) -> some View {
+        content.rotationEffect(.degrees(angle))
     }
 }
