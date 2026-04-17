@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-04-PLAN.md
-last_updated: "2026-04-17T12:02:00.000Z"
-last_activity: "2026-04-17 -- Completed Plan 05-04: Trip Wizard"
+stopped_at: Completed 05-05-PLAN.md
+last_updated: "2026-04-17T12:53:00.000Z"
+last_activity: "2026-04-17 -- Completed Plan 05-05: Plan View"
 progress:
   total_phases: 11
   completed_phases: 5
   total_plans: 56
-  completed_plans: 53
-  percent: 95
+  completed_plans: 54
+  percent: 96
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 5 of 10 (iOS Core)
-Plan: 4 of 7 in current phase (complete)
+Plan: 5 of 7 in current phase (complete)
 Status: In Progress
-Last activity: 2026-04-17 -- Completed Plan 05-04: Trip Wizard
+Last activity: 2026-04-17 -- Completed Plan 05-05: Plan View
 
-Progress: [█████████░] 95%
+Progress: [█████████░] 96%
 
 ## Performance Metrics
 
@@ -101,6 +101,7 @@ Progress: [█████████░] 95%
 | Phase 05-ios-core P02 | 60 min | 2 tasks | 14 files |
 | Phase 05-ios-core P03 | 16 | 2 tasks | 13 files |
 | Phase 05-ios-core P04 | 12 min | 2 tasks | 14 files |
+| Phase 05-ios-core P05 | 47 min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -256,6 +257,9 @@ Recent decisions affecting current work:
 - [Phase 05-ios-core]: swift-http-types added as explicit WWCore dependency -- transitive dep not resolved by Xcode linker for test target
 - [Phase 05-ios-core]: AppConfig reads DSN/API keys from Info.plist -- never hardcoded per security requirements
 - [Phase 05-ios-core]: WizardDraftStoreProtocol defined in WWTripWizard (not extending OfflineStoreProtocol) -- avoids cross-package dependency on WWOffline types; app target bridges via DI
+- [Phase 05-ios-core]: Injectable notification authorization closure instead of direct UNUserNotificationCenter -- enables test isolation without system dialogs hanging in simulator
+- [Phase 05-ios-core]: PlanData/PlanDayData/PlanItemData models defined in PlanViewModel.swift -- keeps WWPlanView self-contained without cross-package model dependency
+- [Phase 05-ios-core]: Walk items filtered from timeline display, shown as inline walking indicators between cards -- per CONTEXT.md walking times design
 
 ### Pending Todos
 
@@ -271,6 +275,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-17T12:02:00.000Z
-Stopped at: Completed 05-04-PLAN.md
+Last session: 2026-04-17T12:53:00.000Z
+Stopped at: Completed 05-05-PLAN.md
 Resume file: None

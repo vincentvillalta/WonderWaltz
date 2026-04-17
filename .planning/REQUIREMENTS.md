@@ -137,7 +137,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **IOS-04**: `WWOffline` module with SwiftData persistence and background sync coordinator (fallback to GRDB if SwiftData is unstable on iOS 18.x real devices)
 - [x] **IOS-05**: Onboarding flow explains the value prop, requests notification permission contextually (not on first launch)
 - [x] **IOS-06**: Trip wizard: dates → park selection + hopper → guests (with DAS flag, mobility, sensory, diet) → budget tier → lodging + transport → must-do rides → meal preferences → review
-- [ ] **IOS-07**: Plan view: day tabs → timeline → item cards (attraction, meal, show, LL book reminder, rest, walk) → item detail → "Rethink my day" button
+- [x] **IOS-07**: Plan view: day tabs → timeline → item cards (attraction, meal, show, LL book reminder, rest, walk) → item detail → "Rethink my day" button
 - [ ] **IOS-08**: Paywall view: locked Days 2+ shown as blurred cards with "Unlock Trip $9.99" CTA → native StoreKit sheet → success animation → unlocked days reveal
 - [ ] **IOS-09**: Packing list view: categorized items with affiliate links opening in SafariView; affiliate disclosure visible
 - [ ] **IOS-10**: Settings view: account, trip archive, notifications, restore purchases, delete account, about (with disclaimer + data source attribution)
@@ -338,7 +338,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | IOS-04 | Phase 5 | Complete |
 | IOS-05 | Phase 5 | Complete |
 | IOS-06 | Phase 5 | Complete |
-| IOS-07 | Phase 5 | Pending |
+| IOS-07 | Phase 5 | Complete |
 | IOS-08 | Phase 6 | Pending |
 | IOS-09 | Phase 6 | Pending |
 | IOS-10 | Phase 6 | Pending |
