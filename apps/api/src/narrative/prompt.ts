@@ -18,23 +18,25 @@ import type { NarrativeInput } from './narrative.service.js';
 // ─── Path resolution ─────────────────────────────────────────────────
 
 /**
- * Resolves the monorepo root from the current file location.
- * In the compiled dist output, this file lives at dist/src/narrative/prompt.js
- * (4 levels up to repo root). In TS source it is src/narrative/prompt.ts
- * (3 levels up). We try both and use the one that contains packages/.
+ * Resolves the monorepo root by walking up from the current file until we
+ * find a `packages/content/wdw/attractions.yaml`. The runtime layout varies
+ * across local dev (tsx/tsc) and Railway/Docker (different WORKDIR nesting),
+ * so probing is more robust than hard-coded "N levels up".
  */
 function resolveMonorepoRoot(): string {
-  // From dist/src/narrative/prompt.js → 4 levels up
-  const fromDist = resolve(__dirname, '..', '..', '..', '..');
-  // From src/narrative/prompt.ts → 3 levels up
-  const fromSrc = resolve(__dirname, '..', '..', '..');
-
-  try {
-    readFileSync(resolve(fromDist, 'packages', 'content', 'wdw', 'attractions.yaml'));
-    return fromDist;
-  } catch {
-    return fromSrc;
+  let dir = __dirname;
+  for (let i = 0; i < 8; i++) {
+    try {
+      readFileSync(resolve(dir, 'packages', 'content', 'wdw', 'attractions.yaml'));
+      return dir;
+    } catch {
+      const parent = resolve(dir, '..');
+      if (parent === dir) break;
+      dir = parent;
+    }
   }
+  // Fallback: repo root assumed 5 levels up from dist/src/narrative/prompt.js
+  return resolve(__dirname, '..', '..', '..', '..', '..');
 }
 
 const MONOREPO_ROOT = resolveMonorepoRoot();
