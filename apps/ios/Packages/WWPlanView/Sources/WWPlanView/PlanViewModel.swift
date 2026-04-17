@@ -205,14 +205,22 @@ public final class PlanViewModel {
         for attempt in 1...maxAttempts {
             do {
                 let tripData = try await apiClient.getTrip(id: tripId)
+                // Log raw payload every 5 attempts so we can see what the
+                // generated client actually returns.
+                if attempt == 1 || attempt % 5 == 0 {
+                    let preview = String(data: tripData.prefix(400), encoding: .utf8) ?? "(non-utf8)"
+                    WWLogger.planView.debug("poll #\(attempt) raw trip body: \(preview, privacy: .public)")
+                }
                 // Extract current_plan_id from the envelope: { data: { current_plan_id: "..." } }
                 if let json = try JSONSerialization.jsonObject(with: tripData) as? [String: Any],
                    let dataObj = json["data"] as? [String: Any],
                    let planId = dataObj["current_plan_id"] as? String, !planId.isEmpty {
+                    WWLogger.planView.debug("poll: got planId=\(planId, privacy: .public) from envelope")
                     await loadPlan(planId: planId)
                     return
                 }
                 if let planId = try? (JSONSerialization.jsonObject(with: tripData) as? [String: Any])?["current_plan_id"] as? String, !planId.isEmpty {
+                    WWLogger.planView.debug("poll: got planId=\(planId, privacy: .public) from flat")
                     await loadPlan(planId: planId)
                     return
                 }
