@@ -1,320 +1,506 @@
 import SwiftUI
 import WWDesignSystem
 
-/// Full detail view for a plan item, pushed via NavigationStack.
-/// Shows complete item information including narrative tip, walking time, and mark-as-done toggle.
+/// Bottom sheet detail view matching React StopDetailSheet.tsx.
+/// Spring animation, park-color time badge, hero gradient, height req card,
+/// Pro Tip gold card, walk time card, navy "Start Navigation" CTA.
 public struct PlanItemDetailView: View {
 
     public let item: PlanItemData
-    public let isCompleted: Bool
-    public let onToggleCompleted: () -> Void
+    public let parkColor: ParkColor
+    public let onDismiss: () -> Void
+    public let onNavigate: () -> Void
+    public let onSwap: () -> Void
+    public let onSkip: () -> Void
 
     public init(
         item: PlanItemData,
-        isCompleted: Bool = false,
-        onToggleCompleted: @escaping () -> Void = {}
+        parkColor: ParkColor,
+        onDismiss: @escaping () -> Void = {},
+        onNavigate: @escaping () -> Void = {},
+        onSwap: @escaping () -> Void = {},
+        onSkip: @escaping () -> Void = {}
     ) {
         self.item = item
-        self.isCompleted = isCompleted
-        self.onToggleCompleted = onToggleCompleted
+        self.parkColor = parkColor
+        self.onDismiss = onDismiss
+        self.onNavigate = onNavigate
+        self.onSwap = onSwap
+        self.onSkip = onSkip
     }
 
+    @State private var sheetOffset: CGFloat = UIScreen.main.bounds.height
+    @State private var backdropOpacity: Double = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     public var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: WWDesignTokens.spacing8) {
+        ZStack(alignment: .bottom) {
+            // Backdrop: black at 40% opacity, tappable to dismiss
+            Color.black
+                .opacity(backdropOpacity)
+                .ignoresSafeArea()
+                .onTapGesture { dismiss() }
+
+            // Bottom sheet
+            sheetContent
+                .offset(y: max(sheetOffset, 0))
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            if value.translation.height > 0 {
+                                sheetOffset = value.translation.height
+                            }
+                        }
+                        .onEnded { value in
+                            if value.translation.height > 150 {
+                                dismiss()
+                            } else {
+                                animateIn()
+                            }
+                        }
+                )
+        }
+        .onAppear { animateIn() }
+        .accessibilityAddTraits(.isModal)
+    }
+
+    // MARK: - Sheet Content
+
+    private var sheetContent: some View {
+        GeometryReader { geo in
+            VStack(spacing: 0) {
+                // Handle: centered 40pt x 4pt capsule
+                Capsule()
+                    .fill(WWTheme.muted)
+                    .frame(width: 40, height: 4)
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
+
                 // Header
                 headerSection
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 16)
 
-                Divider()
+                // Scrollable content
+                ScrollView {
+                    VStack(spacing: 16) {
+                        // Hero image placeholder
+                        heroPlaceholder
 
-                // Time info
-                timeSection
+                        // Height requirement card
+                        if let height = item.heightRequirement {
+                            heightRequirementCard(height: height)
+                        }
 
-                // Type-specific details
-                detailSection
+                        // Pro Tip card
+                        if let tip = item.narrativeTip {
+                            proTipCard(tip: tip)
+                        }
 
-                // Narrative tip
-                if let tip = item.narrativeTip {
-                    narrativeSection(tip: tip)
+                        // Walk time card
+                        if let walkTime = item.walkTimeMinutes, walkTime > 0 {
+                            walkTimeCard(minutes: walkTime)
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 16)
                 }
 
-                // Walking time to next
-                if let walkTime = item.walkTimeMinutes, walkTime > 0 {
-                    walkingSection(minutes: walkTime)
-                }
-
-                Divider()
-
-                // Mark as done
-                completionToggle
-
-                // Map placeholder
-                mapPlaceholder
+                // Action buttons (pinned at bottom)
+                actionButtons
+                    .padding(24)
+                    .background(
+                        Rectangle()
+                            .fill(WWTheme.surface)
+                            .overlay(alignment: .top) {
+                                Rectangle()
+                                    .fill(WWTheme.border)
+                                    .frame(height: 1)
+                            }
+                    )
             }
-            .padding(WWDesignTokens.spacing8)
+            .frame(maxHeight: geo.size.height * 0.85)
+            .background(
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(WWTheme.surface)
+            )
+            .clipShape(
+                UnevenRoundedRectangle(
+                    topLeadingRadius: 24,
+                    bottomLeadingRadius: 0,
+                    bottomTrailingRadius: 0,
+                    topTrailingRadius: 24
+                )
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
-        .background(WWTheme.background)
-        .navigationTitle(item.name)
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     // MARK: - Header
 
     private var headerSection: some View {
-        HStack(spacing: WWDesignTokens.spacing4) {
-            itemIcon
-                .font(.title2)
-                .foregroundStyle(accentColor)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 8) {
+                    // Badges row
+                    HStack(spacing: 8) {
+                        if item.isLightningLane {
+                            Text("Lightning Lane")
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundStyle(WWDesignTokens.colorPrimitiveNavy)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .fill(WWDesignTokens.colorPrimitiveGold)
+                                )
+                        }
+                        if item.isADR {
+                            Text("ADR")
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 3)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .fill(WWDesignTokens.colorParkAnimalKingdom)
+                                )
+                        }
+                    }
 
-            VStack(alignment: .leading, spacing: WWDesignTokens.spacing1) {
-                Text(item.name)
-                    .font(WWTypography.title2)
+                    // Title: Fraunces title2 (22pt)
+                    Text(item.name)
+                        .font(WWTypography.title2)
+                        .foregroundStyle(WWTheme.textPrimary)
+
+                    // Location
+                    HStack(spacing: 4) {
+                        Image(systemName: "mappin")
+                            .font(.system(size: 14))
+                            .foregroundStyle(WWTheme.textSecondary)
+                        Text(locationLabel)
+                            .font(WWTypography.subheadline)
+                            .foregroundStyle(WWTheme.textSecondary)
+                    }
+                }
+
+                Spacer()
+
+                // Close button: 36pt circle
+                Button(action: dismiss) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(WWTheme.textSecondary)
+                        .frame(width: 36, height: 36)
+                        .background(
+                            Circle()
+                                .fill(WWTheme.muted)
+                        )
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Close")
+            }
+
+            // Time + stats row
+            HStack(spacing: 8) {
+                // Time badge: park-color tinted
+                HStack(spacing: 6) {
+                    Image(systemName: "clock")
+                        .font(.system(size: 14))
+                        .foregroundStyle(parkColor.color)
+                    Text(item.startTime)
+                        .font(WWTypography.subheadline.weight(.medium))
+                        .foregroundStyle(WWTheme.textPrimary)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                        .fill(parkColor.color.opacity(0.08))
+                )
+
+                // Wait badge
+                if let wait = item.waitTimeMinutes {
+                    HStack(spacing: 6) {
+                        Image(systemName: "person.2")
+                            .font(.system(size: 14))
+                            .foregroundStyle(WWTheme.textSecondary)
+                        Text("\(wait) min wait")
+                            .font(WWTypography.subheadline.weight(.medium))
+                            .foregroundStyle(WWTheme.textPrimary)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                            .fill(WWTheme.muted)
+                    )
+                }
+
+                // Duration badge
+                if let duration = item.durationMinutes {
+                    HStack(spacing: 6) {
+                        Image(systemName: "clock")
+                            .font(.system(size: 14))
+                            .foregroundStyle(WWTheme.textSecondary)
+                        Text("\(duration) min")
+                            .font(WWTypography.subheadline.weight(.medium))
+                            .foregroundStyle(WWTheme.textPrimary)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                            .fill(WWTheme.muted)
+                    )
+                }
+            }
+        }
+    }
+
+    // MARK: - Hero Placeholder
+
+    /// Full-width, 192pt tall, rounded-2xl, gradient from parkColor/12% to parkColor/3%.
+    private var heroPlaceholder: some View {
+        RoundedRectangle(cornerRadius: WWDesignTokens.radiusBase)
+            .fill(
+                LinearGradient(
+                    colors: [
+                        parkColor.color.opacity(0.12),
+                        parkColor.color.opacity(0.03)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .frame(height: 192)
+            .overlay {
+                Text(heroEmoji)
+                    .font(.system(size: 64))
+            }
+    }
+
+    private var heroEmoji: String {
+        switch item.type {
+        case .attraction: "\u{1F3A2}" // roller coaster
+        case .meal: "\u{1F37D}\u{FE0F}" // plate with cutlery
+        case .show: "\u{1F3AD}" // theater masks
+        case .rest: "\u{2615}" // coffee
+        case .llReminder: "\u{26A1}" // lightning
+        case .walk: "\u{1F6B6}" // walking
+        }
+    }
+
+    // MARK: - Height Requirement Card
+
+    private func heightRequirementCard(height: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "person.2")
+                .font(.system(size: 20))
+                .foregroundStyle(WWDesignTokens.colorPrimitiveGold)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Height Requirement")
+                    .font(WWTypography.subheadline.weight(.medium))
                     .foregroundStyle(WWTheme.textPrimary)
-                    .lineLimit(nil)
-                    .fixedSize(horizontal: false, vertical: true)
 
-                Text(typeLabel)
+                Text("Minimum \(height) tall to ride")
                     .font(WWTypography.subheadline)
                     .foregroundStyle(WWTheme.textSecondary)
-            }
-        }
-    }
 
-    // MARK: - Time
+                Divider()
+                    .padding(.vertical, 4)
 
-    private var timeSection: some View {
-        HStack(spacing: WWDesignTokens.spacing8) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Start")
+                // Per-guest check/cross list (placeholder with sample data)
+                Text("\u{2713} Guests meeting height requirement can ride \u{2022} \u{2717} Shorter guests cannot ride")
                     .font(WWTypography.caption)
                     .foregroundStyle(WWTheme.textSecondary)
-                Text(item.startTime)
-                    .font(WWTypography.headline)
-                    .foregroundStyle(WWTheme.textPrimary)
-            }
-
-            if let endTime = item.endTime {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("End")
-                        .font(WWTypography.caption)
-                        .foregroundStyle(WWTheme.textSecondary)
-                    Text(endTime)
-                        .font(WWTypography.headline)
-                        .foregroundStyle(WWTheme.textPrimary)
-                }
-            }
-
-            if let duration = item.durationMinutes {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Duration")
-                        .font(WWTypography.caption)
-                        .foregroundStyle(WWTheme.textSecondary)
-                    Text("\(duration) min")
-                        .font(WWTypography.headline)
-                        .foregroundStyle(WWTheme.textPrimary)
-                }
             }
         }
-    }
-
-    // MARK: - Details
-
-    @ViewBuilder
-    private var detailSection: some View {
-        switch item.type {
-        case .attraction:
-            attractionDetails
-        case .meal:
-            mealDetails
-        case .show:
-            showDetails
-        case .llReminder:
-            llReminderDetails
-        case .rest:
-            EmptyView()
-        case .walk:
-            EmptyView()
-        }
-    }
-
-    private var attractionDetails: some View {
-        VStack(alignment: .leading, spacing: WWDesignTokens.spacing4) {
-            if let waitTime = item.waitTimeMinutes {
-                detailRow(label: "Estimated Wait", value: "\(waitTime) min")
-            }
-            if let height = item.heightRequirement {
-                detailRow(label: "Height Requirement", value: height)
-            }
-            if item.isLightningLane {
-                HStack(spacing: WWDesignTokens.spacing2) {
-                    Image(systemName: "bolt.fill")
-                        .foregroundStyle(WWTheme.accent)
-                    Text("Lightning Lane")
-                        .font(WWTypography.body)
-                        .foregroundStyle(WWTheme.textPrimary)
-                }
-            }
-        }
-    }
-
-    private var mealDetails: some View {
-        VStack(alignment: .leading, spacing: WWDesignTokens.spacing4) {
-            if let cuisine = item.cuisineType {
-                detailRow(label: "Cuisine", value: cuisine)
-            }
-            if item.isMobileOrder {
-                HStack(spacing: WWDesignTokens.spacing2) {
-                    Image(systemName: "iphone")
-                        .foregroundStyle(WWTheme.success)
-                    Text("Mobile Order Available")
-                        .font(WWTypography.body)
-                        .foregroundStyle(WWTheme.textPrimary)
-                }
-            }
-        }
-    }
-
-    private var showDetails: some View {
-        HStack(spacing: WWDesignTokens.spacing2) {
-            Image(systemName: "clock.fill")
-                .foregroundStyle(WWTheme.primary)
-            Text("Fixed showtime")
-                .font(WWTypography.body)
-                .foregroundStyle(WWTheme.textPrimary)
-        }
-    }
-
-    private var llReminderDetails: some View {
-        VStack(alignment: .leading, spacing: WWDesignTokens.spacing4) {
-            if let window = item.bookingWindowTime {
-                HStack(spacing: WWDesignTokens.spacing2) {
-                    Image(systemName: "bell.fill")
-                        .foregroundStyle(WWTheme.warning)
-                    Text("Booking window opens at \(window)")
-                        .font(WWTypography.body)
-                        .foregroundStyle(WWTheme.textPrimary)
-                }
-            }
-        }
-    }
-
-    // MARK: - Narrative
-
-    private func narrativeSection(tip: String) -> some View {
-        VStack(alignment: .leading, spacing: WWDesignTokens.spacing2) {
-            Text("Tip")
-                .font(WWTypography.caption)
-                .foregroundStyle(WWTheme.textSecondary)
-            Text(tip)
-                .font(WWTypography.body)
-                .foregroundStyle(WWTheme.textPrimary)
-        }
-        .padding(WWDesignTokens.spacing6)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
         .background(
             RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
-                .fill(WWTheme.background)
+                .fill(WWTheme.surface)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                .stroke(WWTheme.border, lineWidth: 1)
         )
     }
 
-    // MARK: - Walking
+    // MARK: - Pro Tip Card
 
-    private func walkingSection(minutes: Int) -> some View {
-        HStack(spacing: WWDesignTokens.spacing2) {
-            Image(systemName: "figure.walk")
-                .foregroundStyle(WWTheme.textSecondary)
-            Text("\(minutes) min walk to next item")
-                .font(WWTypography.footnote)
-                .foregroundStyle(WWTheme.textSecondary)
-        }
-    }
+    /// Gold-tinted card: gold/10% bg, gold/20% border. Sparkles icon.
+    private func proTipCard(tip: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 20))
+                .foregroundStyle(WWDesignTokens.colorPrimitiveGold)
+                .frame(width: 24)
 
-    // MARK: - Completion Toggle
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Pro Tip")
+                    .font(WWTypography.subheadline.weight(.medium))
+                    .foregroundStyle(WWTheme.textPrimary)
 
-    private var completionToggle: some View {
-        Button(action: onToggleCompleted) {
-            HStack(spacing: WWDesignTokens.spacing4) {
-                Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundStyle(isCompleted ? WWTheme.success : WWTheme.textSecondary)
-
-                Text(isCompleted ? "Completed" : "Mark as Done")
-                    .font(WWTypography.body)
+                Text(tip)
+                    .font(WWTypography.subheadline)
                     .foregroundStyle(WWTheme.textPrimary)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .frame(minHeight: WWDesignTokens.iconographyMinTapTarget)
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(isCompleted ? "Mark as not completed" : "Mark as done")
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                .fill(WWDesignTokens.colorPrimitiveGold.opacity(0.1))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                .stroke(WWDesignTokens.colorPrimitiveGold.opacity(0.2), lineWidth: 1)
+        )
     }
 
-    // MARK: - Map Placeholder
+    // MARK: - Walk Time Card
 
-    private var mapPlaceholder: some View {
-        RoundedRectangle(cornerRadius: WWDesignTokens.radiusMd)
-            .fill(WWTheme.muted)
-            .frame(height: 150)
-            .overlay {
-                VStack(spacing: WWDesignTokens.spacing2) {
-                    Image(systemName: "map")
-                        .font(.title2)
-                        .foregroundStyle(WWTheme.textSecondary)
-                    Text("Map coming soon")
+    private func walkTimeCard(minutes: Int) -> some View {
+        HStack(spacing: 12) {
+            HStack(spacing: 12) {
+                Image(systemName: "location.north")
+                    .font(.system(size: 20))
+                    .foregroundStyle(WWTheme.textSecondary)
+                    .frame(width: 24)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("From previous stop")
+                        .font(WWTypography.subheadline.weight(.medium))
+                        .foregroundStyle(WWTheme.textPrimary)
+                    Text("\(minutes) minute walk")
                         .font(WWTypography.caption)
                         .foregroundStyle(WWTheme.textSecondary)
                 }
             }
-            .accessibilityHidden(true)
+
+            Spacer()
+
+            Text("0.2 mi")
+                .font(WWTypography.caption)
+                .foregroundStyle(WWTheme.textSecondary)
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                .fill(WWTheme.surface)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                .stroke(WWTheme.border, lineWidth: 1)
+        )
+    }
+
+    // MARK: - Action Buttons
+
+    private var actionButtons: some View {
+        VStack(spacing: 8) {
+            // Navy CTA: Start Navigation with shimmer
+            WWButton("Start Navigation", style: .primary) {
+                onNavigate()
+            }
+
+            // Two half-width buttons
+            HStack(spacing: 8) {
+                // Swap button (secondary)
+                Button(action: onSwap) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.left.arrow.right")
+                            .font(.system(size: 14))
+                        Text("Swap")
+                            .font(WWTypography.subheadline.weight(.medium))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 48)
+                    .background(
+                        RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                            .fill(WWTheme.surface)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                            .stroke(WWTheme.border, lineWidth: 1)
+                    )
+                    .foregroundStyle(WWTheme.textPrimary)
+                }
+                .buttonStyle(.plain)
+
+                // Skip button (red-tinted)
+                Button(action: onSkip) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "trash")
+                            .font(.system(size: 14))
+                        Text("Skip")
+                            .font(WWTypography.subheadline.weight(.medium))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 48)
+                    .background(
+                        RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                            .fill(WWTheme.surface)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: WWDesignTokens.radiusSm)
+                            .stroke(WWDesignTokens.colorParkHollywoodStudios.opacity(0.2), lineWidth: 1)
+                    )
+                    .foregroundStyle(WWDesignTokens.colorParkHollywoodStudios)
+                }
+                .buttonStyle(.plain)
+            }
+        }
     }
 
     // MARK: - Helpers
 
-    private func detailRow(label: String, value: String) -> some View {
-        HStack {
-            Text(label)
-                .font(WWTypography.subheadline)
-                .foregroundStyle(WWTheme.textSecondary)
-            Spacer()
-            Text(value)
-                .font(WWTypography.body)
-                .foregroundStyle(WWTheme.textPrimary)
+    private var locationLabel: String {
+        if item.type == .meal, let cuisine = item.cuisineType {
+            return cuisine
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("\(label): \(value)"))
-    }
-
-    @ViewBuilder
-    private var itemIcon: some View {
         switch item.type {
-        case .attraction: Image(systemName: "star.fill")
-        case .meal: Image(systemName: "fork.knife")
-        case .show: Image(systemName: "calendar")
-        case .llReminder: Image(systemName: "bell.fill")
-        case .rest: Image(systemName: "bed.double.fill")
-        case .walk: Image(systemName: "figure.walk")
+        case .attraction: return "Attraction"
+        case .meal: return "Dining"
+        case .show: return "Show"
+        case .llReminder: return "Lightning Lane"
+        case .rest: return "Break"
+        case .walk: return "Walking"
         }
     }
 
-    private var accentColor: Color {
-        switch item.type {
-        case .attraction: WWTheme.accent
-        case .meal: WWTheme.success
-        case .show: WWTheme.primary
-        case .llReminder: WWTheme.warning
-        case .rest: WWTheme.textSecondary
-        case .walk: WWTheme.textSecondary
+    private func animateIn() {
+        if reduceMotion {
+            sheetOffset = 0
+            backdropOpacity = 0.4
+        } else {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+                sheetOffset = 0
+            }
+            withAnimation(.easeOut(duration: 0.2)) {
+                backdropOpacity = 0.4
+            }
         }
     }
 
-    private var typeLabel: String {
-        switch item.type {
-        case .attraction: "Attraction"
-        case .meal: "Dining"
-        case .show: "Show / Entertainment"
-        case .llReminder: "Lightning Lane Reminder"
-        case .rest: "Rest Break"
-        case .walk: "Walking"
+    private func dismiss() {
+        if reduceMotion {
+            sheetOffset = UIScreen.main.bounds.height
+            backdropOpacity = 0
+            onDismiss()
+        } else {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
+                sheetOffset = UIScreen.main.bounds.height
+            }
+            withAnimation(.easeIn(duration: 0.2)) {
+                backdropOpacity = 0
+            }
+            // Delay dismiss callback for animation to complete
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                onDismiss()
+            }
         }
     }
 }

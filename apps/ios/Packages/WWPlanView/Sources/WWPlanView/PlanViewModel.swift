@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import UserNotifications
 import WWCore
+import WWDesignSystem
 
 // MARK: - Plan Data Models
 
@@ -80,6 +81,7 @@ public struct PlanItemData: Codable, Sendable, Equatable, Identifiable {
     public let walkTimeMinutes: Int?
     public let waitTimeMinutes: Int?
     public let isLightningLane: Bool
+    public let isADR: Bool
     public let cuisineType: String?
     public let isMobileOrder: Bool
     public let heightRequirement: String?
@@ -98,6 +100,7 @@ public struct PlanItemData: Codable, Sendable, Equatable, Identifiable {
         walkTimeMinutes: Int? = nil,
         waitTimeMinutes: Int? = nil,
         isLightningLane: Bool = false,
+        isADR: Bool = false,
         cuisineType: String? = nil,
         isMobileOrder: Bool = false,
         heightRequirement: String? = nil,
@@ -115,6 +118,7 @@ public struct PlanItemData: Codable, Sendable, Equatable, Identifiable {
         self.walkTimeMinutes = walkTimeMinutes
         self.waitTimeMinutes = waitTimeMinutes
         self.isLightningLane = isLightningLane
+        self.isADR = isADR
         self.cuisineType = cuisineType
         self.isMobileOrder = isMobileOrder
         self.heightRequirement = heightRequirement
@@ -127,7 +131,7 @@ public struct PlanItemData: Codable, Sendable, Equatable, Identifiable {
 // MARK: - PlanViewModel
 
 /// Manages plan viewing state: loads from API or cache, handles rethink flow,
-/// day selection, and notification permission request after first plan load.
+/// day selection, skip/done tracking, and notification permission request after first plan load.
 @Observable
 @MainActor
 public final class PlanViewModel {
@@ -141,6 +145,9 @@ public final class PlanViewModel {
     public var error: String?
     public var isOffline: Bool = false
     public var completedItemIds: Set<String> = []
+
+    /// Tracks items that have been skipped or marked as done via swipe.
+    public var skippedItems: Set<String> = []
 
     /// The currently selected day's data.
     public var currentDay: PlanDayData? {
@@ -245,6 +252,37 @@ public final class PlanViewModel {
         selectedDayIndex = index
     }
 
+    // MARK: - Skip / Done
+
+    /// Mark an item as skipped (swipe left).
+    public func skipItem(_ id: String) {
+        skippedItems.insert(id)
+    }
+
+    /// Mark an item as done (swipe right). Adds to skippedItems set (same visual treatment).
+    public func markDone(_ id: String) {
+        skippedItems.insert(id)
+        completedItemIds.insert(id)
+    }
+
+    // MARK: - Park Color Mapping
+
+    /// Maps a day's parkName string to the corresponding ParkColor enum.
+    public func parkColor(for day: PlanDayData) -> ParkColor {
+        let normalized = day.parkName.lowercased()
+        if normalized.contains("magic kingdom") {
+            return .magicKingdom
+        } else if normalized.contains("epcot") {
+            return .epcot
+        } else if normalized.contains("hollywood") {
+            return .hollywoodStudios
+        } else if normalized.contains("animal kingdom") {
+            return .animalKingdom
+        }
+        // Default to Magic Kingdom if no match
+        return .magicKingdom
+    }
+
     // MARK: - Rethink Today
 
     /// Rethink today's plan. Sends completed item IDs to the API.
@@ -267,6 +305,7 @@ public final class PlanViewModel {
             let decoded = try JSONDecoder().decode(PlanData.self, from: data)
             self.plan = decoded
             completedItemIds.removeAll()
+            skippedItems.removeAll()
             isRethinking = false
         } catch {
             self.error = String(
