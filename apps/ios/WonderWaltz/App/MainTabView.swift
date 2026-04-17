@@ -31,6 +31,7 @@ struct MainTabView: View {
                 WizardContainerView(viewModel: wizardVM)
                     .onChange(of: wizardVM.tripCreated) { _, created in
                         if created, let tripId = wizardVM.generatedTripId {
+                            WWLogger.app.debug("Wizard completed — navigating to plan view for trip=\(tripId, privacy: .public)")
                             showWizard = false
                             currentTripId = tripId
                             planVM = makePlanViewModel()
@@ -83,6 +84,7 @@ struct MainTabView: View {
     // MARK: - Helpers
 
     private func startWizard() {
+        WWLogger.wizard.debug("startWizard tapped")
         let draftStore = container.wizardDraftStore as? any WizardDraftStoreProtocol
         let vm = WizardViewModel(
             apiClient: container.apiClient,
@@ -93,7 +95,10 @@ struct MainTabView: View {
 
         Task {
             if let draft = await draftStore?.loadDraft() {
+                WWLogger.wizard.debug("Restored draft at step=\(draft.currentStep)")
                 vm.restoreFromSnapshot(draft)
+            } else {
+                WWLogger.wizard.trace("No existing draft to restore")
             }
         }
     }

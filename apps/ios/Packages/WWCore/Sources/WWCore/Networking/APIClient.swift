@@ -29,42 +29,53 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
             middlewares: [authMiddleware]
         )
         self.encoder = JSONEncoder()
+        WWLogger.networking.debug("APIClient initialized with serverURL=\(serverURL.absoluteString, privacy: .public)")
     }
 
     // MARK: - APIClientProtocol
 
     public func anonymousAuth() async throws -> String {
-        let response = try await client.AuthController_anonymousAuth()
-        switch response {
-        case .ok(let output):
-            switch output.body {
-            case .json(let payload):
-                // Extract access_token from the envelope response.
-                // The generated type is a composite; encode to JSON then parse.
-                let data = try encoder.encode(payload)
-                guard let dict = try JSONSerialization.jsonObject(
-                    with: data
-                ) as? [String: Any] else {
+        WWLogger.networking.trace("POST /v1/auth/anonymous — start")
+        do {
+            let response = try await client.AuthController_anonymousAuth()
+            switch response {
+            case .ok(let output):
+                switch output.body {
+                case .json(let payload):
+                    let data = try encoder.encode(payload)
+                    guard let dict = try JSONSerialization.jsonObject(
+                        with: data
+                    ) as? [String: Any] else {
+                        WWLogger.networking.error("anonymousAuth: envelope decode failed")
+                        throw APIClientError.decodingFailed
+                    }
+                    if let dataObj = dict["data"] as? [String: Any],
+                       let token = dataObj["access_token"] as? String
+                    {
+                        WWLogger.networking.debug("anonymousAuth OK (token len=\(token.count))")
+                        return token
+                    }
+                    if let token = dict["access_token"] as? String {
+                        WWLogger.networking.debug("anonymousAuth OK (no envelope, token len=\(token.count))")
+                        return token
+                    }
+                    WWLogger.networking.error("anonymousAuth: no access_token in response")
                     throw APIClientError.decodingFailed
                 }
-                // Navigate envelope: { data: { access_token } }
-                if let dataObj = dict["data"] as? [String: Any],
-                   let token = dataObj["access_token"] as? String
-                {
-                    return token
-                }
-                if let token = dict["access_token"] as? String {
-                    return token
-                }
-                throw APIClientError.decodingFailed
+            default:
+                WWLogger.networking.error("anonymousAuth: unexpected response status")
+                throw APIClientError.unexpectedResponse
             }
-        default:
-            throw APIClientError.unexpectedResponse
+        } catch {
+            WWLogger.networking.error("anonymousAuth failed: \(error.localizedDescription, privacy: .public)")
+            throw error
         }
     }
 
     public func createTrip(_ body: Data) async throws -> Data {
+        WWLogger.networking.trace("POST /v1/trips — start (body size=\(body.count)B)")
         guard let dict = try? JSONSerialization.jsonObject(with: body) as? [String: Any] else {
+            WWLogger.networking.error("createTrip: body is not valid JSON")
             throw APIClientError.decodingFailed
         }
 
@@ -106,34 +117,49 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
             preferences: .init(value1: prefs)
         )
 
-        let response = try await client.TripsController_createTrip(body: .json(dto))
-        switch response {
-        case .ok(let output):
-            switch output.body {
-            case .json(let payload):
-                return try encoder.encode(payload)
+        do {
+            let response = try await client.TripsController_createTrip(body: .json(dto))
+            switch response {
+            case .ok(let output):
+                switch output.body {
+                case .json(let payload):
+                    WWLogger.networking.debug("createTrip OK (guests=\(guests.count), dates=\(startDate, privacy: .public)..\(endDate, privacy: .public))")
+                    return try encoder.encode(payload)
+                }
+            default:
+                WWLogger.networking.error("createTrip: unexpected response status")
+                throw APIClientError.unexpectedResponse
             }
-        default:
-            throw APIClientError.unexpectedResponse
+        } catch {
+            WWLogger.networking.error("createTrip failed: \(error.localizedDescription, privacy: .public)")
+            throw error
         }
     }
 
     public func getTrip(id: String) async throws -> Data {
-        let response = try await client.TripsController_getTrip(
-            path: .init(id: id)
-        )
-        switch response {
-        case .ok(let output):
-            switch output.body {
-            case .json(let payload):
-                return try encoder.encode(payload)
+        WWLogger.networking.trace("GET /v1/trips/\(id, privacy: .public)")
+        do {
+            let response = try await client.TripsController_getTrip(
+                path: .init(id: id)
+            )
+            switch response {
+            case .ok(let output):
+                switch output.body {
+                case .json(let payload):
+                    return try encoder.encode(payload)
+                }
+            default:
+                WWLogger.networking.error("getTrip: unexpected response status for id=\(id, privacy: .public)")
+                throw APIClientError.unexpectedResponse
             }
-        default:
-            throw APIClientError.unexpectedResponse
+        } catch {
+            WWLogger.networking.error("getTrip failed: \(error.localizedDescription, privacy: .public)")
+            throw error
         }
     }
 
     public func generatePlan(tripId: String) async throws -> Data {
+        WWLogger.networking.trace("POST /v1/trips/\(tripId, privacy: .public)/generate-plan")
         let response = try await client.TripsController_generatePlan(
             path: .init(id: tripId)
         )
@@ -141,6 +167,7 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
         case .ok(let output):
             switch output.body {
             case .json(let payload):
+                WWLogger.networking.debug("generatePlan OK for tripId=\(tripId, privacy: .public)")
                 return try encoder.encode(payload)
             }
         default:
@@ -149,17 +176,24 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
     }
 
     public func getPlan(id: String) async throws -> Data {
-        let response = try await client.PlansController_getPlan(
-            path: .init(id: id)
-        )
-        switch response {
-        case .ok(let output):
-            switch output.body {
-            case .json(let payload):
-                return try encoder.encode(payload)
+        WWLogger.networking.trace("GET /v1/plans/\(id, privacy: .public)")
+        do {
+            let response = try await client.PlansController_getPlan(
+                path: .init(id: id)
+            )
+            switch response {
+            case .ok(let output):
+                switch output.body {
+                case .json(let payload):
+                    return try encoder.encode(payload)
+                }
+            default:
+                WWLogger.networking.error("getPlan: unexpected status for id=\(id, privacy: .public)")
+                throw APIClientError.unexpectedResponse
             }
-        default:
-            throw APIClientError.unexpectedResponse
+        } catch {
+            WWLogger.networking.error("getPlan failed: \(error.localizedDescription, privacy: .public)")
+            throw error
         }
     }
 

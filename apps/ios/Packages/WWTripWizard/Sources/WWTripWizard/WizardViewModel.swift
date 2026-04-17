@@ -393,8 +393,10 @@ public final class WizardViewModel {
         let snapshot = buildSnapshot()
         do {
             try await draftStore?.saveDraft(snapshot)
+            WWLogger.wizard.trace("draft saved at step=\(self.currentStep.rawValue)")
         } catch {
             // Best-effort save -- don't block user flow
+            WWLogger.wizard.error("draft save failed: \(error.localizedDescription, privacy: .public)")
         }
     }
 
@@ -402,15 +404,18 @@ public final class WizardViewModel {
 
     /// Submit the trip: create via API, then trigger plan generation.
     public func submitTrip() async {
+        WWLogger.wizard.debug("submitTrip start (step=\(self.currentStep.rawValue))")
         isSubmitting = true
         submissionError = nil
 
         do {
             let tripBody = try buildTripBody()
+            WWLogger.wizard.trace("submitTrip: built body (\(tripBody.count)B)")
             let tripData = try await apiClient.createTrip(tripBody)
 
             // Parse trip ID from response
             guard let tripId = parseTripId(from: tripData) else {
+                WWLogger.wizard.error("submitTrip: could not parse trip ID from createTrip response")
                 submissionError = String(
                     localized: "Could not read trip details. Please try again.",
                     comment: "Wizard submission error: trip ID parse failure"
@@ -418,14 +423,17 @@ public final class WizardViewModel {
                 isSubmitting = false
                 return
             }
+            WWLogger.wizard.debug("submitTrip: trip created, id=\(tripId, privacy: .public)")
 
             // Trigger plan generation
             _ = try await apiClient.generatePlan(tripId: tripId)
+            WWLogger.wizard.debug("submitTrip: plan generation enqueued for \(tripId, privacy: .public)")
 
             generatedTripId = tripId
             tripCreated = true
             isSubmitting = false
         } catch {
+            WWLogger.wizard.error("submitTrip failed: \(error.localizedDescription, privacy: .public)")
             submissionError = String(
                 localized: "Something went wrong creating your trip. Please check your connection and try again.",
                 comment: "Wizard submission error: network or server failure"

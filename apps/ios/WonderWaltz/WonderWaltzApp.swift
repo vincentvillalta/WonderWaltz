@@ -20,10 +20,15 @@ struct WonderWaltzApp: App {
     private let modelContainer: ModelContainer
 
     init() {
+        WWLogger.app.debug("WonderWaltzApp init — build=\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?", privacy: .public) API=\(AppConfig.apiBaseURL.absoluteString, privacy: .public)")
+
         // CRITICAL: Initialize Sentry BEFORE any view renders (IOS-14 requirement).
         let dsn = AppConfig.sentryDSN
         if !dsn.isEmpty {
             CrashReportingService.initialize(dsn: dsn)
+            WWLogger.app.debug("Sentry initialized")
+        } else {
+            WWLogger.app.debug("Sentry DSN not set — crash reporting disabled")
         }
 
         // Initialize PostHog analytics.
@@ -33,20 +38,23 @@ struct WonderWaltzApp: App {
                 apiKey: postHogKey,
                 host: AppConfig.postHogHost
             )
+            WWLogger.app.debug("PostHog initialized")
+        } else {
+            WWLogger.app.debug("PostHog API key not set — analytics disabled")
         }
 
         // Wire DI container with all concrete implementations.
-        // App struct body is implicitly @MainActor — use MainActor.assumeIsolated
-        // since App.init runs on the main thread.
         let deps = MainActor.assumeIsolated {
             DISetup.makeContainer()
         }
         _container = State(initialValue: deps)
+        WWLogger.app.debug("DI container wired")
 
         // Create SwiftData ModelContainer from WWOffline configuration.
         do {
             let container = try ModelContainerConfig.makeContainer()
             modelContainer = container
+            WWLogger.offline.debug("SwiftData ModelContainer created")
 
             // Create OfflineStore and wire it into DI container.
             let store = OfflineStore(modelContainer: container)
@@ -54,8 +62,9 @@ struct WonderWaltzApp: App {
                 deps.offlineStore = store
                 deps.wizardDraftStore = WizardDraftStoreBridge(store: store)
             }
+            WWLogger.offline.debug("OfflineStore + WizardDraftStoreBridge wired into DI")
         } catch {
-            // Fatal — app cannot function without data persistence.
+            WWLogger.app.fault("Failed to create ModelContainer: \(error.localizedDescription, privacy: .public)")
             fatalError("Failed to create ModelContainer: \(error)")
         }
     }

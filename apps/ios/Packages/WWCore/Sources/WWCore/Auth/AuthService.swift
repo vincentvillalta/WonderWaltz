@@ -37,8 +37,10 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
     /// Tries keychain first, then falls back to anonymous auth.
     /// On failure, sets `authPending = true` for later retry.
     public func silentAuth() async {
+        WWLogger.auth.trace("silentAuth start")
         // Try keychain first
         if let storedToken = keychainStore.getToken() {
+            WWLogger.auth.debug("silentAuth: token found in keychain (len=\(storedToken.count))")
             token = storedToken
             authPending = false
             return
@@ -46,17 +48,21 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
 
         // Fall back to anonymous auth
         guard let apiClient else {
+            WWLogger.auth.error("silentAuth: no API client configured — auth pending")
             authPending = true
             return
         }
 
         do {
+            WWLogger.auth.debug("silentAuth: no stored token, calling anonymousAuth()")
             let newToken = try await apiClient.anonymousAuth()
             try? keychainStore.saveToken(newToken)
             token = newToken
             authPending = false
+            WWLogger.auth.debug("silentAuth: anonymous session established")
         } catch {
             // Don't block the user — set pending flag for retry
+            WWLogger.auth.error("silentAuth failed: \(error.localizedDescription, privacy: .public) — will retry")
             authPending = true
         }
     }

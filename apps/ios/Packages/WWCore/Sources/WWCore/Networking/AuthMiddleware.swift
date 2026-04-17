@@ -24,9 +24,21 @@ public struct AuthMiddleware: ClientMiddleware, Sendable {
         )
     ) async throws -> (HTTPResponse, HTTPBody?) {
         var request = request
+        let hasToken = tokenProvider() != nil
         if let token = tokenProvider() {
             request.headerFields[.authorization] = "Bearer \(token)"
         }
-        return try await next(request, body, baseURL)
+        WWLogger.networking.trace("→ \(request.method.rawValue, privacy: .public) \(request.path ?? "", privacy: .public) op=\(operationID, privacy: .public) auth=\(hasToken ? "bearer" : "none", privacy: .public)")
+        let start = Date()
+        do {
+            let (response, responseBody) = try await next(request, body, baseURL)
+            let ms = Int(Date().timeIntervalSince(start) * 1000)
+            WWLogger.networking.debug("← \(response.status.code, privacy: .public) \(request.path ?? "", privacy: .public) (\(ms, privacy: .public)ms)")
+            return (response, responseBody)
+        } catch {
+            let ms = Int(Date().timeIntervalSince(start) * 1000)
+            WWLogger.networking.error("✗ \(request.path ?? "", privacy: .public) (\(ms, privacy: .public)ms) \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
     }
 }
