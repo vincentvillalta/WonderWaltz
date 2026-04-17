@@ -197,7 +197,7 @@ export class TripsController {
   @UseGuards(RateLimitGuard)
   @RateLimit('free-tier-lifetime')
   @Post(':id/generate-plan')
-  @HttpCode(202)
+  @HttpCode(200)
   @ApiOperation({
     summary: 'Generate an itinerary plan',
     description:
@@ -246,7 +246,7 @@ export class TripsController {
    * active_ll_bookings become hard pins in the solver.
    */
   @Post(':id/rethink-today')
-  @HttpCode(202)
+  @HttpCode(200)
   @ApiOperation({
     summary: "Rethink today's remaining itinerary",
     description:
