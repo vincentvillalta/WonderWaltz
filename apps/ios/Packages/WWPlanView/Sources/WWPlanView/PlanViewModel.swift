@@ -198,7 +198,9 @@ public final class PlanViewModel {
     /// Poll the trip until the worker finishes plan generation, then load the plan.
     /// The wizard hands us a tripId; the actual planId only exists once the backend
     /// worker has run. Polls GET /v1/trips/:id every 2s up to `maxAttempts` times.
-    public func loadPlanForTrip(tripId: String, maxAttempts: Int = 30) async {
+    /// Default 180 attempts = 6 minutes, which covers the observed ~3-min solver
+    /// + narrative time with plenty of headroom.
+    public func loadPlanForTrip(tripId: String, maxAttempts: Int = 180) async {
         isLoading = true
         error = nil
 
