@@ -17,36 +17,40 @@ public struct OnboardingPageView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
-            // Illustration area — top 60%
-            Spacer()
+        ScrollView {
+            VStack(spacing: 0) {
+                // Illustration area
+                Spacer(minLength: 40)
 
-            Image(systemName: page.systemImage)
-                .font(.system(size: illustrationSize))
-                .foregroundStyle(WWTheme.accent)
-                .accessibilityLabel(Text(
-                    LocalizedStringKey(page.titleKey)
-                ))
-                .frame(maxHeight: .infinity)
+                Image(systemName: page.systemImage)
+                    .font(.system(size: illustrationSize))
+                    .foregroundStyle(WWTheme.accent)
+                    .accessibilityHidden(true)
+                    .frame(maxHeight: .infinity)
 
-            Spacer()
+                Spacer(minLength: 20)
 
-            // Text area — bottom 40%
-            VStack(spacing: 12) {
-                Text(LocalizedStringKey(page.titleKey))
-                    .font(WWTypography.title)
-                    .foregroundStyle(WWTheme.textPrimary)
-                    .multilineTextAlignment(.center)
+                // Text area
+                VStack(spacing: 12) {
+                    Text(LocalizedStringKey(page.titleKey))
+                        .font(WWTypography.title)
+                        .foregroundStyle(WWTheme.textPrimary)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
 
-                Text(LocalizedStringKey(page.subtitleKey))
-                    .font(WWTypography.body)
-                    .foregroundStyle(WWTheme.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
+                    Text(LocalizedStringKey(page.subtitleKey))
+                        .font(WWTypography.body)
+                        .foregroundStyle(WWTheme.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 32)
+                }
+                .padding(.bottom, 80)
             }
-            .padding(.bottom, 80)
+            .frame(maxWidth: .infinity, minHeight: UIScreen.main.bounds.height - 120)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(WWTheme.background)
     }
 

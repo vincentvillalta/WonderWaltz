@@ -11,6 +11,7 @@ public struct ForecastBanner: View {
     static let dismissedKey = "forecastBannerDismissed"
 
     @State private var isDismissed: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init() {
         _isDismissed = State(initialValue: UserDefaults.standard.bool(forKey: Self.dismissedKey))
@@ -22,15 +23,22 @@ public struct ForecastBanner: View {
                 Image(systemName: "info.circle")
                     .foregroundStyle(WWTheme.textSecondary)
                     .font(.body)
+                    .accessibilityHidden(true)
 
                 Text("Wait time forecasts are in beta. Actual wait times may vary.")
                     .font(WWTypography.footnote)
                     .foregroundStyle(WWTheme.textPrimary)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 Button {
-                    withAnimation(.easeOut(duration: 0.2)) {
+                    if reduceMotion {
                         isDismissed = true
+                    } else {
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            isDismissed = true
+                        }
                     }
                     UserDefaults.standard.set(true, forKey: Self.dismissedKey)
                 } label: {
@@ -44,6 +52,7 @@ public struct ForecastBanner: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Dismiss forecast banner")
+                .accessibilityAddTraits(.isButton)
             }
             .padding(WWDesignTokens.spacing6)
             .background(

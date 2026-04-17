@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import WWDesignSystem
 
 /// Root plan view with day tabs, forecast banner, timeline or locked overlay,
@@ -101,6 +102,11 @@ public struct PlanContainerView: View {
         Button {
             Task {
                 await viewModel.rethinkToday()
+                // Announce plan update to VoiceOver users
+                UIAccessibility.post(
+                    notification: .announcement,
+                    argument: "Plan updated"
+                )
             }
         } label: {
             HStack(spacing: WWDesignTokens.spacing2) {
@@ -128,11 +134,14 @@ public struct PlanContainerView: View {
             ProgressView()
                 .tint(WWTheme.accent)
                 .scaleEffect(1.2)
+                .accessibilityHidden(true)
             Text("Your plan is being created...")
                 .font(WWTypography.body)
                 .foregroundStyle(WWTheme.textSecondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Loading. Your plan is being created.")
     }
 
     // MARK: - Error State

@@ -159,7 +159,9 @@ struct MustDoRidesStepView: View {
                             .clipShape(Capsule())
                         }
                         .buttonStyle(.plain)
+                        .frame(minHeight: WWDesignTokens.iconographyMinTapTarget)
                         .accessibilityLabel(Text("Remove \(name)"))
+                        .accessibilityAddTraits(.isButton)
                     }
                 }
             }
@@ -197,7 +199,7 @@ struct MustDoRidesStepView: View {
         .listRowBackground(isSelected ? WWTheme.accent.opacity(0.06) : Color.clear)
         .accessibilityLabel(Text(attraction.name))
         .accessibilityValue(Text(isSelected ? "Selected as must-do" : "Not selected"))
-        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
     }
 
     // MARK: - Helpers

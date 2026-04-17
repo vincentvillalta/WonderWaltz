@@ -14,6 +14,8 @@ public struct DayTabPicker: View {
         self._selectedIndex = selectedIndex
     }
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     public var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
@@ -26,8 +28,12 @@ public struct DayTabPicker: View {
                 .padding(.horizontal, WWDesignTokens.spacing8)
             }
             .onChange(of: selectedIndex) { _, newValue in
-                withAnimation(.easeInOut(duration: 0.25)) {
+                if reduceMotion {
                     proxy.scrollTo(newValue, anchor: .center)
+                } else {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        proxy.scrollTo(newValue, anchor: .center)
+                    }
                 }
             }
         }
@@ -74,6 +80,6 @@ public struct DayTabPicker: View {
                 ? "Day \(day.dayNumber), \(day.parkName), locked"
                 : "Day \(day.dayNumber), \(day.parkName)"
         )
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
     }
 }

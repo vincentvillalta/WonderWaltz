@@ -16,6 +16,8 @@ struct ParksStepView: View {
         ("animal-kingdom", "Animal Kingdom", "leaf"),
     ]
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: WWDesignTokens.spacing10) {
@@ -28,12 +30,16 @@ struct ParksStepView: View {
                     .font(WWTypography.body)
                     .foregroundStyle(WWTheme.textSecondary)
 
-                // Park grid
+                // Park grid -- single column at accessibility sizes
+                let columns: [GridItem] = dynamicTypeSize.isAccessibilitySize
+                    ? [GridItem(.flexible())]
+                    : [
+                        GridItem(.flexible(), spacing: WWDesignTokens.spacing4),
+                        GridItem(.flexible(), spacing: WWDesignTokens.spacing4),
+                    ]
+
                 LazyVGrid(
-                    columns: [
-                        GridItem(.flexible(), spacing: WWDesignTokens.spacing4),
-                        GridItem(.flexible(), spacing: WWDesignTokens.spacing4),
-                    ],
+                    columns: columns,
                     spacing: WWDesignTokens.spacing4
                 ) {
                     ForEach(Self.parks, id: \.id) { park in
@@ -115,6 +121,6 @@ struct ParksStepView: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text(park.name))
         .accessibilityValue(Text(isSelected ? "Selected" : "Not selected"))
-        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
     }
 }

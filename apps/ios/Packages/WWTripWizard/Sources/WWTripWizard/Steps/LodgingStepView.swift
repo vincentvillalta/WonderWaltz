@@ -134,7 +134,7 @@ struct LodgingStepView: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text(option.label))
         .accessibilityValue(Text(isSelected ? "Selected" : "Not selected"))
-        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
     }
 
     // MARK: - Transport Card
@@ -173,6 +173,6 @@ struct LodgingStepView: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text(option.label))
         .accessibilityValue(Text(isSelected ? "Selected" : "Not selected"))
-        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
     }
 }

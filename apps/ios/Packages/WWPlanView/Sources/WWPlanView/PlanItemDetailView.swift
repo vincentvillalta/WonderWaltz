@@ -70,6 +70,8 @@ public struct PlanItemDetailView: View {
                 Text(item.name)
                     .font(WWTypography.title2)
                     .foregroundStyle(WWTheme.textPrimary)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text(typeLabel)
                     .font(WWTypography.subheadline)
@@ -278,6 +280,8 @@ public struct PlanItemDetailView: View {
                 .font(WWTypography.body)
                 .foregroundStyle(WWTheme.textPrimary)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text("\(label): \(value)"))
     }
 
     @ViewBuilder

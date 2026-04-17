@@ -151,6 +151,8 @@ public struct DayTimelineView: View {
 
             Spacer()
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(minutes) minute walk to next item")
     }
 
     // MARK: - Timeline Connector

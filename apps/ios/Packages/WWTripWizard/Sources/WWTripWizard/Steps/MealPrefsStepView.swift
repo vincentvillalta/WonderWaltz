@@ -144,7 +144,9 @@ struct MealPrefsStepView: View {
                                     .clipShape(Capsule())
                                 }
                                 .buttonStyle(.plain)
+                                .frame(minHeight: WWDesignTokens.iconographyMinTapTarget)
                                 .accessibilityLabel(Text("Remove \(name)"))
+                                .accessibilityAddTraits(.isButton)
                             }
                         }
                     }
@@ -195,7 +197,7 @@ struct MealPrefsStepView: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text("\(style.label): \(style.description)"))
         .accessibilityValue(Text(isSelected ? "Selected" : "Not selected"))
-        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
     }
 
     // MARK: - Helpers

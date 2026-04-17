@@ -13,6 +13,7 @@ public struct OnboardingContainerView: View {
     private let onComplete: @MainActor () -> Void
 
     @State private var viewModel: OnboardingViewModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init(onComplete: @escaping @MainActor () -> Void) {
         self.onComplete = onComplete
@@ -33,7 +34,7 @@ public struct OnboardingContainerView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
 
-            // Skip button — top right
+            // Skip button -- top right
             HStack {
                 Spacer()
                 Button {
@@ -44,9 +45,12 @@ public struct OnboardingContainerView: View {
                         .foregroundStyle(WWTheme.textSecondary)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(Rectangle())
                 }
                 .accessibilityLabel(Text("Skip onboarding",
                                          comment: "Skip onboarding accessibility label"))
+                .accessibilityAddTraits(.isButton)
             }
             .padding(.top, 8)
             .padding(.trailing, 8)
@@ -55,7 +59,7 @@ public struct OnboardingContainerView: View {
             VStack {
                 Spacer()
 
-                // Page indicator dots
+                // Page indicator dots -- decorative, hidden from VoiceOver
                 HStack(spacing: 8) {
                     ForEach(0 ..< viewModel.totalPages, id: \.self) { index in
                         Circle()
@@ -63,15 +67,23 @@ public struct OnboardingContainerView: View {
                                   ? WWTheme.accent
                                   : WWTheme.muted)
                             .frame(width: 8, height: 8)
-                            .animation(.easeInOut(duration: 0.2), value: viewModel.currentPage)
+                            .animation(
+                                reduceMotion ? .none : .easeInOut(duration: 0.2),
+                                value: viewModel.currentPage
+                            )
                     }
                 }
+                .accessibilityHidden(true)
                 .padding(.bottom, 16)
 
                 // Get Started / Next button
                 Button {
-                    withAnimation {
+                    if reduceMotion {
                         viewModel.advancePage()
+                    } else {
+                        withAnimation {
+                            viewModel.advancePage()
+                        }
                     }
                 } label: {
                     Text(isLastPage
@@ -80,7 +92,8 @@ public struct OnboardingContainerView: View {
                         .font(WWTypography.button)
                         .foregroundStyle(WWTheme.textOnPrimary)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
+                        .frame(minHeight: 44)
+                        .padding(.vertical, 4)
                         .background(WWTheme.primary)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
@@ -90,6 +103,8 @@ public struct OnboardingContainerView: View {
                                          ? "Get started"
                                          : "Next page",
                                          comment: "Onboarding action button"))
+                .accessibilityAddTraits(.isButton)
+                .accessibilityHint(Text("Page \(viewModel.currentPage + 1) of \(viewModel.totalPages)"))
             }
         }
         .background(WWTheme.background)

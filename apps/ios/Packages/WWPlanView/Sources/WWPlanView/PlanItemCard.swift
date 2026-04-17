@@ -26,13 +26,15 @@ public struct PlanItemCard: View {
                         .font(WWTypography.headline)
                         .foregroundStyle(isCompleted ? WWTheme.textSecondary : WWTheme.textPrimary)
                         .strikethrough(isCompleted)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     // Subtitle / narrative tip
                     if let subtitle = subtitleText {
                         Text(subtitle)
                             .font(WWTypography.caption)
                             .foregroundStyle(WWTheme.textSecondary)
-                            .lineLimit(2)
+                            .lineLimit(3)
                     }
 
                     // Badges

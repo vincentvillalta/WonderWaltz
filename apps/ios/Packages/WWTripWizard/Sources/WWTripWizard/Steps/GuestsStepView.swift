@@ -175,7 +175,7 @@ struct GuestsStepView: View {
                     .frame(minHeight: WWDesignTokens.iconographyMinTapTarget)
                     .accessibilityLabel(Text(option))
                     .accessibilityValue(Text(isSelected ? "Selected" : "Not selected"))
-                    .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+                    .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
                 }
             }
         } label: {

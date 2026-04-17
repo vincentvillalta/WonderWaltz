@@ -208,6 +208,7 @@ struct ReviewStepView: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Edit \(title)"))
         .accessibilityHint(Text("Tap to go back and change this section"))
+        .accessibilityAddTraits(.isButton)
     }
 
     // MARK: - Display Helpers

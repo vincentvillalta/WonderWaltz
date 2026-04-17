@@ -111,6 +111,6 @@ struct BudgetStepView: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text("\(tier.name): \(tier.tagline)"))
         .accessibilityValue(Text(isSelected ? "Selected" : "Not selected"))
-        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : [.isButton])
     }
 }

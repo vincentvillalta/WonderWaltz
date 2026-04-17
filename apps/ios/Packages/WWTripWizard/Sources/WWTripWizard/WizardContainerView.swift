@@ -14,6 +14,8 @@ public struct WizardContainerView: View {
         self.viewModel = viewModel
     }
 
+    @AccessibilityFocusState private var focusedStepTitle: Bool
+
     public var body: some View {
         VStack(spacing: 0) {
             // Progress bar at top
@@ -24,10 +26,13 @@ public struct WizardContainerView: View {
             // Step content
             stepContent
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .transition(.asymmetric(
-                    insertion: .move(edge: .trailing).combined(with: .opacity),
-                    removal: .move(edge: .leading).combined(with: .opacity)
-                ))
+                .transition(reduceMotion
+                    ? .opacity
+                    : .asymmetric(
+                        insertion: .move(edge: .trailing).combined(with: .opacity),
+                        removal: .move(edge: .leading).combined(with: .opacity)
+                    )
+                )
                 .id(viewModel.currentStep)
 
             // Bottom navigation
@@ -40,6 +45,10 @@ public struct WizardContainerView: View {
             reduceMotion ? .none : .easeInOut(duration: 0.3),
             value: viewModel.currentStep
         )
+        .onChange(of: viewModel.currentStep) { _, _ in
+            // Move VoiceOver focus to the new step's title after transition
+            focusedStepTitle = true
+        }
     }
 
     // MARK: - Progress Header
