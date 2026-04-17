@@ -141,11 +141,11 @@ Plans:
 **Plans**: 7 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Xcode project restructure + SPM deps + OpenAPI client + design system + Sentry/PostHog + String Catalog (IOS-01, IOS-02, IOS-03, IOS-14, IOS-15, IOS-16)
-- [ ] 05-02-PLAN.md — SwiftData models + offline persistence layer + sync coordinator (IOS-04, IOS-18)
-- [ ] 05-03-PLAN.md — App shell + navigation + AuthService + splash + onboarding flow (IOS-05)
-- [ ] 05-04-PLAN.md — Trip wizard: all 8 steps with auto-save + trip submission (IOS-06)
-- [ ] 05-05-PLAN.md — Plan view: day tabs + timeline + item cards + rethink + locked overlay (IOS-07)
+- [ ] 05-01-PLAN.md — Tuist project + 7 SPM package scaffolds + WWCore (OpenAPI networking, auth, DI protocols) + WWDesignSystem (tokens, theme, components) + WWAnalytics (Sentry, PostHog) + String Catalog (IOS-01, IOS-02, IOS-03, IOS-14, IOS-15, IOS-16)
+- [ ] 05-02-PLAN.md — WWOffline: SwiftData models + WizardDraft auto-save + SyncCoordinator + OfflinePackageDownloader (IOS-04, IOS-18)
+- [ ] 05-03-PLAN.md — WWOnboarding: splash with silent auth + onboarding screens + app shell + DI wiring (IOS-05)
+- [ ] 05-04-PLAN.md — WWTripWizard: all 8 wizard steps with auto-save + trip submission (IOS-06)
+- [ ] 05-05-PLAN.md — WWPlanView: day tabs + timeline + item cards + rethink + locked overlay + forecast banner (IOS-07)
 - [ ] 05-06-PLAN.md — Accessibility polish: VoiceOver + Dynamic Type + reduce motion + contrast audit (IOS-17)
 - [ ] 05-07-PLAN.md — Human verification checkpoint: full flow on simulator (all IOS reqs)
 
