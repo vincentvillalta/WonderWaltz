@@ -430,7 +430,25 @@ public final class WizardViewModel {
         do {
             let tripBody = try buildTripBody()
             WWLogger.wizard.trace("submitTrip: built body (\(tripBody.count)B)")
-            let tripData = try await apiClient.createTrip(tripBody)
+            var tripData: Data
+            do {
+                tripData = try await apiClient.createTrip(tripBody)
+            } catch {
+                // Likely 401 from a stale keychain token (user purged server-side).
+                // Force a fresh anonymous auth and retry once.
+                if let authService, authService.getToken() != nil {
+                    WWLogger.wizard.debug("submitTrip: createTrip failed — clearing token and re-authing")
+                    await authService.resetSession()
+                    await authService.silentAuth()
+                    if authService.getToken() != nil {
+                        tripData = try await apiClient.createTrip(tripBody)
+                    } else {
+                        throw error
+                    }
+                } else {
+                    throw error
+                }
+            }
 
             // Parse trip ID from response
             guard let tripId = parseTripId(from: tripData) else {

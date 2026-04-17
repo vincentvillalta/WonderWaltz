@@ -34,6 +34,8 @@ COPY apps/api apps/api
 COPY packages/content packages/content
 COPY packages/db packages/db
 COPY packages/solver packages/solver
+# BRAND voice guide is loaded at runtime by the narrative prompt builder
+COPY docs/design/BRAND.md docs/design/BRAND.md
 # design-tokens + shared-openapi are not imported by api at runtime; skip
 
 RUN pnpm exec turbo run build --filter=@wonderwaltz/api...

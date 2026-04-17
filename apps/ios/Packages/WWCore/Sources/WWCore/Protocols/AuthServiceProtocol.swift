@@ -15,6 +15,11 @@ public protocol AuthServiceProtocol: AnyObject {
     /// Perform silent authentication (keychain lookup, then anonymous auth fallback).
     func silentAuth() async
 
+    /// Clear in-memory and keychain token. Call when the server rejects the
+    /// current token (e.g. 401 from a stale session) so the next `silentAuth`
+    /// re-creates an anonymous session from scratch.
+    func resetSession() async
+
     /// Retrieve the current token synchronously.
     nonisolated func getToken() -> String?
 }

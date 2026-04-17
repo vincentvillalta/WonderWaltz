@@ -80,4 +80,13 @@ public final class AuthService: AuthServiceProtocol, @unchecked Sendable {
         // Access keychain directly for synchronous reads
         keychainStore.getToken()
     }
+
+    /// Clear the in-memory and keychain token. Used when the server returns 401
+    /// (stale session) so the next `silentAuth()` fetches a fresh anonymous session.
+    public func resetSession() async {
+        WWLogger.auth.debug("resetSession: clearing token")
+        token = nil
+        authPending = true
+        try? keychainStore.deleteToken()
+    }
 }
