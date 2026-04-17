@@ -1,0 +1,696 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0425CCD317544C45962506DA /* AnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13B34FC710D6141057550A8 /* AnalyticsTests.swift */; };
+		AA11223344556677AABB0001 /* OfflineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11223344556677AABB0010 /* OfflineTests.swift */; };
+		AA11223344556677AABB0002 /* OfflineSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11223344556677AABB0011 /* OfflineSyncTests.swift */; };
+		35DE8362169F530741514F3F /* WonderWaltzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE18055DDFD8C528CABBB06 /* WonderWaltzApp.swift */; };
+		4204FC627D6A80C2DBEF5513 /* WWDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = ECE56CC669BD088D0DB2D595 /* WWDesignSystem */; };
+		57622E9F2AD0FAF2DFA9443D /* DesignTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F70FDD94C76211CC4C0E87D /* DesignTokenTests.swift */; };
+		613E6BB872C49DC1B295B0EC /* TuistBundle+WonderWaltz.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7560489856590483E2D7031 /* TuistBundle+WonderWaltz.swift */; };
+		7945FC88DB5FF0D29B094566 /* TuistAssets+WonderWaltz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ECDCFB3D274B59B8965D109 /* TuistAssets+WonderWaltz.swift */; };
+		7B641F2D79004D18211C47B3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92B47A3302DE8A4A992DFB86 /* ContentView.swift */; };
+		94C47C5E6ED053C8AE1744B0 /* WWCore in Frameworks */ = {isa = PBXBuildFile; productRef = 9052F21F1D68DC0C8EF92A5A /* WWCore */; };
+		96C4F0B05126CFDFD2A9D395 /* WWPlanView in Frameworks */ = {isa = PBXBuildFile; productRef = 00E8D3874EC3BD9A6D2F6662 /* WWPlanView */; };
+		A3C48354D71387062DA4CA6A /* WonderWaltzTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D8AD93725DB4714517F475 /* WonderWaltzTests.swift */; };
+		B38A11B0384828BDC4DE551B /* WWOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = D297A275EEAAD99E6583D81E /* WWOnboarding */; };
+		B8DD18814E918B9B53CBE15B /* WWTripWizard in Frameworks */ = {isa = PBXBuildFile; productRef = DD2042B4EA09F45BFB36D973 /* WWTripWizard */; };
+		BE0875CAC4837E317A8D1948 /* WWOffline in Frameworks */ = {isa = PBXBuildFile; productRef = 32494A7C6332B7EEDEE74EE2 /* WWOffline */; };
+		CDB463AC67FBE7111B5CB247 /* WWDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = B13CAE93C84E76FD587771C6 /* WWDesignSystem */; };
+		DE41D755CC0A7FD1982F4964 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 99587AE4628A5A905EF25C18 /* Localizable.xcstrings */; };
+		EB186CDFD8BC6D0AC4ECFC1F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2062C63AE26AC38A9BFB804 /* Assets.xcassets */; };
+		EB94BE8A4E0E1AED1478F3A1 /* WWAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A4921BEF61BF70BAF7B1FE3A /* WWAnalytics */; };
+		EEF788752BF2C07CA6B2E2AF /* WWAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = DF6B05159BC114ACD7353F19 /* WWAnalytics */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		23DB20473145DFDF622E4C16 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 253D395C237D03ECE18E8ECF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F7B6E2BFF25F4F5F8BC0064F;
+			remoteInfo = WonderWaltz;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		123FCD35D6D63F5F66578CFE /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7C146883C533867DF164BC33 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0ECDCFB3D274B59B8965D109 /* TuistAssets+WonderWaltz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistAssets+WonderWaltz.swift"; sourceTree = "<group>"; };
+		1F36F23E3C2C86A033A50E10 /* WonderWaltz-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "WonderWaltz-Info.plist"; sourceTree = "<group>"; };
+		42F63DBB6C71D7A60E209B3E /* WWPlanView */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WWPlanView; path = Packages/WWPlanView; sourceTree = "<group>"; };
+		4F70FDD94C76211CC4C0E87D /* DesignTokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokenTests.swift; sourceTree = "<group>"; };
+		5A255E044291D5D74E1F7193 /* WWOnboarding */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WWOnboarding; path = Packages/WWOnboarding; sourceTree = "<group>"; };
+		768453B328574D5EE402B4ED /* WWDesignSystem */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WWDesignSystem; path = Packages/WWDesignSystem; sourceTree = "<group>"; };
+		840CBA11984BB2148F0915AB /* WonderWaltz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WonderWaltz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		879248225223C97505BDF457 /* WWOffline */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WWOffline; path = Packages/WWOffline; sourceTree = "<group>"; };
+		92B47A3302DE8A4A992DFB86 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		95222CC0DC4C7ECC2F9092E8 /* WWAnalytics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WWAnalytics; path = Packages/WWAnalytics; sourceTree = "<group>"; };
+		99587AE4628A5A905EF25C18 /* Localizable.xcstrings */ = {isa = PBXFileReference; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		A13B34FC710D6141057550A8 /* AnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTests.swift; sourceTree = "<group>"; };
+		AA11223344556677AABB0010 /* OfflineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineTests.swift; sourceTree = "<group>"; };
+		AA11223344556677AABB0011 /* OfflineSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineSyncTests.swift; sourceTree = "<group>"; };
+		A2062C63AE26AC38A9BFB804 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B0827414FBB4512206111F65 /* WonderWaltzTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "WonderWaltzTests-Info.plist"; sourceTree = "<group>"; };
+		BCE18055DDFD8C528CABBB06 /* WonderWaltzApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WonderWaltzApp.swift; sourceTree = "<group>"; };
+		BD6EC8AEAAFC208216EE3977 /* WWCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WWCore; path = Packages/WWCore; sourceTree = "<group>"; };
+		D040E7043190CAB3EBE10FC8 /* WWTripWizard */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WWTripWizard; path = Packages/WWTripWizard; sourceTree = "<group>"; };
+		D1902E034504A3683E33AEEB /* WonderWaltzTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WonderWaltzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7560489856590483E2D7031 /* TuistBundle+WonderWaltz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistBundle+WonderWaltz.swift"; sourceTree = "<group>"; };
+		D8D8AD93725DB4714517F475 /* WonderWaltzTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WonderWaltzTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7E64011AB942899165F96FB8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDB463AC67FBE7111B5CB247 /* WWDesignSystem in Frameworks */,
+				EB94BE8A4E0E1AED1478F3A1 /* WWAnalytics in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E1EE13F3D95E5729F9546B1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				94C47C5E6ED053C8AE1744B0 /* WWCore in Frameworks */,
+				4204FC627D6A80C2DBEF5513 /* WWDesignSystem in Frameworks */,
+				EEF788752BF2C07CA6B2E2AF /* WWAnalytics in Frameworks */,
+				B38A11B0384828BDC4DE551B /* WWOnboarding in Frameworks */,
+				B8DD18814E918B9B53CBE15B /* WWTripWizard in Frameworks */,
+				96C4F0B05126CFDFD2A9D395 /* WWPlanView in Frameworks */,
+				BE0875CAC4837E317A8D1948 /* WWOffline in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0E405A302C256D6E416A11A3 /* Derived */ = {
+			isa = PBXGroup;
+			children = (
+				5549B386D93D46863770501F /* InfoPlists */,
+				2E2B7290A602372E265CD62C /* Sources */,
+			);
+			path = Derived;
+			sourceTree = "<group>";
+		};
+		2E2B7290A602372E265CD62C /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				0ECDCFB3D274B59B8965D109 /* TuistAssets+WonderWaltz.swift */,
+				D7560489856590483E2D7031 /* TuistBundle+WonderWaltz.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		5549B386D93D46863770501F /* InfoPlists */ = {
+			isa = PBXGroup;
+			children = (
+				1F36F23E3C2C86A033A50E10 /* WonderWaltz-Info.plist */,
+				B0827414FBB4512206111F65 /* WonderWaltzTests-Info.plist */,
+			);
+			path = InfoPlists;
+			sourceTree = "<group>";
+		};
+		5628B8A375C1005577050294 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				0E405A302C256D6E416A11A3 /* Derived */,
+				FC145A46A80DE9B460666E65 /* WonderWaltz */,
+				EB77BBF7915188F0A1CB6C1E /* WonderWaltzTests */,
+			);
+			name = Project;
+			sourceTree = "<group>";
+		};
+		685D3192CED522C0A2EA05DB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				840CBA11984BB2148F0915AB /* WonderWaltz.app */,
+				D1902E034504A3683E33AEEB /* WonderWaltzTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AB0D979141B0666D41C1095B /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				95222CC0DC4C7ECC2F9092E8 /* WWAnalytics */,
+				BD6EC8AEAAFC208216EE3977 /* WWCore */,
+				768453B328574D5EE402B4ED /* WWDesignSystem */,
+				879248225223C97505BDF457 /* WWOffline */,
+				5A255E044291D5D74E1F7193 /* WWOnboarding */,
+				42F63DBB6C71D7A60E209B3E /* WWPlanView */,
+				D040E7043190CAB3EBE10FC8 /* WWTripWizard */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		B42476EFDB42991E8F8548DD = {
+			isa = PBXGroup;
+			children = (
+				685D3192CED522C0A2EA05DB /* Products */,
+				5628B8A375C1005577050294 /* Project */,
+				AB0D979141B0666D41C1095B /* Packages */,
+			);
+			sourceTree = "<group>";
+		};
+		CCFC3F3373D14E0168D2AD90 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				99587AE4628A5A905EF25C18 /* Localizable.xcstrings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		EB77BBF7915188F0A1CB6C1E /* WonderWaltzTests */ = {
+			isa = PBXGroup;
+			children = (
+				A13B34FC710D6141057550A8 /* AnalyticsTests.swift */,
+				4F70FDD94C76211CC4C0E87D /* DesignTokenTests.swift */,
+				AA11223344556677AABB0010 /* OfflineTests.swift */,
+				AA11223344556677AABB0011 /* OfflineSyncTests.swift */,
+				D8D8AD93725DB4714517F475 /* WonderWaltzTests.swift */,
+			);
+			path = WonderWaltzTests;
+			sourceTree = "<group>";
+		};
+		FC145A46A80DE9B460666E65 /* WonderWaltz */ = {
+			isa = PBXGroup;
+			children = (
+				CCFC3F3373D14E0168D2AD90 /* Resources */,
+				A2062C63AE26AC38A9BFB804 /* Assets.xcassets */,
+				92B47A3302DE8A4A992DFB86 /* ContentView.swift */,
+				BCE18055DDFD8C528CABBB06 /* WonderWaltzApp.swift */,
+			);
+			path = WonderWaltz;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		44A1683676FFEAD738EB6894 /* WonderWaltzTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 71E06401C17F8178892EB1D1 /* Build configuration list for PBXNativeTarget "WonderWaltzTests" */;
+			buildPhases = (
+				34199053EC2C08155DB156DE /* Sources */,
+				F4C22A096D5D1B432790B168 /* Resources */,
+				7E64011AB942899165F96FB8 /* Frameworks */,
+				123FCD35D6D63F5F66578CFE /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F8C5D56C58B29FAB6B1C2C21 /* PBXTargetDependency */,
+			);
+			name = WonderWaltzTests;
+			packageProductDependencies = (
+				B13CAE93C84E76FD587771C6 /* WWDesignSystem */,
+				A4921BEF61BF70BAF7B1FE3A /* WWAnalytics */,
+			);
+			productName = WonderWaltzTests;
+			productReference = D1902E034504A3683E33AEEB /* WonderWaltzTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F7B6E2BFF25F4F5F8BC0064F /* WonderWaltz */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2637618A57C59DB2C97EFECF /* Build configuration list for PBXNativeTarget "WonderWaltz" */;
+			buildPhases = (
+				1E684DA79BD803292FFF56B1 /* Sources */,
+				94EAF630673D3B8835990D2C /* Resources */,
+				E1EE13F3D95E5729F9546B1C /* Frameworks */,
+				7C146883C533867DF164BC33 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WonderWaltz;
+			packageProductDependencies = (
+				9052F21F1D68DC0C8EF92A5A /* WWCore */,
+				ECE56CC669BD088D0DB2D595 /* WWDesignSystem */,
+				DF6B05159BC114ACD7353F19 /* WWAnalytics */,
+				D297A275EEAAD99E6583D81E /* WWOnboarding */,
+				DD2042B4EA09F45BFB36D973 /* WWTripWizard */,
+				00E8D3874EC3BD9A6D2F6662 /* WWPlanView */,
+				32494A7C6332B7EEDEE74EE2 /* WWOffline */,
+			);
+			productName = WonderWaltz;
+			productReference = 840CBA11984BB2148F0915AB /* WonderWaltz.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		253D395C237D03ECE18E8ECF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				TargetAttributes = {
+					44A1683676FFEAD738EB6894 = {
+						TestTargetID = F7B6E2BFF25F4F5F8BC0064F;
+					};
+				};
+			};
+			buildConfigurationList = 5F2314013FC784AFCD44CAB5 /* Build configuration list for PBXProject "WonderWaltz" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B42476EFDB42991E8F8548DD;
+			packageReferences = (
+				E93638935EC8AC222E3D3EBC /* XCLocalSwiftPackageReference "Packages/WWAnalytics" */,
+				3DD0B08CA425735D0E22A02A /* XCLocalSwiftPackageReference "Packages/WWCore" */,
+				27E3728C7591E9F679171896 /* XCLocalSwiftPackageReference "Packages/WWDesignSystem" */,
+				6EED83D75D03E83160CAE28D /* XCLocalSwiftPackageReference "Packages/WWOffline" */,
+				DD5D633374B35FA9AEF40382 /* XCLocalSwiftPackageReference "Packages/WWOnboarding" */,
+				C42DBE4DFFF8A623C6F03D0D /* XCLocalSwiftPackageReference "Packages/WWPlanView" */,
+				7F6490B7066E5942772C98E1 /* XCLocalSwiftPackageReference "Packages/WWTripWizard" */,
+			);
+			productRefGroup = 685D3192CED522C0A2EA05DB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F7B6E2BFF25F4F5F8BC0064F /* WonderWaltz */,
+				44A1683676FFEAD738EB6894 /* WonderWaltzTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		94EAF630673D3B8835990D2C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB186CDFD8BC6D0AC4ECFC1F /* Assets.xcassets in Resources */,
+				DE41D755CC0A7FD1982F4964 /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F4C22A096D5D1B432790B168 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1E684DA79BD803292FFF56B1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7945FC88DB5FF0D29B094566 /* TuistAssets+WonderWaltz.swift in Sources */,
+				613E6BB872C49DC1B295B0EC /* TuistBundle+WonderWaltz.swift in Sources */,
+				7B641F2D79004D18211C47B3 /* ContentView.swift in Sources */,
+				35DE8362169F530741514F3F /* WonderWaltzApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		34199053EC2C08155DB156DE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0425CCD317544C45962506DA /* AnalyticsTests.swift in Sources */,
+				57622E9F2AD0FAF2DFA9443D /* DesignTokenTests.swift in Sources */,
+				AA11223344556677AABB0001 /* OfflineTests.swift in Sources */,
+				AA11223344556677AABB0002 /* OfflineSyncTests.swift in Sources */,
+				A3C48354D71387062DA4CA6A /* WonderWaltzTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F8C5D56C58B29FAB6B1C2C21 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WonderWaltz;
+			target = F7B6E2BFF25F4F5F8BC0064F /* WonderWaltz */;
+			targetProxy = 23DB20473145DFDF622E4C16 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		803392E4846F622C81DD07AC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "Derived/InfoPlists/WonderWaltzTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.wonderwaltz.app.tests;
+				PRODUCT_NAME = WonderWaltzTests;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WonderWaltz.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WonderWaltz";
+				TEST_TARGET_NAME = WonderWaltz;
+			};
+			name = Release;
+		};
+		95D3E7D429D104E90615590C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "Derived/InfoPlists/WonderWaltzTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.wonderwaltz.app.tests;
+				PRODUCT_NAME = WonderWaltzTests;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WonderWaltz.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WonderWaltz";
+				TEST_TARGET_NAME = WonderWaltz;
+			};
+			name = Debug;
+		};
+		C2FA85D607CE69B63B375C8B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Derived/InfoPlists/WonderWaltz-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.wonderwaltz.app;
+				PRODUCT_NAME = WonderWaltz;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DAFE62C1B45600ED684BEABE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = complete;
+			};
+			name = Debug;
+		};
+		EC4DE24AEB5C64185876E8C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Derived/InfoPlists/WonderWaltz-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.wonderwaltz.app;
+				PRODUCT_NAME = WonderWaltz;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F7F7ED3285E78495D9D12E91 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2637618A57C59DB2C97EFECF /* Build configuration list for PBXNativeTarget "WonderWaltz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC4DE24AEB5C64185876E8C0 /* Debug */,
+				C2FA85D607CE69B63B375C8B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5F2314013FC784AFCD44CAB5 /* Build configuration list for PBXProject "WonderWaltz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DAFE62C1B45600ED684BEABE /* Debug */,
+				F7F7ED3285E78495D9D12E91 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		71E06401C17F8178892EB1D1 /* Build configuration list for PBXNativeTarget "WonderWaltzTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				95D3E7D429D104E90615590C /* Debug */,
+				803392E4846F622C81DD07AC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		27E3728C7591E9F679171896 /* XCLocalSwiftPackageReference "Packages/WWDesignSystem" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/WWDesignSystem;
+		};
+		3DD0B08CA425735D0E22A02A /* XCLocalSwiftPackageReference "Packages/WWCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/WWCore;
+		};
+		6EED83D75D03E83160CAE28D /* XCLocalSwiftPackageReference "Packages/WWOffline" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/WWOffline;
+		};
+		7F6490B7066E5942772C98E1 /* XCLocalSwiftPackageReference "Packages/WWTripWizard" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/WWTripWizard;
+		};
+		C42DBE4DFFF8A623C6F03D0D /* XCLocalSwiftPackageReference "Packages/WWPlanView" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/WWPlanView;
+		};
+		DD5D633374B35FA9AEF40382 /* XCLocalSwiftPackageReference "Packages/WWOnboarding" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/WWOnboarding;
+		};
+		E93638935EC8AC222E3D3EBC /* XCLocalSwiftPackageReference "Packages/WWAnalytics" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/WWAnalytics;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		00E8D3874EC3BD9A6D2F6662 /* WWPlanView */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWPlanView;
+		};
+		32494A7C6332B7EEDEE74EE2 /* WWOffline */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWOffline;
+		};
+		9052F21F1D68DC0C8EF92A5A /* WWCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWCore;
+		};
+		A4921BEF61BF70BAF7B1FE3A /* WWAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWAnalytics;
+		};
+		B13CAE93C84E76FD587771C6 /* WWDesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWDesignSystem;
+		};
+		D297A275EEAAD99E6583D81E /* WWOnboarding */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWOnboarding;
+		};
+		DD2042B4EA09F45BFB36D973 /* WWTripWizard */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWTripWizard;
+		};
+		DF6B05159BC114ACD7353F19 /* WWAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWAnalytics;
+		};
+		ECE56CC669BD088D0DB2D595 /* WWDesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWDesignSystem;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 253D395C237D03ECE18E8ECF /* Project object */;
+}
