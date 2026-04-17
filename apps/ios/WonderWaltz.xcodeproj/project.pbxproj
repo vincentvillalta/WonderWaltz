@@ -22,6 +22,7 @@
 		AA11223344556677AABB0001 /* OfflineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11223344556677AABB0010 /* OfflineTests.swift */; };
 		AA11223344556677AABB0002 /* OfflineSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11223344556677AABB0011 /* OfflineSyncTests.swift */; };
 		CC0504A10001000100010001 /* WizardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0504A10001000100010010 /* WizardTests.swift */; };
+		CC0505A10001000100010001 /* PlanViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0505A10001000100010010 /* PlanViewTests.swift */; };
 		CC0504A10001000100010002 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0504A10001000100010011 /* MainTabView.swift */; };
 		35DE8362169F530741514F3F /* WonderWaltzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE18055DDFD8C528CABBB06 /* WonderWaltzApp.swift */; };
 		4204FC627D6A80C2DBEF5513 /* WWDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = ECE56CC669BD088D0DB2D595 /* WWDesignSystem */; };
@@ -97,6 +98,7 @@
 		AA11223344556677AABB0010 /* OfflineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineTests.swift; sourceTree = "<group>"; };
 		AA11223344556677AABB0011 /* OfflineSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineSyncTests.swift; sourceTree = "<group>"; };
 		CC0504A10001000100010010 /* WizardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WizardTests.swift; sourceTree = "<group>"; };
+		CC0505A10001000100010010 /* PlanViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanViewTests.swift; sourceTree = "<group>"; };
 		CC0504A10001000100010011 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		A2062C63AE26AC38A9BFB804 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B0827414FBB4512206111F65 /* WonderWaltzTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "WonderWaltzTests-Info.plist"; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 				AA11223344556677AABB0010 /* OfflineTests.swift */,
 				AA11223344556677AABB0011 /* OfflineSyncTests.swift */,
 				CC0503A10001000100010015 /* OnboardingTests.swift */,
+				CC0505A10001000100010010 /* PlanViewTests.swift */,
 				CC0504A10001000100010010 /* WizardTests.swift */,
 				D8D8AD93725DB4714517F475 /* WonderWaltzTests.swift */,
 			);
@@ -400,6 +403,7 @@
 				AA11223344556677AABB0001 /* OfflineTests.swift in Sources */,
 				AA11223344556677AABB0002 /* OfflineSyncTests.swift in Sources */,
 				CC0503A10001000100010006 /* OnboardingTests.swift in Sources */,
+				CC0505A10001000100010001 /* PlanViewTests.swift in Sources */,
 				CC0504A10001000100010001 /* WizardTests.swift in Sources */,
 				A3C48354D71387062DA4CA6A /* WonderWaltzTests.swift in Sources */,
 			);
