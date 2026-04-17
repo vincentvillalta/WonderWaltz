@@ -91,14 +91,14 @@ export class TripsController {
       );
     }
 
-    // Return the created trip
-    const rows = rowsOf<TripDto>(
-      await this.db.execute(
-        sql`SELECT id, user_id, start_date, end_date, entitlement_state, current_plan_id, created_at, updated_at FROM trips WHERE id = ${tripId}`,
-      ),
+    // Always persist preferences (plan generator reads this table)
+    await this.db.execute(
+      sql`INSERT INTO trip_preferences (trip_id, must_do_attraction_ids, avoid_attraction_ids, meal_preferences)
+          VALUES (${tripId}, ${prefs.must_do_attraction_ids ?? []}, ARRAY[]::text[], ARRAY[]::text[])
+          ON CONFLICT (trip_id) DO UPDATE SET must_do_attraction_ids = EXCLUDED.must_do_attraction_ids`,
     );
 
-    return rows[0]!;
+    return this.fetchTripDto(tripId);
   }
 
   /**
@@ -119,17 +119,59 @@ export class TripsController {
   @ApiEnvelopedResponse(TripDto)
   @ApiResponse({ status: 404, description: 'Trip not found' })
   async getTrip(@Param('id') id: string): Promise<TripDto> {
-    const rows = rowsOf<TripDto>(
-      await this.db.execute(
-        sql`SELECT id, user_id, start_date, end_date, entitlement_state, current_plan_id, created_at, updated_at FROM trips WHERE id = ${id} AND deleted_at IS NULL`,
-      ),
-    );
+    return this.fetchTripDto(id);
+  }
 
-    if (!rows[0]) {
+  /**
+   * Build the full TripDto shape (trip + guests + preferences) for responses.
+   * Throws 404 if the trip doesn't exist or is soft-deleted.
+   */
+  private async fetchTripDto(tripId: string): Promise<TripDto> {
+    const [tripRows, guestRows, prefRows] = await Promise.all([
+      this.db.execute(
+        sql`SELECT id, start_date::text AS start_date, end_date::text AS end_date, budget_tier, entitlement_state, created_at FROM trips WHERE id = ${tripId} AND deleted_at IS NULL`,
+      ),
+      this.db.execute(sql`SELECT name, age_bracket, has_das FROM guests WHERE trip_id = ${tripId}`),
+      this.db.execute(
+        sql`SELECT must_do_attraction_ids FROM trip_preferences WHERE trip_id = ${tripId}`,
+      ),
+    ]);
+
+    type TripRow = {
+      id: string;
+      start_date: string;
+      end_date: string;
+      budget_tier: string;
+      entitlement_state: string;
+      created_at: string | Date;
+    };
+    type GuestRow = { name: string; age_bracket: string; has_das: boolean };
+    type PrefRow = { must_do_attraction_ids: string[] | null };
+
+    const trip = rowsOf<TripRow>(tripRows)[0];
+    if (!trip) {
       throw new NotFoundException('Trip not found');
     }
+    const guests = rowsOf<GuestRow>(guestRows);
+    const prefs = rowsOf<PrefRow>(prefRows)[0];
 
-    return rows[0];
+    return {
+      id: trip.id,
+      start_date: trip.start_date,
+      end_date: trip.end_date,
+      entitlement_state: trip.entitlement_state as TripDto['entitlement_state'],
+      created_at:
+        typeof trip.created_at === 'string' ? trip.created_at : trip.created_at.toISOString(),
+      guests: guests.map((g) => ({
+        name: g.name,
+        age_bracket: g.age_bracket as never,
+        has_das: g.has_das,
+      })),
+      preferences: {
+        budget_tier: trip.budget_tier as never,
+        must_do_attraction_ids: prefs?.must_do_attraction_ids ?? [],
+      },
+    };
   }
 
   /**
