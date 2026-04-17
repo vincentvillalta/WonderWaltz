@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 5 of 10 (iOS Core)
-Plan: 10 of 11 in current phase
+Plan: 11 of 11 in current phase
 Status: In Progress
-Last activity: 2026-04-17 -- Completed Plan 05-09: Onboarding Design Alignment
+Last activity: 2026-04-17 -- Completed Plan 05-10: Trip Wizard Design Alignment
 
 Progress: [██████████] 100%
 
@@ -105,6 +105,7 @@ Progress: [██████████] 100%
 | Phase 05-ios-core P06 | 10 min | 2 tasks | 23 files |
 | Phase 05-ios-core P08 | 5 min | 2 tasks | 6 files |
 | Phase 05-ios-core P09 | 5 min | 2 tasks | 4 files |
+| Phase 05-ios-core P10 | 9 min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -270,6 +271,9 @@ Recent decisions affecting current work:
 - [Phase 05-ios-core]: WWButton shimmer uses repeating linear animation with GeometryReader offset -- translateX equivalent from React
 - [Phase 05-ios-core]: WWCard border replaces shadow -- React uses border-border (navy 10%) not box-shadow
 - [Phase 05-ios-core]: WWTabBar uses matchedGeometryEffect for gold pill indicator -- SwiftUI equivalent of Framer Motion layoutId
+- [Phase 05-ios-core]: Wizard restructured from 8 to 4 steps matching React TripSetup.tsx -- datesParty, resortTickets, dining, pacePriorities
+- [Phase 05-ios-core]: Progress formula (step+1)/4 gives 25/50/75/100% per React design (not step/(total-1))
+- [Phase 05-ios-core]: AccommodationType enum replaces string lodgingType -- type safety with backward-compatible draft snapshot
 
 ### Pending Todos
 
@@ -285,6 +289,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-17T14:11:47Z
-Stopped at: Completed 05-09-PLAN.md
+Last session: 2026-04-17T14:23:23Z
+Stopped at: Completed 05-10-PLAN.md
 Resume file: None
