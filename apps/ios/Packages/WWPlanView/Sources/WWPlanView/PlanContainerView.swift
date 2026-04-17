@@ -47,11 +47,13 @@ public struct PlanContainerView: View {
             }
         }
         .refreshable {
-            await viewModel.loadPlan(planId: planId)
+            // `planId` is actually a tripId passed from MainTabView — poll the trip
+            // until the worker sets current_plan_id, then load the plan.
+            await viewModel.loadPlanForTrip(tripId: planId)
         }
         .task {
             if viewModel.plan == nil {
-                await viewModel.loadPlan(planId: planId)
+                await viewModel.loadPlanForTrip(tripId: planId)
             }
         }
         .overlay {

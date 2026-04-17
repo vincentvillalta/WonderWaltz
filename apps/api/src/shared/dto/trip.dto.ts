@@ -154,6 +154,15 @@ export class TripDto {
     example: '2026-04-14T10:00:00.000Z',
   })
   created_at!: string;
+
+  @ApiPropertyOptional({
+    description:
+      'UUID of the most recent plan for this trip, if one has been generated. ' +
+      'Clients should poll GET /v1/trips/:id after POST /generate-plan, then fetch ' +
+      'GET /v1/plans/:current_plan_id once it becomes non-null.',
+    example: 'plan-uuid-here',
+  })
+  current_plan_id?: string | null;
 }
 
 export class GeneratePlanResponseDto {

@@ -157,7 +157,7 @@
     },
     "/v1/trips": {
       "post": {
-        "description": "Creates a new trip with guest list and preferences. Returns 501 until Phase 3 solver implementation.",
+        "description": "Creates a new trip with guest list and preferences.",
         "operationId": "TripsController_createTrip",
         "parameters": [],
         "requestBody": {
@@ -195,18 +195,15 @@
           },
           "403": {
             "description": "Anonymous users limited to 1 trip"
-          },
-          "501": {
-            "description": "Not implemented until Phase 3"
           }
         },
-        "summary": "Create a trip (Phase 3)",
+        "summary": "Create a trip",
         "tags": ["trips"]
       }
     },
     "/v1/trips/{id}": {
       "get": {
-        "description": "Returns the trip object including guests and preferences. Returns 501 until Phase 3.",
+        "description": "Returns the trip object including guests and preferences.",
         "operationId": "TripsController_getTrip",
         "parameters": [
           {
@@ -243,11 +240,11 @@
               }
             }
           },
-          "501": {
-            "description": "Not implemented until Phase 3"
+          "404": {
+            "description": "Trip not found"
           }
         },
-        "summary": "Get a trip by ID (Phase 3)",
+        "summary": "Get a trip by ID",
         "tags": ["trips"]
       }
     },
@@ -396,9 +393,6 @@
                 }
               }
             }
-          },
-          "201": {
-            "description": "Anonymous user created"
           },
           "500": {
             "description": "Failed to create anonymous user"
@@ -904,6 +898,11 @@
             "type": "string",
             "description": "ISO 8601 creation timestamp",
             "example": "2026-04-14T10:00:00.000Z"
+          },
+          "current_plan_id": {
+            "type": "object",
+            "description": "UUID of the most recent plan for this trip, if one has been generated. Clients should poll GET /v1/trips/:id after POST /generate-plan, then fetch GET /v1/plans/:current_plan_id once it becomes non-null.",
+            "example": "plan-uuid-here"
           }
         },
         "required": [

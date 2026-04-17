@@ -761,17 +761,11 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/TripDto/created_at`.
             public var created_at: Swift.String
-            /// Creates a new `TripDto`.
+            /// UUID of the most recent plan for this trip, if one has been generated.
             ///
-            /// - Parameters:
-            ///   - id: Trip UUID
-            ///   - resort_id: Resort UUID (Walt Disney World if omitted)
-            ///   - start_date: Trip start date in YYYY-MM-DD format
-            ///   - end_date: Trip end date in YYYY-MM-DD format (inclusive)
-            ///   - guests: Guests in the party
-            ///   - preferences: Trip planning preferences
-            ///   - entitlement_state: "free" = plan not yet purchased (Phase 4 entitlements); "unlocked" = plan purchased and available.
-            ///   - created_at: ISO 8601 creation timestamp
+            /// - Remark: Generated from `#/components/schemas/TripDto/current_plan_id`.
+            public var current_plan_id: Swift.String?
+            /// Creates a new `TripDto`.
             public init(
                 id: Swift.String,
                 resort_id: Swift.String? = nil,
@@ -780,7 +774,8 @@ public enum Components {
                 guests: [Components.Schemas.GuestInputDto],
                 preferences: Components.Schemas.TripDto.preferencesPayload,
                 entitlement_state: Components.Schemas.TripDto.entitlement_statePayload,
-                created_at: Swift.String
+                created_at: Swift.String,
+                current_plan_id: Swift.String? = nil
             ) {
                 self.id = id
                 self.resort_id = resort_id
@@ -790,6 +785,7 @@ public enum Components {
                 self.preferences = preferences
                 self.entitlement_state = entitlement_state
                 self.created_at = created_at
+                self.current_plan_id = current_plan_id
             }
             public enum CodingKeys: String, CodingKey {
                 case id
@@ -800,6 +796,7 @@ public enum Components {
                 case preferences
                 case entitlement_state
                 case created_at
+                case current_plan_id
             }
         }
         /// - Remark: Generated from `#/components/schemas/CreateTripDto`.

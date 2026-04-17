@@ -195,6 +195,49 @@ public final class PlanViewModel {
 
     // MARK: - Load Plan
 
+    /// Poll the trip until the worker finishes plan generation, then load the plan.
+    /// The wizard hands us a tripId; the actual planId only exists once the backend
+    /// worker has run. Polls GET /v1/trips/:id every 2s up to `maxAttempts` times.
+    public func loadPlanForTrip(tripId: String, maxAttempts: Int = 30) async {
+        isLoading = true
+        error = nil
+
+        for attempt in 1...maxAttempts {
+            do {
+                let tripData = try await apiClient.getTrip(id: tripId)
+                // Extract current_plan_id from the envelope: { data: { current_plan_id: "..." } }
+                if let json = try JSONSerialization.jsonObject(with: tripData) as? [String: Any],
+                   let dataObj = json["data"] as? [String: Any],
+                   let planId = dataObj["current_plan_id"] as? String, !planId.isEmpty {
+                    await loadPlan(planId: planId)
+                    return
+                }
+                if let planId = try? (JSONSerialization.jsonObject(with: tripData) as? [String: Any])?["current_plan_id"] as? String, !planId.isEmpty {
+                    await loadPlan(planId: planId)
+                    return
+                }
+            } catch {
+                // Keep polling unless we've exhausted attempts
+                if attempt == maxAttempts {
+                    self.error = String(
+                        localized: "Unable to load your plan. Please check your connection and try again.",
+                        comment: "Plan load error message"
+                    )
+                    isLoading = false
+                    return
+                }
+            }
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+        }
+
+        // Exhausted attempts without current_plan_id being set
+        self.error = String(
+            localized: "Your plan is taking longer than expected to generate. Please try again.",
+            comment: "Plan generation timeout"
+        )
+        isLoading = false
+    }
+
     /// Load a plan by ID. Tries API first; falls back to offline cache if the request fails.
     /// After first successful load, requests notification permission.
     public func loadPlan(planId: String) async {
