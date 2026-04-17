@@ -2,11 +2,8 @@ import SwiftUI
 
 /// Typography helpers using Fraunces (display) and Inter (UI) fonts.
 /// All fonts use `relativeTo:` for Dynamic Type scaling.
-///
-/// Note: Fraunces and Inter are variable fonts. For v1, we use system
-/// font fallbacks when custom fonts are not yet registered. The font
-/// registration will be completed when font files are added to the
-/// package's resource bundle.
+/// Font files are bundled in the main app target's Resources/Fonts/ and
+/// registered via UIAppFonts in Info.plist.
 public enum WWTypography {
 
     // MARK: - Display (Fraunces)

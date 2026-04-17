@@ -35,8 +35,29 @@ public final class WizardDraft {
     /// Meal preferences (Step 7: meals).
     public var mealPreferences: [String]
 
-    /// Current wizard step (0-7) for resume.
+    /// Current wizard step (0-3) for resume.
     public var currentStep: Int
+
+    /// Accommodation type: onsite, offsite, undecided (Step 2: Resort & Tickets).
+    public var accommodationType: String?
+
+    /// Selected Disney resort name (Step 2: Resort & Tickets).
+    public var selectedResort: String?
+
+    /// Dining budget: budget, moderate, premium (Step 3: Dining ADRs).
+    public var diningBudget: String?
+
+    /// Character dining preference: must, nice, skip (Step 3: Dining ADRs).
+    public var characterDining: String?
+
+    /// Whether user wants dining suggestions (Step 3: Dining ADRs).
+    public var wantDiningSuggestions: Bool
+
+    /// Serialized dining reservations as JSON string (Step 3: Dining ADRs).
+    public var reservationsJSON: String
+
+    /// Pace slider value 0-120 (Step 4: Pace & Priorities).
+    public var paceValue: Double
 
     /// When this draft was created.
     public var createdAt: Date
@@ -56,6 +77,13 @@ public final class WizardDraft {
         mustDoRideIds: [String] = [],
         mealPreferences: [String] = [],
         currentStep: Int = 0,
+        accommodationType: String? = nil,
+        selectedResort: String? = nil,
+        diningBudget: String? = nil,
+        characterDining: String? = nil,
+        wantDiningSuggestions: Bool = true,
+        reservationsJSON: String = "[]",
+        paceValue: Double = 60.0,
         createdAt: Date = .now,
         updatedAt: Date = .now
     ) {
@@ -70,6 +98,13 @@ public final class WizardDraft {
         self.mustDoRideIds = mustDoRideIds
         self.mealPreferences = mealPreferences
         self.currentStep = currentStep
+        self.accommodationType = accommodationType
+        self.selectedResort = selectedResort
+        self.diningBudget = diningBudget
+        self.characterDining = characterDining
+        self.wantDiningSuggestions = wantDiningSuggestions
+        self.reservationsJSON = reservationsJSON
+        self.paceValue = paceValue
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }

@@ -64,9 +64,58 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
     }
 
     public func createTrip(_ body: Data) async throws -> Data {
-        // TODO: Phase 5 plan 02+ — decode body into CreateTripDto
-        // and call TripsController_createTrip with proper input.
-        throw APIClientError.unexpectedResponse
+        guard let dict = try? JSONSerialization.jsonObject(with: body) as? [String: Any] else {
+            throw APIClientError.decodingFailed
+        }
+
+        let startDate = dict["startDate"] as? String ?? ""
+        let endDate = dict["endDate"] as? String ?? ""
+
+        // Map wizard guests to generated GuestInputDto.
+        let guestDicts = dict["guests"] as? [[String: Any]] ?? []
+        let guests: [Components.Schemas.GuestInputDto] = guestDicts.compactMap { g in
+            guard let name = g["name"] as? String,
+                  let ageStr = g["ageBracket"] as? String,
+                  let ageBracket = Components.Schemas.GuestInputDto.age_bracketPayload(rawValue: ageStr)
+            else { return nil }
+            return Components.Schemas.GuestInputDto(
+                name: name,
+                age_bracket: ageBracket,
+                has_das: g["hasDAS"] as? Bool ?? false
+            )
+        }
+
+        // Map wizard budget tier to API enum.
+        let budgetStr = dict["budgetTier"] as? String ?? "moderate"
+        let budgetTier: Components.Schemas.TripPreferencesDto.budget_tierPayload
+        switch budgetStr {
+        case "budget": budgetTier = .pixie_dust
+        case "premium": budgetTier = .royal_treatment
+        default: budgetTier = .fairy_tale
+        }
+
+        let prefs = Components.Schemas.TripPreferencesDto(
+            budget_tier: budgetTier,
+            must_do_attraction_ids: dict["mustDoAttractionIds"] as? [String] ?? []
+        )
+
+        let dto = Components.Schemas.CreateTripDto(
+            start_date: startDate,
+            end_date: endDate,
+            guests: guests,
+            preferences: .init(value1: prefs)
+        )
+
+        let response = try await client.TripsController_createTrip(body: .json(dto))
+        switch response {
+        case .ok(let output):
+            switch output.body {
+            case .json(let payload):
+                return try encoder.encode(payload)
+            }
+        default:
+            throw APIClientError.unexpectedResponse
+        }
     }
 
     public func getTrip(id: String) async throws -> Data {
@@ -85,8 +134,18 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
     }
 
     public func generatePlan(tripId: String) async throws -> Data {
-        // TODO: Phase 5 plan 03+ — implement with proper input body.
-        throw APIClientError.unexpectedResponse
+        let response = try await client.TripsController_generatePlan(
+            path: .init(id: tripId)
+        )
+        switch response {
+        case .ok(let output):
+            switch output.body {
+            case .json(let payload):
+                return try encoder.encode(payload)
+            }
+        default:
+            throw APIClientError.unexpectedResponse
+        }
     }
 
     public func getPlan(id: String) async throws -> Data {
@@ -105,8 +164,25 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
     }
 
     public func rethinkToday(tripId: String) async throws -> Data {
-        // TODO: Phase 5 plan 04+ — implement with proper input.
-        throw APIClientError.unexpectedResponse
+        let now = ISO8601DateFormatter().string(from: Date())
+        let body = Components.Schemas.RethinkRequestDto(
+            current_time: now,
+            completed_item_ids: [],
+            active_ll_bookings: []
+        )
+        let response = try await client.TripsController_rethinkToday(
+            path: .init(id: tripId),
+            body: .json(body)
+        )
+        switch response {
+        case .ok(let output):
+            switch output.body {
+            case .json(let payload):
+                return try encoder.encode(payload)
+            }
+        default:
+            throw APIClientError.unexpectedResponse
+        }
     }
 
     public func getCurrentUser() async throws -> Data {

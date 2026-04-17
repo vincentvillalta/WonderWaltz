@@ -122,6 +122,13 @@ public struct WizardDraftData: Sendable, Equatable {
     public let mustDoRideIds: [String]
     public let mealPreferences: [String]
     public let currentStep: Int
+    public let accommodationType: String?
+    public let selectedResort: String?
+    public let diningBudget: String?
+    public let characterDining: String?
+    public let wantDiningSuggestions: Bool
+    public let reservationsJSON: String
+    public let paceValue: Double
     public let createdAt: Date
     public let updatedAt: Date
 
@@ -137,6 +144,13 @@ public struct WizardDraftData: Sendable, Equatable {
         mustDoRideIds: [String] = [],
         mealPreferences: [String] = [],
         currentStep: Int = 0,
+        accommodationType: String? = nil,
+        selectedResort: String? = nil,
+        diningBudget: String? = nil,
+        characterDining: String? = nil,
+        wantDiningSuggestions: Bool = true,
+        reservationsJSON: String = "[]",
+        paceValue: Double = 60.0,
         createdAt: Date = .now,
         updatedAt: Date = .now
     ) {
@@ -151,6 +165,13 @@ public struct WizardDraftData: Sendable, Equatable {
         self.mustDoRideIds = mustDoRideIds
         self.mealPreferences = mealPreferences
         self.currentStep = currentStep
+        self.accommodationType = accommodationType
+        self.selectedResort = selectedResort
+        self.diningBudget = diningBudget
+        self.characterDining = characterDining
+        self.wantDiningSuggestions = wantDiningSuggestions
+        self.reservationsJSON = reservationsJSON
+        self.paceValue = paceValue
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
@@ -380,6 +401,13 @@ public actor OfflineStore: OfflineStoreProtocol {
             mustDoRideIds: draft.mustDoRideIds,
             mealPreferences: draft.mealPreferences,
             currentStep: draft.currentStep,
+            accommodationType: draft.accommodationType,
+            selectedResort: draft.selectedResort,
+            diningBudget: draft.diningBudget,
+            characterDining: draft.characterDining,
+            wantDiningSuggestions: draft.wantDiningSuggestions,
+            reservationsJSON: draft.reservationsJSON,
+            paceValue: draft.paceValue,
             createdAt: draft.createdAt,
             updatedAt: draft.updatedAt
         )
@@ -410,6 +438,13 @@ public actor OfflineStore: OfflineStoreProtocol {
             mustDoRideIds: draft.mustDoRideIds,
             mealPreferences: draft.mealPreferences,
             currentStep: draft.currentStep,
+            accommodationType: draft.accommodationType,
+            selectedResort: draft.selectedResort,
+            diningBudget: draft.diningBudget,
+            characterDining: draft.characterDining,
+            wantDiningSuggestions: draft.wantDiningSuggestions,
+            reservationsJSON: draft.reservationsJSON,
+            paceValue: draft.paceValue,
             createdAt: draft.createdAt,
             updatedAt: draft.updatedAt
         )

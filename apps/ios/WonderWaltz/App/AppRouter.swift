@@ -43,7 +43,7 @@ struct AppRouter: View {
         VStack {
             HStack {
                 Image(systemName: "wifi.slash")
-                    .font(.subheadline)
+                    .font(WWTypography.subheadline)
                 Text(LocalizedStringKey(appState.authBannerMessage))
                     .font(WWTypography.subheadline)
                 Spacer()
@@ -53,7 +53,7 @@ struct AppRouter: View {
                     }
                 } label: {
                     Image(systemName: "xmark")
-                        .font(.caption)
+                        .font(WWTypography.caption)
                 }
                 .accessibilityLabel(Text("Dismiss banner"))
             }

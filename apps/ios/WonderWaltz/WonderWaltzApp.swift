@@ -45,7 +45,15 @@ struct WonderWaltzApp: App {
 
         // Create SwiftData ModelContainer from WWOffline configuration.
         do {
-            modelContainer = try ModelContainerConfig.makeContainer()
+            let container = try ModelContainerConfig.makeContainer()
+            modelContainer = container
+
+            // Create OfflineStore and wire it into DI container.
+            let store = OfflineStore(modelContainer: container)
+            MainActor.assumeIsolated {
+                deps.offlineStore = store
+                deps.wizardDraftStore = WizardDraftStoreBridge(store: store)
+            }
         } catch {
             // Fatal — app cannot function without data persistence.
             fatalError("Failed to create ModelContainer: \(error)")

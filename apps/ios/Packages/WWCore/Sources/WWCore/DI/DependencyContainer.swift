@@ -22,6 +22,10 @@ public final class DependencyContainer: @unchecked Sendable {
     /// The offline store for plan caching (optional, set when WWOffline is configured).
     public var offlineStore: (any OfflineStoreProtocol)?
 
+    /// Opaque wizard draft store, set by the app target after OfflineStore is created.
+    /// Typed as `Any` to avoid WWCore depending on WWTripWizard.
+    public var wizardDraftStore: (any Sendable)?
+
     public init(
         apiClient: any APIClientProtocol,
         authService: any AuthServiceProtocol,

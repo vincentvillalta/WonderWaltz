@@ -30,6 +30,10 @@ let project = Project(
             infoPlist: .extendingDefault(with: [
                 "CFBundleDisplayName": "WonderWaltz",
                 "UILaunchStoryboardName": "LaunchScreen",
+                "UIAppFonts": .array([
+                    "Fraunces-VariableFont.ttf",
+                    "Inter-VariableFont.ttf",
+                ]),
             ]),
             sources: ["WonderWaltz/**/*.swift"],
             resources: [

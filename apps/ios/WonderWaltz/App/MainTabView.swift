@@ -54,11 +54,20 @@ struct MainTabView: View {
             WWButton(
                 String(localized: "Start Planning", comment: "CTA to begin trip wizard")
             ) {
+                let draftStore = container.wizardDraftStore as? any WizardDraftStoreProtocol
                 let vm = WizardViewModel(
-                    apiClient: container.apiClient
+                    apiClient: container.apiClient,
+                    draftStore: draftStore
                 )
                 viewModel = vm
                 showWizard = true
+
+                // Load any existing draft in the background.
+                Task {
+                    if let draft = await draftStore?.loadDraft() {
+                        vm.restoreFromSnapshot(draft)
+                    }
+                }
             }
             .padding(.horizontal, WWDesignTokens.spacing8)
             .padding(.bottom, WWDesignTokens.spacing12)

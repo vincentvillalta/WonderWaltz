@@ -195,6 +195,22 @@ public struct WizardContainerView: View {
 
     private var bottomCTA: some View {
         VStack(spacing: 0) {
+            // Submission error banner
+            if let error = viewModel.submissionError {
+                HStack(spacing: WWDesignTokens.spacing4) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(WWTheme.warning)
+                    Text(error)
+                        .font(WWTypography.footnote)
+                        .foregroundStyle(WWTheme.textPrimary)
+                    Spacer()
+                }
+                .padding(.horizontal, WWDesignTokens.spacing12)
+                .padding(.vertical, WWDesignTokens.spacing8)
+                .background(WWTheme.warning.opacity(0.15))
+                .accessibilityElement(children: .combine)
+            }
+
             // border-t separator
             Divider()
                 .overlay(WWTheme.border)

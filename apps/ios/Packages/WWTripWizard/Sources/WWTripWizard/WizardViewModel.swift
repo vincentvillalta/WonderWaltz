@@ -432,6 +432,12 @@ public final class WizardViewModel {
 
     // MARK: - Private Helpers
 
+    /// Restore wizard state from a persisted draft snapshot.
+    /// Called by the app target after loading the draft from disk.
+    public func restoreFromSnapshot(_ draft: WizardDraftSnapshot) {
+        restoreFromDraft(draft)
+    }
+
     private func restoreFromDraft(_ draft: WizardDraftSnapshot) {
         if let start = draft.startDate { startDate = start }
         if let end = draft.endDate { endDate = end }

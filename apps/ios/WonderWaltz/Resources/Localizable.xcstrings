@@ -1,5 +1,21 @@
 {
   "sourceLanguage" : "en",
-  "strings" : {},
+  "strings" : {
+    "Dismiss banner" : {
+
+    },
+    "Hello WonderWaltz" : {
+
+    },
+    "Phase 1 — Foundation" : {
+
+    },
+    "Start planning your Disney trip" : {
+
+    },
+    "WonderWaltz" : {
+
+    }
+  },
   "version" : "1.0"
 }
