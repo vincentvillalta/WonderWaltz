@@ -178,11 +178,27 @@ export class QueueTimesService {
    */
   async extendTtlOnFailure(): Promise<void> {
     try {
-      const keys = await (
-        this.redis as unknown as { keys(pattern: string): Promise<string[]> }
-      ).keys('wait:*');
-      for (const key of keys) {
-        await this.redis.expire(key, FAILURE_TTL_EXTENSION_S);
+      // Use SCAN cursor instead of KEYS to avoid O(N) blocking scan.
+      // SCAN is non-blocking and paginates through the keyspace.
+      const redis = this.redis as unknown as {
+        scanStream(opts: { match: string; count: number }): NodeJS.ReadableStream;
+        expire(key: string, seconds: number): Promise<number>;
+      };
+      const stream = redis.scanStream({ match: 'wait:*', count: 100 });
+      const pipeline = (
+        this.redis as unknown as {
+          pipeline(): { expire(k: string, s: number): unknown; exec(): Promise<unknown> };
+        }
+      ).pipeline();
+      let keyCount = 0;
+      for await (const keys of stream as AsyncIterable<string[]>) {
+        for (const key of keys) {
+          pipeline.expire(key, FAILURE_TTL_EXTENSION_S);
+          keyCount++;
+        }
+      }
+      if (keyCount > 0) {
+        await pipeline.exec();
       }
     } catch (err) {
       this.logger.error('extendTtlOnFailure failed', err);

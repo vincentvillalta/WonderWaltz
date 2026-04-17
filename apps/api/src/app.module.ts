@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { BullModule } from '@nestjs/bullmq';
+import { buildBullRedisConfig } from './common/redis-config.js';
 import { AuthModule } from './auth/auth.module.js';
 import { ResponseEnvelopeInterceptor } from './common/interceptors/response-envelope.interceptor.js';
 import { EntitlementModule } from './entitlements/entitlement.module.js';
@@ -21,6 +23,9 @@ import { WebhookModule } from './webhooks/webhook.module.js';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
+    }),
+    BullModule.forRoot({
+      connection: buildBullRedisConfig(),
     }),
     SharedInfraModule,
     WeatherModule,

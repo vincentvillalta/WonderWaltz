@@ -56,11 +56,12 @@ export const SUPABASE_ADMIN_TOKEN = 'SUPABASE_ADMIN_TOKEN';
           password = parsed.password || undefined;
         }
         // In tests, ioredis is globally mocked — new Redis() returns a stub object
+        const useTls = redisUrl.startsWith('rediss://');
         const config: RedisOptions = {
           host,
           port,
           password,
-          tls: {},
+          ...(useTls ? { tls: {} } : {}),
           maxRetriesPerRequest: null,
           enableReadyCheck: false,
         };

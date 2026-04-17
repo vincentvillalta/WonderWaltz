@@ -5,17 +5,22 @@ import {
   HttpCode,
   HttpException,
   Inject,
+  NotFoundException,
   Param,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { sql } from 'drizzle-orm';
+import { randomUUID } from 'crypto';
 import type { Queue } from 'bullmq';
 import { ApiEnvelopedResponse } from '../common/decorators/api-enveloped-response.decorator.js';
+import { rowsOf } from '../common/drizzle-rows.js';
 import { AnonymousTripLimitGuard } from '../auth/anonymous-trip-limit.guard.js';
 import { SupabaseAuthGuard } from '../auth/auth.guard.js';
+import type { RequestUser } from '../auth/auth.guard.js';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
 import { CircuitBreakerService } from '../plan-generation/circuit-breaker.service.js';
 import { RateLimitGuard, RateLimit } from '../plan-generation/rate-limit.guard.js';
@@ -54,31 +59,57 @@ export class TripsController {
    */
   @Post()
   @UseGuards(SupabaseAuthGuard, AnonymousTripLimitGuard)
-  @HttpCode(501)
+  @HttpCode(200)
   @ApiOperation({
-    summary: 'Create a trip (Phase 3)',
-    description:
-      'Creates a new trip with guest list and preferences. ' +
-      'Returns 501 until Phase 3 solver implementation.',
+    summary: 'Create a trip',
+    description: 'Creates a new trip with guest list and preferences.',
   })
   @ApiBody({ type: CreateTripDto })
   @ApiEnvelopedResponse(TripDto)
-  @ApiResponse({ status: 501, description: 'Not implemented until Phase 3' })
   @ApiResponse({ status: 403, description: 'Anonymous users limited to 1 trip' })
-  createTrip(@Body() _body: CreateTripDto): never {
-    throw new HttpException('Not Implemented', 501);
+  async createTrip(
+    @Body() body: CreateTripDto,
+    @Req() req: { user: RequestUser },
+  ): Promise<TripDto> {
+    const tripId = randomUUID();
+    const userId = req.user.id;
+    const prefs = body.preferences;
+
+    // Insert trip with preferences flattened to columns
+    const tripName = `Trip ${body.start_date}`;
+    await this.db.execute(
+      sql`INSERT INTO trips (id, user_id, name, start_date, end_date, budget_tier, entitlement_state, created_at, updated_at)
+          VALUES (${tripId}, ${userId}, ${tripName}, ${body.start_date}, ${body.end_date}, ${prefs.budget_tier ?? 'fairy_tale'}, 'free', NOW(), NOW())`,
+    );
+
+    // Insert guests
+    for (const guest of body.guests) {
+      const guestId = randomUUID();
+      await this.db.execute(
+        sql`INSERT INTO guests (id, trip_id, name, age_bracket, has_das, created_at)
+            VALUES (${guestId}, ${tripId}, ${guest.name}, ${guest.age_bracket}, ${guest.has_das}, NOW())`,
+      );
+    }
+
+    // Return the created trip
+    const rows = rowsOf<TripDto>(
+      await this.db.execute(
+        sql`SELECT id, user_id, start_date, end_date, entitlement_state, current_plan_id, created_at, updated_at FROM trips WHERE id = ${tripId}`,
+      ),
+    );
+
+    return rows[0]!;
   }
 
   /**
    * GET /v1/trips/:id
-   * Retrieve a trip by ID. Phase 3 implementation.
+   * Retrieve a trip by ID.
    */
   @Get(':id')
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get a trip by ID (Phase 3)',
-    description:
-      'Returns the trip object including guests and preferences. Returns 501 until Phase 3.',
+    summary: 'Get a trip by ID',
+    description: 'Returns the trip object including guests and preferences.',
   })
   @ApiParam({
     name: 'id',
@@ -86,9 +117,19 @@ export class TripsController {
     example: 'trip-uuid-here',
   })
   @ApiEnvelopedResponse(TripDto)
-  @ApiResponse({ status: 501, description: 'Not implemented until Phase 3' })
-  getTrip(@Param('id') _id: string): never {
-    throw new HttpException('Not Implemented', 501);
+  @ApiResponse({ status: 404, description: 'Trip not found' })
+  async getTrip(@Param('id') id: string): Promise<TripDto> {
+    const rows = rowsOf<TripDto>(
+      await this.db.execute(
+        sql`SELECT id, user_id, start_date, end_date, entitlement_state, current_plan_id, created_at, updated_at FROM trips WHERE id = ${id} AND deleted_at IS NULL`,
+      ),
+    );
+
+    if (!rows[0]) {
+      throw new NotFoundException('Trip not found');
+    }
+
+    return rows[0];
   }
 
   /**

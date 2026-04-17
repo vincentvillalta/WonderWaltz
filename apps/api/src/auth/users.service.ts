@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
+import { rowsOf } from '../common/drizzle-rows.js';
 
 /**
  * Duck-typed Drizzle DB interface — same pattern as QueueTimesService,
@@ -33,10 +34,10 @@ export class UsersService {
    * Get user profile by ID. Returns null if user not found or soft-deleted.
    */
   async getUserProfile(userId: string): Promise<UserProfile | null> {
-    const { rows } = await this.db.execute<UserProfile>(
-      sql`SELECT id, email, is_anonymous, created_at
+    const rows = rowsOf<UserProfile>(
+      await this.db.execute(sql`SELECT id, email, is_anonymous, created_at
           FROM users
-          WHERE id = ${userId} AND deleted_at IS NULL`,
+          WHERE id = ${userId} AND deleted_at IS NULL`),
     );
 
     return rows[0] ?? null;
@@ -46,10 +47,10 @@ export class UsersService {
    * Count non-deleted trips for a user. Used by anonymous trip limit enforcement.
    */
   async getTripsCount(userId: string): Promise<number> {
-    const { rows } = await this.db.execute<{ count: string }>(
-      sql`SELECT COUNT(*) AS count
+    const rows = rowsOf<{ count: string }>(
+      await this.db.execute(sql`SELECT COUNT(*) AS count
           FROM trips
-          WHERE user_id = ${userId} AND deleted_at IS NULL`,
+          WHERE user_id = ${userId} AND deleted_at IS NULL`),
     );
 
     return Number(rows[0]?.count ?? 0);

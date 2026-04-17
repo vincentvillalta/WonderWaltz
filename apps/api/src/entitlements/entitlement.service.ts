@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
+import { rowsOf } from '../common/drizzle-rows.js';
 
 /** Minimal Drizzle-compatible interface for raw SQL execution */
 interface DbExecutable {
@@ -46,11 +47,13 @@ export class EntitlementService {
     revenuecatId: string,
     purchasedAt: Date,
   ): Promise<EntitlementRow | null> {
-    const { rows } = await this.db.execute<EntitlementRow>(
-      sql`INSERT INTO entitlements (user_id, trip_id, revenuecat_id, state, purchased_at)
-          VALUES (${userId}, ${tripId}, ${revenuecatId}, 'active', ${purchasedAt.toISOString()})
-          ON CONFLICT (revenuecat_id) DO NOTHING
-          RETURNING *`,
+    const rows = rowsOf<EntitlementRow>(
+      await this.db.execute(
+        sql`INSERT INTO entitlements (user_id, trip_id, revenuecat_id, state, purchased_at)
+            VALUES (${userId}, ${tripId}, ${revenuecatId}, 'active', ${purchasedAt.toISOString()})
+            ON CONFLICT (revenuecat_id) DO NOTHING
+            RETURNING *`,
+      ),
     );
 
     if (rows.length === 0) {
@@ -96,8 +99,8 @@ export class EntitlementService {
    * Lookup a single entitlement by RevenueCat ID.
    */
   async getEntitlementByRevenuecatId(revenuecatId: string): Promise<EntitlementRow | null> {
-    const { rows } = await this.db.execute<EntitlementRow>(
-      sql`SELECT * FROM entitlements WHERE revenuecat_id = ${revenuecatId}`,
+    const rows = rowsOf<EntitlementRow>(
+      await this.db.execute(sql`SELECT * FROM entitlements WHERE revenuecat_id = ${revenuecatId}`),
     );
     return rows[0] ?? null;
   }
@@ -106,9 +109,10 @@ export class EntitlementService {
    * Get all active entitlements for a user (used by restore flow in Plan 04).
    */
   async getEntitlementsByUserId(userId: string): Promise<EntitlementRow[]> {
-    const { rows } = await this.db.execute<EntitlementRow>(
-      sql`SELECT * FROM entitlements WHERE user_id = ${userId} AND state = 'active'`,
+    return rowsOf<EntitlementRow>(
+      await this.db.execute(
+        sql`SELECT * FROM entitlements WHERE user_id = ${userId} AND state = 'active'`,
+      ),
     );
-    return rows;
   }
 }

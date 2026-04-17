@@ -10,6 +10,7 @@ import { sql } from 'drizzle-orm';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { SUPABASE_ADMIN_TOKEN } from '../shared-infra.module.js';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
+import { rowsOf } from '../common/drizzle-rows.js';
 
 /**
  * Duck-typed Drizzle DB interface — same pattern as QueueTimesService,
@@ -59,8 +60,8 @@ export class SupabaseAuthGuard implements CanActivate {
     const user = data.user;
 
     // Check if user is soft-deleted in public.users
-    const { rows } = await this.db.execute<{ deleted_at: string | null }>(
-      sql`SELECT deleted_at FROM users WHERE id = ${user.id}`,
+    const rows = rowsOf<{ deleted_at: string | null }>(
+      await this.db.execute(sql`SELECT deleted_at FROM users WHERE id = ${user.id}`),
     );
 
     if (rows[0]?.deleted_at) {

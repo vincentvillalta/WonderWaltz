@@ -5,37 +5,12 @@ import { SUPABASE_ADMIN_TOKEN } from '../shared-infra.module.js';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
 
 /**
- * Sign a JWT using the jose library (ESM-only — dynamic import required in CJS).
- * Returns the compact JWS string.
- */
-/**
- * Sign a JWT using the jose library (ESM-only — dynamic import required in CJS).
- * Returns the compact JWS string.
- */
-async function signJwt(
-  payload: Record<string, unknown>,
-  secret: Uint8Array,
-  iat: number,
-  exp: number,
-): Promise<string> {
-  const jose = await import('jose');
-  return new jose.SignJWT(payload)
-    .setProtectedHeader({ alg: 'HS256' as const, typ: 'JWT' })
-    .setIssuedAt(iat)
-    .setExpirationTime(exp)
-    .sign(secret);
-}
-
-/**
  * Duck-typed Drizzle DB interface — same pattern as QueueTimesService,
  * LagAlertService, etc. to avoid @wonderwaltz/db dist-path mismatch.
  */
 interface DrizzleDb {
   execute<T extends Record<string, unknown>>(query: ReturnType<typeof sql>): Promise<{ rows: T[] }>;
 }
-
-/** JWT lifetime in seconds (1 hour) */
-const JWT_LIFETIME_S = 3600;
 
 /**
  * AuthService — handles anonymous user creation via Supabase admin API
@@ -63,12 +38,11 @@ export class AuthService {
     user_id: string;
     expires_at: string;
   }> {
-    // 1. Create user in Supabase auth
-    const { data, error } = await this.supabase.auth.admin.createUser({
-      user_metadata: { is_anonymous: true },
-    });
+    // 1. Create anonymous user via Supabase signInAnonymously().
+    // Requires "Allow anonymous sign-ins" enabled in Supabase dashboard.
+    const { data, error } = await this.supabase.auth.signInAnonymously();
 
-    if (error || !data.user) {
+    if (error || !data.user || !data.session) {
       this.logger.error(`Failed to create anonymous user: ${error?.message ?? 'unknown'}`);
       throw new InternalServerErrorException('Failed to create anonymous user');
     }
@@ -82,35 +56,14 @@ export class AuthService {
           ON CONFLICT (id) DO NOTHING`,
     );
 
-    // 3. Sign a JWT using the Supabase JWT secret
-    const iat = Math.floor(Date.now() / 1000);
-    const exp = iat + JWT_LIFETIME_S;
-    const supabaseUrl = process.env['SUPABASE_URL'] ?? 'http://localhost:54321';
-    const jwtSecret =
-      process.env['SUPABASE_JWT_SECRET'] ??
-      'super-secret-jwt-token-with-at-least-32-characters-long';
-
-    const secret = new TextEncoder().encode(jwtSecret);
-
-    const accessToken = await signJwt(
-      {
-        sub: userId,
-        aud: 'authenticated',
-        role: 'authenticated',
-        iss: `${supabaseUrl}/auth/v1`,
-        user_metadata: { is_anonymous: true },
-      },
-      secret,
-      iat,
-      exp,
-    );
-
-    const expiresAt = new Date(exp * 1000).toISOString();
+    // 3. Return the Supabase-signed JWT from the session.
+    // This token is accepted by SupabaseAuthGuard (validated via supabase.auth.getUser).
+    const expiresAt = new Date(data.session.expires_at! * 1000).toISOString();
 
     this.logger.log(`Created anonymous user ${userId}`);
 
     return {
-      access_token: accessToken,
+      access_token: data.session.access_token,
       user_id: userId,
       expires_at: expiresAt,
     };
