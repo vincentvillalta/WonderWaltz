@@ -29,6 +29,14 @@ public enum WWTheme {
     /// Text on accent (gold) backgrounds — navy.
     public static let textOnAccent = WWDesignTokens.colorSemanticLightAccentFg
 
+    // MARK: - Borders
+
+    /// Border color — navy at 10% opacity. Matches React `--border: rgba(27, 42, 78, 0.1)`.
+    public static let border = WWDesignTokens.colorPrimitiveNavy.opacity(0.1)
+
+    /// Card background alias for clarity.
+    public static let cardBackground = WWDesignTokens.colorSemanticLightCard
+
     // MARK: - Accent & Brand
 
     /// Accent color — gold. Decorative/background only, never body text.
