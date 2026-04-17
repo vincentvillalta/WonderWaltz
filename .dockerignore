@@ -37,12 +37,14 @@ apps/android
 
 # Docs + planning
 docs
+!docs/design/BRAND.md
 .planning
 .claude
 .mcp.json
 .continue
 *.md
 !packages/content/**/*.md
+!docs/design/BRAND.md
 
 # Build artifacts from local dev
 tsconfig.tsbuildinfo
