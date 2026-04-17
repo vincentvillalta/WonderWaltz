@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 5 of 10 (iOS Core)
-Plan: 11 of 11 in current phase
-Status: In Progress
-Last activity: 2026-04-17 -- Completed Plan 05-10: Trip Wizard Design Alignment
+Plan: 11 of 11 in current phase (COMPLETE)
+Status: Phase 5 Complete
+Last activity: 2026-04-17 -- Completed Plan 05-11: Plan View Design Alignment
 
 Progress: [██████████] 100%
 
@@ -106,6 +106,7 @@ Progress: [██████████] 100%
 | Phase 05-ios-core P08 | 5 min | 2 tasks | 6 files |
 | Phase 05-ios-core P09 | 5 min | 2 tasks | 4 files |
 | Phase 05-ios-core P10 | 9 min | 2 tasks | 12 files |
+| Phase 05-ios-core P11 | 10 min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -268,6 +269,9 @@ Recent decisions affecting current work:
 - [Phase 05-ios-core]: WWBlurOverlay uses solid surface background (opacity 0.95) when reduce transparency is ON -- ultraThinMaterial replaced
 - [Phase 05-ios-core]: Park grid switches from 2-column to 1-column at accessibility sizes via @Environment dynamicTypeSize
 - [Phase 05-ios-core]: UIAccessibility.post(notification: .announcement) for "Plan updated" after rethink completes -- VoiceOver users informed of async result
+- [Phase 05-ios-core]: DayTabPicker replaced by DayPillPicker -- horizontal pills with park-color borders, file deleted
+- [Phase 05-ios-core]: PlanItemDetailView is custom ZStack overlay (not .sheet) -- enables spring animation control matching StopDetailSheet.tsx
+- [Phase 05-ios-core]: isADR field added to PlanItemData with default false -- backward-compatible JSON decoding
 - [Phase 05-ios-core]: WWButton shimmer uses repeating linear animation with GeometryReader offset -- translateX equivalent from React
 - [Phase 05-ios-core]: WWCard border replaces shadow -- React uses border-border (navy 10%) not box-shadow
 - [Phase 05-ios-core]: WWTabBar uses matchedGeometryEffect for gold pill indicator -- SwiftUI equivalent of Framer Motion layoutId
@@ -289,6 +293,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-17T14:23:23Z
-Stopped at: Completed 05-10-PLAN.md
+Last session: 2026-04-17T14:36:30Z
+Stopped at: Completed 05-11-PLAN.md (Phase 05 complete)
 Resume file: None
