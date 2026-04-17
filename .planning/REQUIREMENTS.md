@@ -134,7 +134,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **IOS-01**: Xcode project for `apps/ios` targets iOS 17.0 minimum, Swift 6, SwiftUI, Swift Concurrency, Observation framework
 - [x] **IOS-02**: `WWCore` module with Swift OpenAPI Generator 1.11.1 client generated from `packages/shared-openapi/openapi.json` at build time
 - [x] **IOS-03**: `WWDesignSystem` module consuming `packages/design-tokens` generated Swift constants
-- [ ] **IOS-04**: `WWOffline` module with SwiftData persistence and background sync coordinator (fallback to GRDB if SwiftData is unstable on iOS 18.x real devices)
+- [x] **IOS-04**: `WWOffline` module with SwiftData persistence and background sync coordinator (fallback to GRDB if SwiftData is unstable on iOS 18.x real devices)
 - [ ] **IOS-05**: Onboarding flow explains the value prop, requests notification permission contextually (not on first launch)
 - [ ] **IOS-06**: Trip wizard: dates → park selection + hopper → guests (with DAS flag, mobility, sensory, diet) → budget tier → lodging + transport → must-do rides → meal preferences → review
 - [ ] **IOS-07**: Plan view: day tabs → timeline → item cards (attraction, meal, show, LL book reminder, rest, walk) → item detail → "Rethink my day" button
@@ -148,7 +148,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **IOS-15**: PostHog iOS SDK integrated with event schema that excludes any guest age data
 - [x] **IOS-16**: All strings externalized via `String Catalogs` (`.xcstrings`) for future i18n; English at launch
 - [ ] **IOS-17**: Dynamic Type up to `accessibility5`, VoiceOver labels, reduce motion, reduce transparency respected
-- [ ] **IOS-18**: Offline mode: trip + plan + catalog subset + walking graph + static maps persisted; full read-only access with no signal; sync when online
+- [x] **IOS-18**: Offline mode: trip + plan + catalog subset + walking graph + static maps persisted; full read-only access with no signal; sync when online
 
 ### Android App (Phase 7)
 
@@ -335,7 +335,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | IOS-01 | Phase 5 | Complete |
 | IOS-02 | Phase 5 | Complete |
 | IOS-03 | Phase 5 | Complete |
-| IOS-04 | Phase 5 | Pending |
+| IOS-04 | Phase 5 | Complete |
 | IOS-05 | Phase 5 | Pending |
 | IOS-06 | Phase 5 | Pending |
 | IOS-07 | Phase 5 | Pending |
@@ -349,7 +349,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | IOS-15 | Phase 5 | Complete |
 | IOS-16 | Phase 5 | Complete |
 | IOS-17 | Phase 5 | Pending |
-| IOS-18 | Phase 5 | Pending |
+| IOS-18 | Phase 5 | Complete |
 | AND-01 | Phase 7 | Pending |
 | AND-02 | Phase 7 | Pending |
 | AND-03 | Phase 7 | Pending |

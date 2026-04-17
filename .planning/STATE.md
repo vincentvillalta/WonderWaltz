@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-04-17T10:25:23.977Z"
-last_activity: "2026-04-17 -- Completed Plan 05-01: iOS Core Foundation"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-04-17T11:27:00.000Z"
+last_activity: "2026-04-17 -- Completed Plan 05-02: WWOffline Package"
 progress:
   total_phases: 11
   completed_phases: 5
   total_plans: 56
-  completed_plans: 50
-  percent: 89
+  completed_plans: 51
+  percent: 91
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 5 of 10 (iOS Core)
-Plan: 1 of 7 in current phase (complete)
+Plan: 2 of 7 in current phase (complete)
 Status: In Progress
-Last activity: 2026-04-17 -- Completed Plan 05-01: iOS Core Foundation
+Last activity: 2026-04-17 -- Completed Plan 05-02: WWOffline Package
 
-Progress: [█████████░] 89%
+Progress: [█████████░] 91%
 
 ## Performance Metrics
 
@@ -98,6 +98,7 @@ Progress: [█████████░] 89%
 | Phase 04-entitlements-accounts P04 | 6 min | 2 tasks | 14 files |
 | Phase 04-entitlements-accounts P05 | 5 min | 2 tasks | 8 files |
 | Phase 05-ios-core P01 | 22 | 2 tasks | 52 files |
+| Phase 05-ios-core P02 | 60 min | 2 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -245,6 +246,9 @@ Recent decisions affecting current work:
 - [Phase 05-ios-core]: sentry-cocoa pinned to exact 8.44.0 -- Swift 6.2 manifest compilation error in newer versions
 - [Phase 05-ios-core]: AuthServiceProtocol @MainActor -- enables @Observable without Sendable crossing isolation
 - [Phase 05-ios-core]: WWDesignTokens rewritten as enum with CGFloat/String types -- auto-generated had invalid Swift
+- [Phase 05-ios-core]: CachedWalkingEdge uses @Attribute(.unique) compoundKey string instead of #Unique macro -- #Unique requires iOS 18, deployment target is iOS 17
+- [Phase 05-ios-core]: clearCache uses fetch-then-delete pattern (not modelContext.delete(model:)) -- batch delete triggers constraint violations on inverse relationships
+- [Phase 05-ios-core]: Static map tile download deferred to Phase 6 -- OfflinePackageDownloader only handles catalog subset + walking graph
 
 ### Pending Todos
 
@@ -260,6 +264,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-17T10:25:23.974Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-04-17T11:27:00.000Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None
