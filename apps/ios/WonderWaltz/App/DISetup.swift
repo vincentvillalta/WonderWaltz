@@ -25,7 +25,8 @@ enum DISetup {
         let serverURL = AppConfig.apiBaseURL
         let apiClient = APIClient(
             serverURL: serverURL,
-            authMiddleware: authMiddleware
+            authMiddleware: authMiddleware,
+            tokenProvider: { authService.getToken() }
         )
 
         // Close the DI cycle — AuthService can now call anonymousAuth.

@@ -13,15 +13,23 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
 
     private let client: Client
     private let encoder: JSONEncoder
+    private let serverURL: URL
+    private let tokenProvider: @Sendable () -> String?
 
     /// Initialize the API client.
     /// - Parameters:
     ///   - serverURL: The base URL of the API server.
     ///   - authMiddleware: Middleware for injecting auth headers.
+    ///   - tokenProvider: Direct access to the bearer token, used for raw
+    ///     URLSession fallbacks where the generated client would strip
+    ///     unknown response fields.
     public init(
         serverURL: URL,
-        authMiddleware: AuthMiddleware
+        authMiddleware: AuthMiddleware,
+        tokenProvider: @escaping @Sendable () -> String? = { nil }
     ) {
+        self.serverURL = serverURL
+        self.tokenProvider = tokenProvider
         let transport = URLSessionTransport()
         self.client = Client(
             serverURL: serverURL,
@@ -137,25 +145,24 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
     }
 
     public func getTrip(id: String) async throws -> Data {
-        WWLogger.networking.trace("GET /v1/trips/\(id, privacy: .public)")
-        do {
-            let response = try await client.TripsController_getTrip(
-                path: .init(id: id)
-            )
-            switch response {
-            case .ok(let output):
-                switch output.body {
-                case .json(let payload):
-                    return try encoder.encode(payload)
-                }
-            default:
-                WWLogger.networking.error("getTrip: unexpected response status for id=\(id, privacy: .public)")
-                throw APIClientError.unexpectedResponse
-            }
-        } catch {
-            WWLogger.networking.error("getTrip failed: \(error.localizedDescription, privacy: .public)")
-            throw error
+        // Bypass the generated OpenAPI client — it strips fields not present
+        // in the bundled TripDto struct, which blocks the iOS polling loop
+        // from seeing server-side fields like current_plan_id. Raw URLSession
+        // gives us the verbatim JSON body.
+        WWLogger.networking.trace("GET /v1/trips/\(id, privacy: .public) (raw)")
+        let url = serverURL.appendingPathComponent("v1/trips/\(id)")
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        if let token = tokenProvider() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            let status = (response as? HTTPURLResponse)?.statusCode ?? -1
+            WWLogger.networking.error("getTrip: HTTP \(status, privacy: .public) for id=\(id, privacy: .public)")
+            throw APIClientError.unexpectedResponse
+        }
+        return data
     }
 
     public func generatePlan(tripId: String) async throws -> Data {
