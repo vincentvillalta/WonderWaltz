@@ -2,6 +2,7 @@ import SwiftUI
 import WWCore
 import WWOnboarding
 import WWDesignSystem
+import WWTripWizard
 
 /// Root navigation router that drives the splash -> onboarding -> main flow.
 /// Uses `AppState.currentRoute` to determine which view to display.
@@ -82,24 +83,4 @@ struct AppRouter: View {
     }
 }
 
-// MARK: - MainTabView Placeholder
-
-/// Placeholder main tab view. Wizard and plan views will be added in Plans 04/05.
-struct MainTabView: View {
-
-    var body: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 48))
-                .foregroundStyle(WWTheme.accent)
-            Text("WonderWaltz")
-                .font(WWTypography.largeTitle)
-                .foregroundStyle(WWTheme.textPrimary)
-            Text("Your Disney adventure starts here")
-                .font(WWTypography.body)
-                .foregroundStyle(WWTheme.textSecondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(WWTheme.background)
-    }
-}
+// MainTabView is now in its own file: MainTabView.swift
