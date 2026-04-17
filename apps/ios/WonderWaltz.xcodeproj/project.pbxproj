@@ -12,6 +12,12 @@
 		CC0503A10001000100010003 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0503A10001000100010012 /* AppRouter.swift */; };
 		CC0503A10001000100010004 /* DISetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0503A10001000100010013 /* DISetup.swift */; };
 		CC0503A10001000100010005 /* AnalyticsBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0503A10001000100010014 /* AnalyticsBridge.swift */; };
+		CC0503A10001000100010006 /* OnboardingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0503A10001000100010015 /* OnboardingTests.swift */; };
+		CC0503A10001000100010007 /* WWOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = CC0503A10001000100010030 /* WWOnboarding */; };
+		CC0503A10001000100010008 /* WWCore in Frameworks */ = {isa = PBXBuildFile; productRef = CC0503A10001000100010031 /* WWCore */; };
+		CC0503A10001000100010009 /* WWOffline in Frameworks */ = {isa = PBXBuildFile; productRef = CC0503A10001000100010032 /* WWOffline */; };
+		CC0503A1000100010001000A /* WWTripWizard in Frameworks */ = {isa = PBXBuildFile; productRef = CC0503A10001000100010033 /* WWTripWizard */; };
+		CC0503A1000100010001000B /* WWPlanView in Frameworks */ = {isa = PBXBuildFile; productRef = CC0503A10001000100010034 /* WWPlanView */; };
 		0425CCD317544C45962506DA /* AnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13B34FC710D6141057550A8 /* AnalyticsTests.swift */; };
 		AA11223344556677AABB0001 /* OfflineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11223344556677AABB0010 /* OfflineTests.swift */; };
 		AA11223344556677AABB0002 /* OfflineSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11223344556677AABB0011 /* OfflineSyncTests.swift */; };
@@ -73,6 +79,7 @@
 		CC0503A10001000100010012 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		CC0503A10001000100010013 /* DISetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DISetup.swift; sourceTree = "<group>"; };
 		CC0503A10001000100010014 /* AnalyticsBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsBridge.swift; sourceTree = "<group>"; };
+		CC0503A10001000100010015 /* OnboardingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTests.swift; sourceTree = "<group>"; };
 		0ECDCFB3D274B59B8965D109 /* TuistAssets+WonderWaltz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TuistAssets+WonderWaltz.swift"; sourceTree = "<group>"; };
 		1F36F23E3C2C86A033A50E10 /* WonderWaltz-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "WonderWaltz-Info.plist"; sourceTree = "<group>"; };
 		42F63DBB6C71D7A60E209B3E /* WWPlanView */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WWPlanView; path = Packages/WWPlanView; sourceTree = "<group>"; };
@@ -104,6 +111,11 @@
 			files = (
 				CDB463AC67FBE7111B5CB247 /* WWDesignSystem in Frameworks */,
 				EB94BE8A4E0E1AED1478F3A1 /* WWAnalytics in Frameworks */,
+				CC0503A10001000100010007 /* WWOnboarding in Frameworks */,
+				CC0503A10001000100010008 /* WWCore in Frameworks */,
+				CC0503A10001000100010009 /* WWOffline in Frameworks */,
+				CC0503A1000100010001000A /* WWTripWizard in Frameworks */,
+				CC0503A1000100010001000B /* WWPlanView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,6 +220,7 @@
 				4F70FDD94C76211CC4C0E87D /* DesignTokenTests.swift */,
 				AA11223344556677AABB0010 /* OfflineTests.swift */,
 				AA11223344556677AABB0011 /* OfflineSyncTests.swift */,
+				CC0503A10001000100010015 /* OnboardingTests.swift */,
 				D8D8AD93725DB4714517F475 /* WonderWaltzTests.swift */,
 			);
 			path = WonderWaltzTests;
@@ -258,6 +271,11 @@
 			packageProductDependencies = (
 				B13CAE93C84E76FD587771C6 /* WWDesignSystem */,
 				A4921BEF61BF70BAF7B1FE3A /* WWAnalytics */,
+				CC0503A10001000100010030 /* WWOnboarding */,
+				CC0503A10001000100010031 /* WWCore */,
+				CC0503A10001000100010032 /* WWOffline */,
+				CC0503A10001000100010033 /* WWTripWizard */,
+				CC0503A10001000100010034 /* WWPlanView */,
 			);
 			productName = WonderWaltzTests;
 			productReference = D1902E034504A3683E33AEEB /* WonderWaltzTests.xctest */;
@@ -374,6 +392,7 @@
 				57622E9F2AD0FAF2DFA9443D /* DesignTokenTests.swift in Sources */,
 				AA11223344556677AABB0001 /* OfflineTests.swift in Sources */,
 				AA11223344556677AABB0002 /* OfflineSyncTests.swift in Sources */,
+				CC0503A10001000100010006 /* OnboardingTests.swift in Sources */,
 				A3C48354D71387062DA4CA6A /* WonderWaltzTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -717,6 +736,26 @@
 		ECE56CC669BD088D0DB2D595 /* WWDesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WWDesignSystem;
+		};
+		CC0503A10001000100010030 /* WWOnboarding */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWOnboarding;
+		};
+		CC0503A10001000100010031 /* WWCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWCore;
+		};
+		CC0503A10001000100010032 /* WWOffline */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWOffline;
+		};
+		CC0503A10001000100010033 /* WWTripWizard */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWTripWizard;
+		};
+		CC0503A10001000100010034 /* WWPlanView */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WWPlanView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
