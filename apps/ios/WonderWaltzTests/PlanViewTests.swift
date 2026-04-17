@@ -87,6 +87,7 @@ private func makePlanJSON(
                     "startTime": "09:00",
                     "sortOrder": 0,
                     "isLightningLane": false,
+                    "isADR": false,
                     "isMobileOrder": false,
                     "isCompleted": false
                 ] as [String: Any]
@@ -225,6 +226,71 @@ final class PlanViewTests: XCTestCase {
         XCTAssertEqual(vm.selectedDayIndex, 0) // unchanged
     }
 
+    // MARK: - Skip / Done Tests
+
+    func testSkipItem() {
+        let vm = makeVM()
+
+        XCTAssertTrue(vm.skippedItems.isEmpty)
+
+        vm.skipItem("item-1")
+
+        XCTAssertTrue(vm.skippedItems.contains("item-1"))
+        XCTAssertEqual(vm.skippedItems.count, 1)
+    }
+
+    func testMarkDone() {
+        let vm = makeVM()
+
+        XCTAssertTrue(vm.skippedItems.isEmpty)
+        XCTAssertTrue(vm.completedItemIds.isEmpty)
+
+        vm.markDone("item-1")
+
+        XCTAssertTrue(vm.skippedItems.contains("item-1"))
+        XCTAssertTrue(vm.completedItemIds.contains("item-1"))
+    }
+
+    // MARK: - Park Color Mapping Tests
+
+    func testParkColorMapping() {
+        let vm = makeVM()
+
+        let mkDay = PlanDayData(
+            dayNumber: 1, date: "2026-05-01",
+            parkName: "Magic Kingdom", parkAbbreviation: "MK"
+        )
+        XCTAssertEqual(vm.parkColor(for: mkDay), .magicKingdom)
+
+        let epcotDay = PlanDayData(
+            dayNumber: 2, date: "2026-05-02",
+            parkName: "EPCOT", parkAbbreviation: "EP"
+        )
+        XCTAssertEqual(vm.parkColor(for: epcotDay), .epcot)
+
+        let hsDay = PlanDayData(
+            dayNumber: 3, date: "2026-05-03",
+            parkName: "Hollywood Studios", parkAbbreviation: "HS"
+        )
+        XCTAssertEqual(vm.parkColor(for: hsDay), .hollywoodStudios)
+
+        let akDay = PlanDayData(
+            dayNumber: 4, date: "2026-05-04",
+            parkName: "Animal Kingdom", parkAbbreviation: "AK"
+        )
+        XCTAssertEqual(vm.parkColor(for: akDay), .animalKingdom)
+    }
+
+    func testParkColorMappingDefaultsToMagicKingdom() {
+        let vm = makeVM()
+
+        let unknownDay = PlanDayData(
+            dayNumber: 1, date: "2026-05-01",
+            parkName: "Unknown Park", parkAbbreviation: "UP"
+        )
+        XCTAssertEqual(vm.parkColor(for: unknownDay), .magicKingdom)
+    }
+
     // MARK: - Notification Permission Tests
 
     func testNotificationPermissionSetsFlag() async {
@@ -244,7 +310,6 @@ final class PlanViewTests: XCTestCase {
 
         let vm = makeVM()
 
-        let eventCountBefore = mockAnalytics.capturedEvents.count
         await vm.requestNotificationPermissionIfNeeded()
 
         // Should not fire analytics since flag already set (returns early)
@@ -282,6 +347,22 @@ final class PlanViewTests: XCTestCase {
 
         XCTAssertNotNil(vm.error)
         XCTAssertFalse(vm.isRethinking)
+    }
+
+    func testRethinkClearsSkippedItems() async {
+        mockAPI.getPlanResult = makePlanJSON()
+        mockAPI.rethinkResult = makePlanJSON()
+        let vm = makeVM()
+
+        await vm.loadPlan(planId: "plan-1")
+        vm.skipItem("item-1")
+        vm.markDone("item-2")
+        XCTAssertFalse(vm.skippedItems.isEmpty)
+
+        await vm.rethinkToday()
+
+        XCTAssertTrue(vm.skippedItems.isEmpty)
+        XCTAssertTrue(vm.completedItemIds.isEmpty)
     }
 
     // MARK: - Analytics Tests
