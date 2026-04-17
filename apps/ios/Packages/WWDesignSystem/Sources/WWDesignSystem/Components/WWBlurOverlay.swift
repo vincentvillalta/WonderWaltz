@@ -19,10 +19,18 @@ public struct WWBlurOverlay<Content: View>: View {
         self.content = content()
     }
 
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
     public var body: some View {
         ZStack {
-            Rectangle()
-                .fill(.ultraThinMaterial)
+            if reduceTransparency {
+                // Solid background when reduce transparency is ON
+                Rectangle()
+                    .fill(WWTheme.surface.opacity(0.95))
+            } else {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+            }
 
             VStack(spacing: WWDesignTokens.spacing6) {
                 content
@@ -33,6 +41,8 @@ public struct WWBlurOverlay<Content: View>: View {
                 }
             }
         }
+        .accessibilityAddTraits(.isModal)
+        .accessibilityElement(children: .contain)
     }
 }
 

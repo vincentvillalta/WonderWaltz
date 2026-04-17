@@ -23,6 +23,8 @@ public struct WWProgressBar: View {
         self.currentStep = currentStep
     }
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     public var body: some View {
         VStack(spacing: WWDesignTokens.spacing2) {
             GeometryReader { geometry in
@@ -39,7 +41,10 @@ public struct WWProgressBar: View {
                             width: geometry.size.width * progress,
                             height: 6
                         )
-                        .animation(.easeInOut(duration: 0.3), value: progress)
+                        .animation(
+                            reduceMotion ? .none : .easeInOut(duration: 0.3),
+                            value: progress
+                        )
                 }
             }
             .frame(height: 6)
@@ -49,6 +54,17 @@ public struct WWProgressBar: View {
                     .font(WWTypography.caption)
                     .foregroundStyle(WWTheme.textSecondary)
             }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityValue(accessibilityValueText)
+        .accessibilityAddTraits(.updatesFrequently)
+    }
+
+    private var accessibilityValueText: Text {
+        if let totalSteps, let currentStep {
+            Text("Step \(currentStep) of \(totalSteps)")
+        } else {
+            Text("\(Int(progress * 100)) percent")
         }
     }
 }

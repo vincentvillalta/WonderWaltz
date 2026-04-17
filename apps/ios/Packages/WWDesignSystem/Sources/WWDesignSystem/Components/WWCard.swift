@@ -23,6 +23,7 @@ public struct WWCard<Content: View>: View {
                 x: 0,
                 y: 4
             )
+            .accessibilityElement(children: .combine)
     }
 }
 

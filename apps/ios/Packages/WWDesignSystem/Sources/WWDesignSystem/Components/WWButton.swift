@@ -57,6 +57,8 @@ public struct WWButton: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(Text(isLoading ? "Loading" : title))
     }
 
     private var backgroundColor: Color {
