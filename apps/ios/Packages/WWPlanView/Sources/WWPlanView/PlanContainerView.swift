@@ -323,13 +323,53 @@ public struct PlanContainerView: View {
                 .tint(WWTheme.accent)
                 .scaleEffect(1.2)
                 .accessibilityHidden(true)
-            Text("Your plan is being created...")
-                .font(WWTypography.body)
-                .foregroundStyle(WWTheme.textSecondary)
+
+            VStack(spacing: WWDesignTokens.spacing2) {
+                Text(loadingHeadline)
+                    .font(WWTypography.title3)
+                    .foregroundStyle(WWTheme.textPrimary)
+                    .multilineTextAlignment(.center)
+
+                Text(loadingSubtitle)
+                    .font(WWTypography.footnote)
+                    .foregroundStyle(WWTheme.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, WWDesignTokens.spacing8)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Loading. Your plan is being created.")
+        .accessibilityLabel("Loading. \(loadingHeadline). \(loadingSubtitle)")
+    }
+
+    /// Headline shown in the loading state — adapts to poll progress so the
+    /// user gets reassurance that things are still happening during the
+    /// ~3-minute server-side solver run.
+    private var loadingHeadline: String {
+        switch viewModel.planStatus {
+        case "ready":
+            return "Fetching your plan…"
+        case "failed":
+            return "Plan generation ran into trouble"
+        default:
+            if viewModel.pollAttempt > 20 {
+                return "Still crafting your itinerary…"
+            } else if viewModel.pollAttempt > 5 {
+                return "Arranging your days…"
+            } else {
+                return "Creating your plan…"
+            }
+        }
+    }
+
+    private var loadingSubtitle: String {
+        if viewModel.pollAttempt > 30 {
+            return "This can take up to a few minutes. You can close the app — it'll resume when you come back."
+        } else if viewModel.pollAttempt > 10 {
+            return "Hang tight, we're matching rides, meals, and rest to your party."
+        } else {
+            return "Matching rides, meals, and rest to your party."
+        }
     }
 
     // MARK: - Error State

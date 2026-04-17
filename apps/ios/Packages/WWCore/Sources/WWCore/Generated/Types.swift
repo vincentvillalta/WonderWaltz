@@ -762,9 +762,9 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/TripDto/created_at`.
             public var created_at: Swift.String
             /// UUID of the most recent plan for this trip, if one has been generated.
-            ///
-            /// - Remark: Generated from `#/components/schemas/TripDto/current_plan_id`.
             public var current_plan_id: Swift.String?
+            /// Plan generation lifecycle.
+            public var plan_status: Swift.String?
             /// Creates a new `TripDto`.
             public init(
                 id: Swift.String,
@@ -775,7 +775,8 @@ public enum Components {
                 preferences: Components.Schemas.TripDto.preferencesPayload,
                 entitlement_state: Components.Schemas.TripDto.entitlement_statePayload,
                 created_at: Swift.String,
-                current_plan_id: Swift.String? = nil
+                current_plan_id: Swift.String? = nil,
+                plan_status: Swift.String? = nil
             ) {
                 self.id = id
                 self.resort_id = resort_id
@@ -786,6 +787,7 @@ public enum Components {
                 self.entitlement_state = entitlement_state
                 self.created_at = created_at
                 self.current_plan_id = current_plan_id
+                self.plan_status = plan_status
             }
             public enum CodingKeys: String, CodingKey {
                 case id
@@ -797,6 +799,7 @@ public enum Components {
                 case entitlement_state
                 case created_at
                 case current_plan_id
+                case plan_status
             }
         }
         /// - Remark: Generated from `#/components/schemas/CreateTripDto`.

@@ -141,7 +141,7 @@ export class TripsController {
   private async fetchTripDto(tripId: string): Promise<TripDto> {
     const [tripRows, guestRows, prefRows] = await Promise.all([
       this.db.execute(
-        sql`SELECT id, start_date::text AS start_date, end_date::text AS end_date, budget_tier, entitlement_state, created_at, current_plan_id FROM trips WHERE id = ${tripId} AND deleted_at IS NULL`,
+        sql`SELECT id, start_date::text AS start_date, end_date::text AS end_date, budget_tier, entitlement_state, created_at, current_plan_id, plan_status FROM trips WHERE id = ${tripId} AND deleted_at IS NULL`,
       ),
       this.db.execute(sql`SELECT name, age_bracket, has_das FROM guests WHERE trip_id = ${tripId}`),
       this.db.execute(
@@ -157,6 +157,7 @@ export class TripsController {
       entitlement_state: string;
       created_at: string | Date;
       current_plan_id: string | null;
+      plan_status: string | null;
     };
     type GuestRow = { name: string; age_bracket: string; has_das: boolean };
     type PrefRow = { must_do_attraction_ids: string[] | null };
@@ -176,6 +177,7 @@ export class TripsController {
       created_at:
         typeof trip.created_at === 'string' ? trip.created_at : trip.created_at.toISOString(),
       current_plan_id: trip.current_plan_id ?? null,
+      plan_status: trip.plan_status ?? null,
       guests: guests.map((g) => ({
         name: g.name,
         age_bracket: g.age_bracket as never,

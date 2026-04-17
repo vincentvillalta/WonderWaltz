@@ -146,6 +146,12 @@ public final class PlanViewModel {
     public var isOffline: Bool = false
     public var completedItemIds: Set<String> = []
 
+    /// Current polling attempt (1-based) while loadPlanForTrip is waiting for
+    /// the backend worker. Surfaced in the loading view so users see progress.
+    public var pollAttempt: Int = 0
+    /// plan_status from the trip endpoint (e.g. "pending" / "generating" / "ready").
+    public var planStatus: String?
+
     /// Tracks items that have been skipped or marked as done via swipe.
     public var skippedItems: Set<String> = []
 
@@ -205,26 +211,24 @@ public final class PlanViewModel {
         error = nil
 
         for attempt in 1...maxAttempts {
+            pollAttempt = attempt
             do {
                 let tripData = try await apiClient.getTrip(id: tripId)
-                // Log raw payload every 5 attempts so we can see what the
-                // generated client actually returns.
                 if attempt == 1 || attempt % 5 == 0 {
                     let preview = String(data: tripData.prefix(400), encoding: .utf8) ?? "(non-utf8)"
                     WWLogger.planView.debug("poll #\(attempt) raw trip body: \(preview, privacy: .public)")
                 }
-                // Extract current_plan_id from the envelope: { data: { current_plan_id: "..." } }
+                // Extract current_plan_id + plan_status from the envelope.
                 if let json = try JSONSerialization.jsonObject(with: tripData) as? [String: Any],
-                   let dataObj = json["data"] as? [String: Any],
-                   let planId = dataObj["current_plan_id"] as? String, !planId.isEmpty {
-                    WWLogger.planView.debug("poll: got planId=\(planId, privacy: .public) from envelope")
-                    await loadPlan(planId: planId)
-                    return
-                }
-                if let planId = try? (JSONSerialization.jsonObject(with: tripData) as? [String: Any])?["current_plan_id"] as? String, !planId.isEmpty {
-                    WWLogger.planView.debug("poll: got planId=\(planId, privacy: .public) from flat")
-                    await loadPlan(planId: planId)
-                    return
+                   let dataObj = json["data"] as? [String: Any] {
+                    if let status = dataObj["plan_status"] as? String {
+                        planStatus = status
+                    }
+                    if let planId = dataObj["current_plan_id"] as? String, !planId.isEmpty {
+                        WWLogger.planView.debug("poll: got planId=\(planId, privacy: .public)")
+                        await loadPlan(planId: planId)
+                        return
+                    }
                 }
             } catch {
                 // Keep polling unless we've exhausted attempts

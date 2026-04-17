@@ -1022,6 +1022,11 @@
             "type": "object",
             "description": "UUID of the most recent plan for this trip, if one has been generated. Clients should poll GET /v1/trips/:id after POST /generate-plan, then fetch GET /v1/plans/:current_plan_id once it becomes non-null.",
             "example": "plan-uuid-here"
+          },
+          "plan_status": {
+            "type": "object",
+            "description": "Plan generation lifecycle: \"pending\" (not yet generated), \"generating\" (worker has the job), \"ready\" (current_plan_id is set), \"failed\".",
+            "example": "ready"
           }
         },
         "required": [

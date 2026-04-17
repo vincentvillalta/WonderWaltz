@@ -406,9 +406,13 @@ export class NarrativeService {
         output_tokens: usage.output_tokens,
       });
 
+      // tripId/planId are uuid columns in the DB; empty strings from callers
+      // (e.g. narrative runs before plan is persisted so planId is "") must
+      // be coerced to null to avoid "invalid input syntax for type uuid".
+      const coerce = (v: string | null | undefined) => (v && v.length > 0 ? v : null);
       await recordLlmCost(this.db, {
-        tripId: costContext?.tripId ?? null,
-        planId: costContext?.planId ?? null,
+        tripId: coerce(costContext?.tripId),
+        planId: coerce(costContext?.planId),
         model,
         inputTok: usage.input_tokens,
         cachedReadTok: usage.cache_read_input_tokens,

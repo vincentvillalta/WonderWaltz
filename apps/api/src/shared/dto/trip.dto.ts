@@ -163,6 +163,14 @@ export class TripDto {
     example: 'plan-uuid-here',
   })
   current_plan_id?: string | null;
+
+  @ApiPropertyOptional({
+    description:
+      'Plan generation lifecycle: "pending" (not yet generated), "generating" ' +
+      '(worker has the job), "ready" (current_plan_id is set), "failed".',
+    example: 'ready',
+  })
+  plan_status?: string | null;
 }
 
 export class GeneratePlanResponseDto {
