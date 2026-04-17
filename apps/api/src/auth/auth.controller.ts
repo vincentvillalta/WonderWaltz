@@ -15,7 +15,7 @@ export class AuthController {
    * Create an anonymous user session and return a JWT.
    */
   @Post('anonymous')
-  @HttpCode(201)
+  @HttpCode(200)
   @ApiOperation({
     summary: 'Create anonymous user session',
     description:
@@ -23,7 +23,7 @@ export class AuthController {
       'Anonymous users can create and view trips but cannot purchase entitlements.',
   })
   @ApiEnvelopedResponse(AnonymousAuthResponseDto)
-  @ApiResponse({ status: 201, description: 'Anonymous user created' })
+  @ApiResponse({ status: 200, description: 'Anonymous user created' })
   @ApiResponse({ status: 500, description: 'Failed to create anonymous user' })
   async anonymousAuth(): Promise<AnonymousAuthResponseDto> {
     return this.authService.createAnonymousUser();
