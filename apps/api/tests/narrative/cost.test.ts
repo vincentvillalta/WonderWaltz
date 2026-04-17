@@ -103,10 +103,14 @@ describe('calculateUsdCents', () => {
 // ─── recordLlmCost DB write tests ──────────────────────────────────────
 
 describe('recordLlmCost', () => {
-  let mockDb: { execute: ReturnType<typeof vi.fn> };
+  // Typed as the minimal DbExecutable shape so Mock<Procedure> passes the
+  // exactOptionalPropertyTypes check on `execute(query: unknown) => Promise<unknown>`.
+  let mockDb: {
+    execute: ReturnType<typeof vi.fn<(query: unknown) => Promise<unknown>>>;
+  };
 
   beforeEach(() => {
-    mockDb = { execute: vi.fn().mockResolvedValue([]) };
+    mockDb = { execute: vi.fn<(query: unknown) => Promise<unknown>>().mockResolvedValue([]) };
   });
 
   it('inserts a row with correct column values', async () => {
