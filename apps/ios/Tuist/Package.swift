@@ -12,7 +12,6 @@ let packageSettings = PackageSettings(
 let package = Package(
     name: "WonderWaltz",
     dependencies: [
-        .package(url: "https://github.com/apple/swift-openapi-generator", from: "1.11.1"),
         .package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.7.0"),
         .package(url: "https://github.com/apple/swift-openapi-urlsession", from: "1.0.0"),
         .package(url: "https://github.com/getsentry/sentry-cocoa", exact: "8.44.0"),

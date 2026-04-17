@@ -2,7 +2,9 @@ import Foundation
 
 /// Protocol for the authentication service.
 /// Feature packages use this to check auth state and retrieve tokens.
-public protocol AuthServiceProtocol: AnyObject, Sendable {
+/// Marked @MainActor since it drives UI state via Observation.
+@MainActor
+public protocol AuthServiceProtocol: AnyObject {
 
     /// Whether the user is currently authenticated (has a valid token).
     var isAuthenticated: Bool { get }
@@ -14,5 +16,5 @@ public protocol AuthServiceProtocol: AnyObject, Sendable {
     func silentAuth() async
 
     /// Retrieve the current token synchronously.
-    func getToken() -> String?
+    nonisolated func getToken() -> String?
 }

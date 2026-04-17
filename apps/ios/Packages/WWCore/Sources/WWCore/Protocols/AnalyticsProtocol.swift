@@ -2,7 +2,7 @@ import Foundation
 
 /// Protocol for analytics event capture.
 /// Concrete implementations wrap PostHog or other analytics SDKs.
-public protocol AnalyticsProtocol: Sendable {
+public protocol AnalyticsProtocol {
 
     /// Capture an event with optional properties.
     func capture(_ event: String, properties: [String: Any])

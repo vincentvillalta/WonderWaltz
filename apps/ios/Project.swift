@@ -60,13 +60,8 @@ let project = Project(
             sources: ["WonderWaltzTests/**/*.swift"],
             dependencies: [
                 .target(name: "WonderWaltz"),
-                .package(product: "WWCore"),
                 .package(product: "WWDesignSystem"),
                 .package(product: "WWAnalytics"),
-                .package(product: "WWOnboarding"),
-                .package(product: "WWTripWizard"),
-                .package(product: "WWPlanView"),
-                .package(product: "WWOffline"),
             ],
             settings: .settings(
                 base: [
