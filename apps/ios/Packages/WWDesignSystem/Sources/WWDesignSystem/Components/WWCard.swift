@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// Rounded card container with shadow and cream/white background.
+/// Rounded card container matching React pattern: bg-card border border-border rounded-2xl.
+/// White background, rounded-2xl (16pt), border of navy at 10% opacity.
 /// Used by wizard steps and plan items.
 public struct WWCard<Content: View>: View {
 
@@ -16,12 +17,10 @@ public struct WWCard<Content: View>: View {
         content
             .padding(WWDesignTokens.spacing8)
             .background(WWTheme.surface)
-            .clipShape(RoundedRectangle(cornerRadius: WWDesignTokens.radiusLg))
-            .shadow(
-                color: WWTheme.primary.opacity(0.08),
-                radius: 8,
-                x: 0,
-                y: 4
+            .clipShape(RoundedRectangle(cornerRadius: WWDesignTokens.radiusBase)) // rounded-2xl = 16pt
+            .overlay(
+                RoundedRectangle(cornerRadius: WWDesignTokens.radiusBase)
+                    .stroke(WWTheme.border, lineWidth: 1) // border border-border
             )
             .accessibilityElement(children: .combine)
     }
