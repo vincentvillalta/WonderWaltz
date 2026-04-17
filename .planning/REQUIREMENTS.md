@@ -147,7 +147,7 @@ Requirements for initial release. Each maps to exactly one roadmap phase.
 - [x] **IOS-14**: Sentry Cocoa 9.8.0 SDK integrated with release health
 - [x] **IOS-15**: PostHog iOS SDK integrated with event schema that excludes any guest age data
 - [x] **IOS-16**: All strings externalized via `String Catalogs` (`.xcstrings`) for future i18n; English at launch
-- [ ] **IOS-17**: Dynamic Type up to `accessibility5`, VoiceOver labels, reduce motion, reduce transparency respected
+- [x] **IOS-17**: Dynamic Type up to `accessibility5`, VoiceOver labels, reduce motion, reduce transparency respected
 - [x] **IOS-18**: Offline mode: trip + plan + catalog subset + walking graph + static maps persisted; full read-only access with no signal; sync when online
 
 ### Android App (Phase 7)
@@ -348,7 +348,7 @@ Populated during roadmap creation by `gsd-roadmapper`. Every v1 REQ-ID maps to e
 | IOS-14 | Phase 5 | Complete |
 | IOS-15 | Phase 5 | Complete |
 | IOS-16 | Phase 5 | Complete |
-| IOS-17 | Phase 5 | Pending |
+| IOS-17 | Phase 5 | Complete |
 | IOS-18 | Phase 5 | Complete |
 | AND-01 | Phase 7 | Pending |
 | AND-02 | Phase 7 | Pending |
