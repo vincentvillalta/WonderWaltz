@@ -94,7 +94,10 @@ export class TripsController {
     // Always persist preferences (plan generator reads this table).
     // Pass arrays as JSON, then cast to typed arrays inside SQL to sidestep
     // Drizzle's empty-array serialization which emits invalid "()" SQL.
-    const mustDoIds = prefs.must_do_attraction_ids ?? [];
+    // Filter to valid UUIDs — clients may send human-readable attraction
+    // names during early wizard development which can't cast to uuid[].
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const mustDoIds = (prefs.must_do_attraction_ids ?? []).filter((id) => uuidRegex.test(id));
     const mustDoJson = JSON.stringify(mustDoIds);
     await this.db.execute(
       sql`INSERT INTO trip_preferences (trip_id, must_do_attraction_ids, avoid_attraction_ids, meal_preferences)
