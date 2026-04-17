@@ -91,10 +91,19 @@ export class TripsController {
       );
     }
 
-    // Always persist preferences (plan generator reads this table)
+    // Always persist preferences (plan generator reads this table).
+    // Pass arrays as JSON, then cast to typed arrays inside SQL to sidestep
+    // Drizzle's empty-array serialization which emits invalid "()" SQL.
+    const mustDoIds = prefs.must_do_attraction_ids ?? [];
+    const mustDoJson = JSON.stringify(mustDoIds);
     await this.db.execute(
       sql`INSERT INTO trip_preferences (trip_id, must_do_attraction_ids, avoid_attraction_ids, meal_preferences)
-          VALUES (${tripId}, ${prefs.must_do_attraction_ids ?? []}, ARRAY[]::text[], ARRAY[]::text[])
+          VALUES (
+            ${tripId},
+            COALESCE((SELECT ARRAY(SELECT value::uuid FROM jsonb_array_elements_text(${mustDoJson}::jsonb))), ARRAY[]::uuid[]),
+            ARRAY[]::uuid[],
+            ARRAY[]::text[]
+          )
           ON CONFLICT (trip_id) DO UPDATE SET must_do_attraction_ids = EXCLUDED.must_do_attraction_ids`,
     );
 
