@@ -14,14 +14,40 @@ import queueTimesFixture from '../../tests/fixtures/queue-times-response.json';
  * ESM isolation mode. The ioredis mock is still registered globally by setupFiles.
  */
 
+/**
+ * Creates an async iterable scanStream that yields the given key batches.
+ * Mirrors ioredis's scanStream interface: a ReadableStream that's
+ * async-iterable and yields string[] chunks.
+ */
+function makeScanStream(batches: string[][]) {
+  return {
+    *[Symbol.asyncIterator]() {
+      for (const batch of batches) {
+        yield batch;
+      }
+    },
+  };
+}
+
 function makeRedisClient() {
+  const pipelineExec = vi.fn().mockResolvedValue([]);
+  const pipelineExpire = vi.fn();
+  const pipeline = {
+    expire: pipelineExpire,
+    exec: pipelineExec,
+  };
+  // expire returns `pipeline` itself for chaining (mockReturnThis)
+  pipelineExpire.mockReturnValue(pipeline);
+
   return {
     get: vi.fn().mockResolvedValue(null),
     set: vi.fn().mockResolvedValue('OK'),
     expire: vi.fn().mockResolvedValue(1),
     incr: vi.fn().mockResolvedValue(1),
     del: vi.fn().mockResolvedValue(1),
-    keys: vi.fn().mockResolvedValue([]),
+    scanStream: vi.fn().mockReturnValue(makeScanStream([[]])),
+    pipeline: vi.fn().mockReturnValue(pipeline),
+    _pipeline: pipeline,
     quit: vi.fn().mockResolvedValue('OK'),
     disconnect: vi.fn(),
     status: 'ready',
@@ -171,8 +197,11 @@ describe('QueueTimesService', () => {
       mockFetch.mockRejectedValue(new Error('Network timeout'));
       vi.stubGlobal('fetch', mockFetch);
 
-      // Pre-populate Redis keys for the failure path
-      mockRedis.keys = vi.fn().mockResolvedValue([`wait:${RIDE_56_UUID}`, `wait:${RIDE_62_UUID}`]);
+      // Pre-populate Redis keys for the failure path via scanStream (single batch).
+      // extendTtlOnFailure() uses redis.scanStream + pipeline.expire, not redis.keys.
+      mockRedis.scanStream = vi
+        .fn()
+        .mockReturnValue(makeScanStream([[`wait:${RIDE_56_UUID}`, `wait:${RIDE_62_UUID}`]]));
 
       // Reset execute mock — no DB calls should happen on failure
       mockExecute.mockReset();
@@ -181,8 +210,12 @@ describe('QueueTimesService', () => {
     it('calls redis.expire with +600 on existing keys when fetch fails', async () => {
       await service.pollPark(6);
 
-      expect(mockRedis.expire).toHaveBeenCalledWith(`wait:${RIDE_56_UUID}`, 600);
-      expect(mockRedis.expire).toHaveBeenCalledWith(`wait:${RIDE_62_UUID}`, 600);
+      // The service now uses a pipeline: pipeline.expire(key, 600) for each SCAN-yielded key,
+      // then pipeline.exec() once at the end.
+      const pipeline = mockRedis._pipeline;
+      expect(pipeline.expire).toHaveBeenCalledWith(`wait:${RIDE_56_UUID}`, 600);
+      expect(pipeline.expire).toHaveBeenCalledWith(`wait:${RIDE_62_UUID}`, 600);
+      expect(pipeline.exec).toHaveBeenCalled();
     });
 
     it('does NOT call db.execute when fetch fails', async () => {

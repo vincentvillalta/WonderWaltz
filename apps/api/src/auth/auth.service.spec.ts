@@ -6,19 +6,35 @@ describe('AuthService', () => {
   let service: AuthService;
   let mockSupabase: {
     auth: {
-      admin: {
-        createUser: ReturnType<typeof vi.fn>;
-      };
+      signInAnonymously: ReturnType<typeof vi.fn>;
     };
   };
   let mockDb: { execute: ReturnType<typeof vi.fn> };
 
+  // expires_at is seconds since epoch, far in the future (year 2286)
+  const FAR_FUTURE_EXPIRES_AT = 9999999999;
+
+  function makeSignInResponse(userId: string, accessToken = 'jwt.access.token') {
+    return {
+      data: {
+        user: {
+          id: userId,
+          email: null,
+          user_metadata: { is_anonymous: true },
+        },
+        session: {
+          access_token: accessToken,
+          expires_at: FAR_FUTURE_EXPIRES_AT,
+        },
+      },
+      error: null,
+    };
+  }
+
   beforeEach(() => {
     mockSupabase = {
       auth: {
-        admin: {
-          createUser: vi.fn(),
-        },
+        signInAnonymously: vi.fn(),
       },
     };
     mockDb = { execute: vi.fn() };
@@ -27,28 +43,15 @@ describe('AuthService', () => {
   });
 
   describe('createAnonymousUser', () => {
-    it('Test 1: creates a Supabase auth user and inserts row into public.users with is_anonymous=true', async () => {
+    it('Test 1: creates a Supabase auth user via signInAnonymously and inserts row into public.users', async () => {
       const userId = 'anon-user-001';
-      mockSupabase.auth.admin.createUser.mockResolvedValue({
-        data: {
-          user: {
-            id: userId,
-            email: null,
-            user_metadata: { is_anonymous: true },
-          },
-        },
-        error: null,
-      });
+      mockSupabase.auth.signInAnonymously.mockResolvedValue(makeSignInResponse(userId));
       mockDb.execute.mockResolvedValue({ rows: [] });
 
       await service.createAnonymousUser();
 
-      // Verify Supabase createUser called with correct metadata
-      expect(mockSupabase.auth.admin.createUser).toHaveBeenCalledWith(
-        expect.objectContaining({
-          user_metadata: { is_anonymous: true },
-        }),
-      );
+      // Verify signInAnonymously was called
+      expect(mockSupabase.auth.signInAnonymously).toHaveBeenCalled();
 
       // Verify DB insert was called (ON CONFLICT DO NOTHING)
       expect(mockDb.execute).toHaveBeenCalled();
@@ -56,16 +59,9 @@ describe('AuthService', () => {
 
     it('Test 2: returns { access_token, user_id, expires_at } matching AnonymousAuthResponseDto shape', async () => {
       const userId = 'anon-user-002';
-      mockSupabase.auth.admin.createUser.mockResolvedValue({
-        data: {
-          user: {
-            id: userId,
-            email: null,
-            user_metadata: { is_anonymous: true },
-          },
-        },
-        error: null,
-      });
+      mockSupabase.auth.signInAnonymously.mockResolvedValue(
+        makeSignInResponse(userId, 'jwt.access.token.002'),
+      );
       mockDb.execute.mockResolvedValue({ rows: [] });
 
       const result = await service.createAnonymousUser();
@@ -73,15 +69,16 @@ describe('AuthService', () => {
       expect(result).toHaveProperty('access_token');
       expect(typeof result.access_token).toBe('string');
       expect(result.access_token.length).toBeGreaterThan(0);
+      expect(result.access_token).toBe('jwt.access.token.002');
       expect(result).toHaveProperty('user_id', userId);
       expect(result).toHaveProperty('expires_at');
-      // expires_at should be a valid ISO date
+      // expires_at should be a valid ISO date string in the future
       expect(new Date(result.expires_at).getTime()).toBeGreaterThan(Date.now());
     });
 
-    it('Test 3: throws 500 if Supabase admin createUser fails', async () => {
-      mockSupabase.auth.admin.createUser.mockResolvedValue({
-        data: { user: null },
+    it('Test 3: throws 500 if Supabase signInAnonymously fails', async () => {
+      mockSupabase.auth.signInAnonymously.mockResolvedValue({
+        data: { user: null, session: null },
         error: { message: 'User limit exceeded' },
       });
 
@@ -90,16 +87,7 @@ describe('AuthService', () => {
 
     it('Test 4: uses ON CONFLICT DO NOTHING for idempotent public.users insert', async () => {
       const userId = 'anon-user-004';
-      mockSupabase.auth.admin.createUser.mockResolvedValue({
-        data: {
-          user: {
-            id: userId,
-            email: null,
-            user_metadata: { is_anonymous: true },
-          },
-        },
-        error: null,
-      });
+      mockSupabase.auth.signInAnonymously.mockResolvedValue(makeSignInResponse(userId));
       // Simulate that the user already exists (ON CONFLICT DO NOTHING returns no rows)
       mockDb.execute.mockResolvedValue({ rows: [] });
 
@@ -107,7 +95,7 @@ describe('AuthService', () => {
       const result = await service.createAnonymousUser();
       expect(result.user_id).toBe(userId);
 
-      // Verify DB execute was called (ON CONFLICT DO NOTHING is in the SQL template)
+      // Verify DB execute was called exactly once (ON CONFLICT DO NOTHING is in the SQL template)
       expect(mockDb.execute).toHaveBeenCalledTimes(1);
     });
 
@@ -115,32 +103,18 @@ describe('AuthService', () => {
       const userId = 'returning-user-005';
 
       // First call — create the user
-      mockSupabase.auth.admin.createUser.mockResolvedValue({
-        data: {
-          user: {
-            id: userId,
-            email: null,
-            user_metadata: { is_anonymous: true },
-          },
-        },
-        error: null,
-      });
+      mockSupabase.auth.signInAnonymously.mockResolvedValue(
+        makeSignInResponse(userId, 'jwt.access.token.first'),
+      );
       mockDb.execute.mockResolvedValue({ rows: [] });
 
       const first = await service.createAnonymousUser();
       expect(first.user_id).toBe(userId);
 
       // Second call — same user returns (ON CONFLICT DO NOTHING, still get a token)
-      mockSupabase.auth.admin.createUser.mockResolvedValue({
-        data: {
-          user: {
-            id: userId,
-            email: null,
-            user_metadata: { is_anonymous: true },
-          },
-        },
-        error: null,
-      });
+      mockSupabase.auth.signInAnonymously.mockResolvedValue(
+        makeSignInResponse(userId, 'jwt.access.token.second'),
+      );
       mockDb.execute.mockResolvedValue({ rows: [] });
 
       const second = await service.createAnonymousUser();

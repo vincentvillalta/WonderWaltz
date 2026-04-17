@@ -107,12 +107,23 @@ describe('worker bootstrap (DATA-07)', () => {
     expect(workerSource).toContain('enableShutdownHooks');
   });
 
-  it('worker.module.ts has maxRetriesPerRequest: null in BullModule config', async () => {
+  it('BullModule config has maxRetriesPerRequest: null (required for blocking commands)', async () => {
+    // The BullModule connection config lives in common/redis-config.ts
+    // (shared between AppModule and WorkerModule) via buildBullRedisConfig().
+    // Check both files — whichever defines the config must contain this setting.
     const fs = await import('fs');
     const path = await import('path');
-    const modulePath = path.resolve(__dirname, 'worker.module.ts');
-    const moduleSource = fs.readFileSync(modulePath, 'utf-8');
 
-    expect(moduleSource).toContain('maxRetriesPerRequest: null');
+    const modulePath = path.resolve(__dirname, 'worker.module.ts');
+    const redisConfigPath = path.resolve(__dirname, 'common', 'redis-config.ts');
+
+    const moduleSource = fs.readFileSync(modulePath, 'utf-8');
+    const redisConfigSource = fs.readFileSync(redisConfigPath, 'utf-8');
+
+    const hasSetting =
+      moduleSource.includes('maxRetriesPerRequest: null') ||
+      redisConfigSource.includes('maxRetriesPerRequest: null');
+
+    expect(hasSetting).toBe(true);
   });
 });
