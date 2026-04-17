@@ -149,10 +149,14 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
         // in the bundled TripDto struct, which blocks the iOS polling loop
         // from seeing server-side fields like current_plan_id. Raw URLSession
         // gives us the verbatim JSON body.
+        //
+        // Explicitly disable URLSession's response cache — polling loops need
+        // the fresh body every call, not a cached snapshot from poll #1.
         WWLogger.networking.trace("GET /v1/trips/\(id, privacy: .public) (raw)")
         let url = serverURL.appendingPathComponent("v1/trips/\(id)")
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         if let token = tokenProvider() {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }

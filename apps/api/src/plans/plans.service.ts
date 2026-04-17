@@ -119,7 +119,7 @@ export class PlansService {
 
     // 3. Load plan days
     const dayRows = await this.queryRows<PlanDayRow>(
-      sql`SELECT pd.id, pd.plan_id, pd.day_index, pd.park_id, COALESCE(p.name, pd.park_id) as park_name, pd.date, pd.narrative_intro, pd.forecast_confidence
+      sql`SELECT pd.id, pd.plan_id, pd.day_index, pd.park_id, COALESCE(p.name, pd.park_id::text) as park_name, pd.date, pd.narrative_intro, pd.forecast_confidence
           FROM plan_days pd
           LEFT JOIN parks p ON p.id = pd.park_id
           WHERE pd.plan_id = ${planId}
