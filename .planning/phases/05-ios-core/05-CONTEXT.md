@@ -42,15 +42,34 @@ Not in this phase: paywall/StoreKit (Phase 6), push notifications (Phase 6), cou
 - **Offline status indicator:** subtle top banner only when the user tries an action that needs internet (rethink, generate new plan). No persistent offline badge. Plan view works identically online or offline
 - **Stale data handling:** background refresh when online. When app opens with internet, silently check if plan's underlying data has changed. If significant changes detected, show gentle prompt: "Park hours updated — refresh your plan?" Never auto-refresh without asking
 
+### Modular architecture (LOCKED — applies to all iOS plans)
+- **Tuist for project generation** — replace the hand-crafted `.xcodeproj` with a Tuist-managed project. `Project.swift` defines targets, dependencies, and build settings. `tuist generate` produces the Xcode workspace
+- **SPM local packages for every feature** — each feature is an isolated Swift Package under `apps/ios/Packages/`:
+  - `WWCore` — networking (OpenAPI client), auth service, keychain, DI container
+  - `WWDesignSystem` — design tokens, theme, typography, reusable UI components (buttons, cards, banners)
+  - `WWOnboarding` — onboarding screens, splash
+  - `WWTripWizard` — all 8 wizard steps, wizard view model, draft persistence
+  - `WWPlanView` — plan container, day timeline, item cards, rethink, locked overlay
+  - `WWOffline` — SwiftData models, sync coordinator, offline package downloader
+  - `WWAnalytics` — Sentry + PostHog wrappers, event schema, age-data filter
+- **Dependency injection is mandatory** — use a protocol-based DI approach. Each package exposes protocols (e.g., `AuthServiceProtocol`, `APIClientProtocol`, `OfflineStoreProtocol`). The main app target wires concrete implementations at launch. Feature packages depend on protocols, never on concrete types from other packages
+- **Package dependency rules:**
+  - Feature packages (`WWOnboarding`, `WWTripWizard`, `WWPlanView`) depend on `WWCore` and `WWDesignSystem` only
+  - `WWOffline` depends on `WWCore` only
+  - `WWAnalytics` depends on nothing (standalone wrapper)
+  - The main `WonderWaltz` app target depends on ALL packages and wires DI
+  - No feature-to-feature dependencies (wizard does not import plan view)
+- **Benefits:** features can be developed/tested in isolation, build times improve with incremental compilation, future phases (paywall, notifications, widget) plug in as new packages without modifying existing ones
+
 ### Claude's Discretion
-- Swift OpenAPI Generator configuration and build integration details (IOS-02)
-- SwiftData model schema design (IOS-04)
-- Navigation architecture (NavigationStack vs coordinator pattern)
-- Sentry Cocoa + PostHog iOS SDK integration details (IOS-14, IOS-15)
+- Tuist configuration details (build settings, schemes, test plans)
+- Exact DI container implementation (manual factory vs lightweight container)
+- SwiftData model schema design within WWOffline (IOS-04)
+- Sentry Cocoa + PostHog iOS SDK integration details within WWAnalytics (IOS-14, IOS-15)
 - String Catalog (.xcstrings) setup for i18n readiness (IOS-16)
 - VoiceOver label strategy and Dynamic Type implementation (IOS-17)
-- Background download task implementation for offline package
-- Network layer architecture (async/await, error handling, retry logic)
+- Background download task implementation within WWOffline
+- Network layer architecture within WWCore (async/await, error handling, retry logic)
 
 </decisions>
 
@@ -73,10 +92,11 @@ Not in this phase: paywall/StoreKit (Phase 6), push notifications (Phase 6), cou
 - **One trip per anonymous user** — enforced server-side but client should also prevent creating a second trip
 
 ### Integration Points
-- **`apps/ios/WonderWaltz.xcodeproj`**: Shell project exists with `WonderWaltzApp.swift` and `ContentView.swift` placeholder — Phase 5 replaces the placeholder with the full app
+- **`apps/ios/`**: Shell Xcode project exists — Phase 5 replaces it with a Tuist-managed project. `tuist generate` produces the workspace from `Project.swift`
+- **`apps/ios/Packages/`**: New directory for all SPM local packages (WWCore, WWDesignSystem, WWOnboarding, etc.)
 - **Backend endpoints (Phase 4):** `POST /v1/auth/anonymous`, `POST /trips`, `POST /trips/:id/generate-plan`, `GET /plans/:id`, `POST /trips/:id/rethink-today`, `GET /v1/users/me`
-- **Supabase Auth**: JWT tokens from backend, stored in iOS Keychain
-- **Design tokens**: `WWDesignTokens.swift` imported as a source file into the Xcode project
+- **Supabase Auth**: JWT tokens from backend, stored in iOS Keychain via `WWCore`
+- **Design tokens**: `WWDesignTokens.swift` imported into the `WWDesignSystem` package
 
 </code_context>
 
