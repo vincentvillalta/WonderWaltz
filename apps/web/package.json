@@ -21,6 +21,7 @@
     "posthog-js": "latest",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "server-only": "^0.0.1",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "4.2.0"
   },
