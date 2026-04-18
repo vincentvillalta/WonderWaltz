@@ -449,10 +449,12 @@ export class PlanGenerationService {
     };
 
     // ─── Forecast hydration (FC-01..FC-05) ─────────────────────
+    // Field names must match the solver's buildForecastFn contract:
+    // attractionId / bucketStart / predictedWaitMinutes.
     const forecastBuckets: Array<{
-      rideId: string;
-      slot: string;
-      minutes: number;
+      attractionId: string;
+      bucketStart: string;
+      predictedWaitMinutes: number;
       confidence: string;
     }> = [];
     try {
@@ -466,9 +468,9 @@ export class PlanGenerationService {
             try {
               const result = await this.forecastService.predictWait(attraction.id, targetTs);
               forecastBuckets.push({
-                rideId: attraction.id,
-                slot: targetTs.toISOString(),
-                minutes: result.minutes,
+                attractionId: attraction.id,
+                bucketStart: targetTs.toISOString(),
+                predictedWaitMinutes: result.minutes,
                 confidence: result.confidence,
               });
             } catch {
