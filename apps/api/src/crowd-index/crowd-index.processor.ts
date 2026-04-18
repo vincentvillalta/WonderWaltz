@@ -1,4 +1,5 @@
 import { Processor, WorkerHost, OnWorkerEvent, InjectQueue } from '@nestjs/bullmq';
+import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bullmq';
 import * as Sentry from '@sentry/nestjs';
 import { CrowdIndexService } from './crowd-index.service.js';
@@ -25,6 +26,8 @@ import { SlackAlerterService } from '../alerting/slack-alerter.service.js';
  */
 @Processor('crowd-index', { concurrency: 1 })
 export class CrowdIndexProcessor extends WorkerHost {
+  private readonly log = new Logger(CrowdIndexProcessor.name);
+
   constructor(
     private readonly crowdIndexService: CrowdIndexService,
     private readonly slackAlerter: SlackAlerterService,
@@ -39,6 +42,10 @@ export class CrowdIndexProcessor extends WorkerHost {
    * Uses upsertJobScheduler (idempotent) — safe to call on every restart.
    */
   async onModuleInit(): Promise<void> {
+    if (process.env['ENABLE_INGESTION_WORKERS'] !== 'true') {
+      this.log.log('crowd-index scheduler disabled (ENABLE_INGESTION_WORKERS!=true)');
+      return;
+    }
     await this.crowdIndexQueue.upsertJobScheduler(
       'crowd-index-scheduler',
       { pattern: '0 * * * *' },

@@ -45,6 +45,10 @@ export class RollupProcessor extends WorkerHost {
    * Uses upsertJobScheduler (idempotent) — safe to call on every restart.
    */
   async onModuleInit(): Promise<void> {
+    if (process.env['ENABLE_INGESTION_WORKERS'] !== 'true') {
+      this.logger.log('rollup-verify scheduler disabled (ENABLE_INGESTION_WORKERS!=true)');
+      return;
+    }
     await this.rollupQueue.upsertJobScheduler(
       'rollup-verify-scheduler',
       { pattern: '30 * * * *' },

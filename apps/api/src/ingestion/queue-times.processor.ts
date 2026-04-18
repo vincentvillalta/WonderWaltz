@@ -45,6 +45,13 @@ export class QueueTimesProcessor extends WorkerHost {
    * The scheduler will be re-registered on the next restart if it fails here.
    */
   async onModuleInit(): Promise<void> {
+    // Gate the recurring ingestion scheduler behind an env flag. Without real
+    // users we were burning ~158k Redis commands/day on idle BullMQ polling.
+    // Set ENABLE_INGESTION_WORKERS=true once production traffic lands.
+    if (process.env['ENABLE_INGESTION_WORKERS'] !== 'true') {
+      this.log.log('fetch-wait-times scheduler disabled (ENABLE_INGESTION_WORKERS!=true)');
+      return;
+    }
     await this.waitTimesQueue.upsertJobScheduler(
       'fetch-wait-times-scheduler',
       { every: 5 * 60 * 1000 },

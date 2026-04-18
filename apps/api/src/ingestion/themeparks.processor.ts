@@ -1,4 +1,5 @@
 import { Processor, WorkerHost, OnWorkerEvent, InjectQueue } from '@nestjs/bullmq';
+import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bullmq';
 import * as Sentry from '@sentry/nestjs';
 import { ThemeparksService, WDW_PARKS } from './themeparks.service.js';
@@ -29,6 +30,8 @@ import { SlackAlerterService } from '../alerting/slack-alerter.service.js';
   },
 })
 export class ThemeparksProcessor extends WorkerHost {
+  private readonly log = new Logger(ThemeparksProcessor.name);
+
   constructor(
     private readonly themeparksService: ThemeparksService,
     private readonly slackAlerter: SlackAlerterService,
@@ -45,6 +48,10 @@ export class ThemeparksProcessor extends WorkerHost {
    * Staggered from queue-times.com (which runs every 5 minutes at :00).
    */
   async onModuleInit(): Promise<void> {
+    if (process.env['ENABLE_INGESTION_WORKERS'] !== 'true') {
+      this.log.log('fetch-park-hours scheduler disabled (ENABLE_INGESTION_WORKERS!=true)');
+      return;
+    }
     await this.parkHoursQueue.upsertJobScheduler(
       'fetch-park-hours-scheduler',
       { pattern: '0 1,7,13,19 * * *' },
