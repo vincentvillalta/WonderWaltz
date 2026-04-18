@@ -1,14 +1,20 @@
 /**
- * SOLV-07: Child fatigue model — age-weighted rest block insertion.
+ * SOLV-07 (revised 2026-04): Child fatigue model — gap-fill rest blocks.
  *
- * Inserts rest blocks based on the youngest guest's age bracket and
- * the budget tier's rest frequency. Peak fatigue windows are:
+ * Rest blocks are ONLY inserted into gaps where the existing schedule is
+ * already empty. The previous implementation deleted any non-must-do item
+ * that overlapped a rest block, which produced plans with no attractions
+ * when the tier's rest blocks were large enough to cover the afternoon.
+ *
+ * Peak fatigue rules (children):
  *   - Toddlers (0-2): 12:30-13:30
  *   - Young kids (3-6): 13:00-14:00
  *   - Both present: merged 12:30-14:00
  *
- * Fatigue is a soft constraint: must-do items are never displaced.
- * Items that conflict with a rest block are removed (unless must-do).
+ * For all tiers, periodic tier-driven rests are attempted at
+ * (dayStart + freqMin), (dayStart + 2*freqMin), … but each candidate rest
+ * is clipped to the next available gap. Rest blocks that would shrink
+ * below MIN_REST_MINUTES get skipped — the solver simply keeps riding.
  *
  * Pure — no randomness, no side effects, no I/O.
  */
@@ -24,6 +30,9 @@ export type InsertRestBlocksOptions = {
   /** Lodging type — 'deluxe' enables resort mid-day break for Royal. */
   lodgingType?: string;
 };
+
+/** Rest blocks shorter than this are skipped — not worth scheduling. */
+const MIN_REST_MINUTES = 30;
 
 // ─── Time helpers (timezone-naive) ─────────────────────────────────────────
 
@@ -118,17 +127,117 @@ function overlaps(aStart: number, aEnd: number, bStart: number, bEnd: number): b
   return aStart < bEnd && bStart < aEnd;
 }
 
+// ─── Gap computation ───────────────────────────────────────────────────────
+
+type Gap = { startMin: number; endMin: number };
+
+/**
+ * Given a sorted list of occupied ranges, compute the free gaps
+ * between them bounded by [dayStartMin, dayEndMin]. Adjacent / touching
+ * ranges collapse; zero-length gaps are not emitted.
+ */
+function computeGaps(
+  occupied: Array<{ startMin: number; endMin: number }>,
+  dayStartMin: number,
+  dayEndMin: number,
+): Gap[] {
+  if (occupied.length === 0) {
+    return dayEndMin > dayStartMin ? [{ startMin: dayStartMin, endMin: dayEndMin }] : [];
+  }
+
+  // Merge overlapping occupied ranges
+  const sorted = [...occupied].sort((a, b) => a.startMin - b.startMin);
+  const merged: Array<{ startMin: number; endMin: number }> = [sorted[0]!];
+  for (let i = 1; i < sorted.length; i++) {
+    const cur = sorted[i]!;
+    const last = merged[merged.length - 1]!;
+    if (cur.startMin <= last.endMin) {
+      last.endMin = Math.max(last.endMin, cur.endMin);
+    } else {
+      merged.push({ ...cur });
+    }
+  }
+
+  const gaps: Gap[] = [];
+  let cursor = dayStartMin;
+  for (const range of merged) {
+    if (range.startMin > cursor) {
+      gaps.push({ startMin: cursor, endMin: Math.min(range.startMin, dayEndMin) });
+    }
+    cursor = Math.max(cursor, range.endMin);
+    if (cursor >= dayEndMin) break;
+  }
+  if (cursor < dayEndMin) {
+    gaps.push({ startMin: cursor, endMin: dayEndMin });
+  }
+  return gaps;
+}
+
+/**
+ * Try to fit a rest block of the given ideal duration starting at or after
+ * idealStartMin into one of the available gaps. The rest never exceeds the
+ * gap's boundaries and never falls below MIN_REST_MINUTES. Returns null
+ * when nothing fits.
+ *
+ * Deterministic: picks the earliest gap that can host the rest.
+ */
+function pickRestSlot(
+  gaps: Gap[],
+  idealStartMin: number,
+  idealDurationMin: number,
+): { startMin: number; endMin: number; gapIndex: number } | null {
+  for (let i = 0; i < gaps.length; i++) {
+    const gap = gaps[i]!;
+    // We want the rest to start at idealStartMin if possible, otherwise
+    // at the gap's own start — whichever is later.
+    const start = Math.max(gap.startMin, idealStartMin);
+    if (start >= gap.endMin) continue;
+
+    const available = gap.endMin - start;
+    if (available < MIN_REST_MINUTES) continue;
+
+    const actualDuration = Math.min(idealDurationMin, available);
+    return { startMin: start, endMin: start + actualDuration, gapIndex: i };
+  }
+  return null;
+}
+
+/**
+ * Consume a slice of a gap by splitting the gap into before/after the
+ * consumed range. Returns a new gaps array (input is not mutated).
+ */
+function consumeGap(
+  gaps: Gap[],
+  gapIndex: number,
+  consumedStartMin: number,
+  consumedEndMin: number,
+): Gap[] {
+  const before = gaps.slice(0, gapIndex);
+  const after = gaps.slice(gapIndex + 1);
+  const target = gaps[gapIndex]!;
+  const pieces: Gap[] = [];
+  if (consumedStartMin > target.startMin) {
+    pieces.push({ startMin: target.startMin, endMin: consumedStartMin });
+  }
+  if (consumedEndMin < target.endMin) {
+    pieces.push({ startMin: consumedEndMin, endMin: target.endMin });
+  }
+  return [...before, ...pieces, ...after];
+}
+
 // ─── Core insertion logic ──────────────────────────────────────────────────
 
 /**
  * Insert rest blocks into a day's plan items based on guest age
- * distribution and budget tier rules.
+ * distribution and budget tier rules. Rest blocks are only inserted in
+ * gaps that already exist in the schedule — scheduled rides, meals, and
+ * shows are never displaced.
  *
  * @param items - Current plan items (sorted by startTime)
  * @param guests - Party members with age brackets
  * @param tier - Budget tier key
- * @param options - Must-do IDs and lodging type
- * @returns New array of plan items with rest blocks inserted, sorted
+ * @param options - Must-do IDs (legacy, no longer gates displacement) and lodgingType
+ * @returns New array of items with rest blocks inserted, sorted by startTime
  */
 export function insertRestBlocks(
   items: readonly PlanItem[],
@@ -138,11 +247,10 @@ export function insertRestBlocks(
 ): PlanItem[] {
   if (items.length === 0) return [];
 
-  const mustDoIds = new Set(options?.mustDoIds ?? []);
   const lodgingType = options?.lodgingType;
   const rules = BUDGET_TIER_RULES[tier];
 
-  // Parse all items into minutes for overlap math
+  // Parse all items into minute ranges
   const parsed = items.map((item) => {
     const s = parseIso(item.startTime);
     const e = parseIso(item.endTime);
@@ -150,133 +258,71 @@ export function insertRestBlocks(
   });
 
   const datePrefix = parseIso(items[0]!.startTime).datePrefix;
-
-  // Determine the day's time span
   const dayStartMin = parsed[0]!.startMin;
   const dayEndMin = parsed[parsed.length - 1]!.endMin;
 
-  // Collect rest blocks to insert
-  const restBlocks: Array<{
-    startMin: number;
-    endMin: number;
-    label: string;
-  }> = [];
+  // Start with the gaps between already-scheduled items.
+  let gaps = computeGaps(
+    parsed.map((p) => ({ startMin: p.startMin, endMin: p.endMin })),
+    dayStartMin,
+    dayEndMin,
+  );
 
-  // 1. Peak fatigue window (children only)
+  const restBlocksPlaced: Array<{ startMin: number; endMin: number; label: string }> = [];
+
+  // ─── 1. Peak fatigue window (children only) — best effort ──────────
   const peakWindow = computePeakWindow(guests);
   if (peakWindow) {
-    restBlocks.push({
-      startMin: peakWindow.startMin,
-      endMin: peakWindow.endMin,
-      label: 'Rest break (peak fatigue)',
-    });
+    const slot = pickRestSlot(gaps, peakWindow.startMin, peakWindow.endMin - peakWindow.startMin);
+    if (slot !== null) {
+      restBlocksPlaced.push({
+        startMin: slot.startMin,
+        endMin: slot.endMin,
+        label: 'Rest break (peak fatigue)',
+      });
+      gaps = consumeGap(gaps, slot.gapIndex, slot.startMin, slot.endMin);
+    }
   }
 
-  // 2. Tier-driven periodic rest blocks
+  // ─── 2. Tier-driven periodic rest blocks — best effort ─────────────
   const freqMin = rules.restFrequencyHours * 60;
-  const blockDuration = rules.restBlockDurationMinutes;
+  const idealDuration = rules.restBlockDurationMinutes;
 
-  // Royal + deluxe lodging: afternoon resort mid-day break
   const isResortBreak =
     tier === 'royal' && lodgingType != null && ['deluxe', 'deluxe_villa'].includes(lodgingType);
+  const label = isResortBreak ? 'Resort mid-day break' : 'Rest break (scheduled)';
 
-  // Place periodic rests starting from dayStart + freqMin
   let cursor = dayStartMin + freqMin;
-  while (cursor + blockDuration <= dayEndMin) {
-    // Skip if this overlaps with a peak fatigue window we already placed
-    const overlapsPeak =
-      peakWindow != null &&
-      overlaps(cursor, cursor + blockDuration, peakWindow.startMin, peakWindow.endMin);
-
-    if (!overlapsPeak) {
-      const label = isResortBreak ? 'Resort mid-day break' : 'Rest break (scheduled)';
-      restBlocks.push({
-        startMin: cursor,
-        endMin: cursor + blockDuration,
-        label,
-      });
-    }
-    cursor += freqMin;
-  }
-
-  // 3. Filter out rest blocks that fully conflict with must-do items
-  //    and adjust blocks that partially conflict
-  const finalRestBlocks: Array<{
-    startMin: number;
-    endMin: number;
-    label: string;
-  }> = [];
-
-  for (const rest of restBlocks) {
-    // Check conflicts with must-do items
-    const conflictingMustDos = parsed.filter(
-      (p) => mustDoIds.has(p.item.id) && overlaps(rest.startMin, rest.endMin, p.startMin, p.endMin),
-    );
-
-    if (conflictingMustDos.length === 0) {
-      finalRestBlocks.push(rest);
-    } else {
-      // Try to place rest around must-do items
-      // Find gaps around must-do conflicts
-      const occupiedRanges = conflictingMustDos
-        .map((c) => ({ start: c.startMin, end: c.endMin }))
-        .sort((a, b) => a.start - b.start);
-
-      // Try before first must-do
-      if (occupiedRanges[0]!.start > rest.startMin) {
-        const gapEnd = occupiedRanges[0]!.start;
-        if (gapEnd - rest.startMin >= 30) {
-          finalRestBlocks.push({
-            startMin: rest.startMin,
-            endMin: gapEnd,
-            label: rest.label,
-          });
-        }
-      }
-
-      // Try after last must-do
-      const lastOccupied = occupiedRanges[occupiedRanges.length - 1]!;
-      if (lastOccupied.end < rest.endMin) {
-        const gapStart = lastOccupied.end;
-        if (rest.endMin - gapStart >= 30) {
-          finalRestBlocks.push({
-            startMin: gapStart,
-            endMin: rest.endMin,
-            label: rest.label,
-          });
-        }
-      }
-    }
-  }
-
-  // 4. Build final item list: keep items that don't conflict with
-  //    rest blocks (unless must-do), then merge in rest blocks
-  const keptItems: PlanItem[] = [];
-
-  for (const p of parsed) {
-    const isMustDo = mustDoIds.has(p.item.id);
-    if (isMustDo) {
-      keptItems.push(p.item);
+  while (cursor + MIN_REST_MINUTES <= dayEndMin) {
+    const slot = pickRestSlot(gaps, cursor, idealDuration);
+    if (slot === null) {
+      cursor += freqMin;
       continue;
     }
-
-    // Check if this item overlaps with any rest block
-    const conflictsWithRest = finalRestBlocks.some((rest) =>
-      overlaps(p.startMin, p.endMin, rest.startMin, rest.endMin),
+    // Skip if we already placed something that overlaps this slot (e.g. peak
+    // fatigue rest already covers the same minute range).
+    const alreadyCovered = restBlocksPlaced.some((r) =>
+      overlaps(slot.startMin, slot.endMin, r.startMin, r.endMin),
     );
-
-    if (!conflictsWithRest) {
-      keptItems.push(p.item);
+    if (!alreadyCovered) {
+      restBlocksPlaced.push({
+        startMin: slot.startMin,
+        endMin: slot.endMin,
+        label,
+      });
+      gaps = consumeGap(gaps, slot.gapIndex, slot.startMin, slot.endMin);
     }
+    cursor = slot.endMin + freqMin;
   }
 
-  // Add rest block PlanItems
-  for (const rest of finalRestBlocks) {
-    keptItems.push(makeRestBlock(datePrefix, rest.startMin, rest.endMin, rest.label));
+  // ─── 3. Build final item list ──────────────────────────────────────
+  // Every original item is preserved. Rest blocks are appended.
+  const out: PlanItem[] = items.map((item) => item);
+  for (const rest of restBlocksPlaced) {
+    out.push(makeRestBlock(datePrefix, rest.startMin, rest.endMin, rest.label));
   }
 
-  // Sort by startTime
-  return keptItems.sort((a, b) => {
+  return out.sort((a, b) => {
     if (a.startTime < b.startTime) return -1;
     if (a.startTime > b.startTime) return 1;
     return 0;
