@@ -8,7 +8,7 @@ import type { NarrativeResponse } from '../narrative/schema.js';
  * PersistPlanService -- multi-table INSERT for plan persistence.
  *
  * Inserts into:
- *   1. plans (trip_id, solver_input_hash, version, status, generated_at)
+ *   1. plans (trip_id, version, status, generated_at)
  *   2. plan_days (plan_id, day_index, park_id, date, narrative_intro, forecast_confidence)
  *   3. plan_items (plan_day_id, item_type, ref_id, name, start_time, end_time, wait_minutes, sort_index, lightning_lane_type, notes, narrative_tip, metadata)
  *
@@ -47,7 +47,6 @@ export interface PersistInput {
   narrative: NarrativeResponse | null;
   narrativeAvailable: boolean;
   usage: AnthropicUsage;
-  solverInputHash: string;
   model: string;
 }
 
@@ -87,8 +86,8 @@ export class PersistPlanService {
 
     // 1. INSERT plan
     const planRows = await this.queryRows<PlanIdRow>(sql`
-      INSERT INTO plans (trip_id, solver_input_hash, version, status, warnings, generated_at)
-      VALUES (${input.tripId}, ${input.solverInputHash}, ${nextVersion}, 'ready', ${warningsJson}, NOW())
+      INSERT INTO plans (trip_id, version, status, warnings, generated_at)
+      VALUES (${input.tripId}, ${nextVersion}, 'ready', ${warningsJson}, NOW())
       RETURNING id
     `);
 

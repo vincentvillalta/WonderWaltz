@@ -119,16 +119,9 @@ describeIfDb('migration 0004 — phase 3 scaffolding', () => {
     expect(budget!.column_default ?? '').toMatch(/^50/);
   });
 
-  it('plans_trip_hash_idx index exists on plans(trip_id, solver_input_hash)', async () => {
-    const idx = await sql<{ indexname: string; indexdef: string }[]>`
-      SELECT indexname, indexdef
-      FROM pg_indexes
-      WHERE schemaname = 'public' AND tablename = 'plans' AND indexname = 'plans_trip_hash_idx'
-    `;
-    expect(idx).toHaveLength(1);
-    expect(idx[0]!.indexdef).toContain('trip_id');
-    expect(idx[0]!.indexdef).toContain('solver_input_hash');
-  });
+  // The solver_input_hash column + plans_trip_hash_idx were dropped in
+  // migration 0006 (cache was ineffective — guest identity made cache
+  // keys unique per trip). Nothing to assert here anymore.
 
   it('attractions has baseline_wait_minutes, lightning_lane_type, is_headliner', async () => {
     const cols = await sql<

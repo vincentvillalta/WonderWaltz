@@ -1,15 +1,21 @@
 /**
- * SOLV-03: Greedy construction pass with must-do hard pinning.
+ * SOLV-03 (revised 2026-04): Greedy construction pass with must-do *scoring*
+ * boost (not hard pinning).
  *
  * Algorithm:
- * 1. Generate 30-min time slots across park hours.
- * 2. Pin must-do attractions at their forecast-optimal slots.
- * 3. Greedy fill: at each free slot, pick the highest-scoring remaining
- *    attraction that fits (including walk time from previous item).
- * 4. Return PlanItem[] sorted by startTime, no overlaps.
+ *   1. Generate 30-min time slots across park hours.
+ *   2. Greedy fill: at each free slot, pick the highest-scoring remaining
+ *      attraction that fits (including walk time from previous item).
+ *      Must-dos receive a 5x multiplier in score() so they dominate
+ *      comparisons but will still defer to a much better time slot when
+ *      the forecast says the morning is 180min vs a 30min evening slot.
+ *   3. Rescue pass: any must-do not placed by the greedy fill is force-
+ *      inserted at its best remaining slot (a warning is attached to the
+ *      plan item's notes when the wait exceeds 90min).
  *
- * Deterministic: same inputs → byte-identical output.
- * Tie-breaking by attraction.id lexicographic.
+ * Return: PlanItem[] sorted by startTime, no overlaps. Deterministic —
+ * same inputs → byte-identical output. Tie-breaking by attraction.id
+ * lexicographic.
  *
  * All time arithmetic uses minutes-since-midnight on a date prefix string
  * to avoid Date-object timezone surprises. The solver is timezone-agnostic —
@@ -31,6 +37,9 @@ const SLOT_GRANULARITY = 30; // minutes
 
 /** Staging buffer added to ride duration (must match score.ts). */
 const STAGING_MINUTES = 5;
+
+/** Wait threshold above which rescued must-dos get a warning note. */
+const MUST_DO_WARN_WAIT_MIN = 90;
 
 // ─── Input type ─────────────────────────────────────────────────────────────
 
@@ -94,7 +103,7 @@ function generateSlotMinutes(openMin: number, closeMin: number): number[] {
 // ─── Main construction function ─────────────────────────────────────────────
 
 /**
- * Constructs a day plan using greedy scoring with must-do hard pinning.
+ * Constructs a day plan using greedy scoring with a must-do rescue pass.
  *
  * Returns PlanItem[] sorted by startTime ascending, no overlapping items.
  * Deterministic: same inputs produce identical output.
@@ -122,12 +131,14 @@ export function constructDay(input: ConstructDayInput): PlanItem[] {
     attractionMap.set(a.id, a);
   }
 
+  const mustDoSet = new Set(mustDoAttractionIds);
+
   // Set of occupied slot-start minutes (each slot is SLOT_GRANULARITY wide).
   const occupiedSlots = new Set<number>();
   const placedItems: PlanItem[] = [];
   const placedIds = new Set<string>();
 
-  // ─── Helper: check if a range of minutes overlaps occupied slots ───────
+  // ─── Helpers: occupancy tracking ───────────────────────────────────────
 
   function isRangeOccupied(startMin: number, durationMin: number): boolean {
     const endMin = startMin + durationMin;
@@ -144,58 +155,10 @@ export function constructDay(input: ConstructDayInput): PlanItem[] {
     }
   }
 
-  // ─── Phase 1: Pin must-do attractions at forecast-optimal slots ─────────
+  // ─── Phase 1: Greedy fill with must-do scoring boost ────────────────────
 
-  for (const mustDoId of mustDoAttractionIds) {
-    const attraction = attractionMap.get(mustDoId);
-    if (!attraction) continue; // silently skip if not in filtered set
-
-    const totalDurationMin = attraction.durationMinutes + STAGING_MINUTES;
-
-    // Find the slot with the minimum predicted wait that is available.
-    let bestSlotMin: number | null = null;
-    let bestWait = Infinity;
-
-    for (const slotMin of slotMinutes) {
-      if (isRangeOccupied(slotMin, totalDurationMin)) continue;
-      if (slotMin + totalDurationMin > closeMin) continue;
-
-      const slotIso = buildIso(datePrefix, slotMin);
-      const forecast = forecastFn(mustDoId, slotIso);
-      if (forecast.predictedWaitMinutes < bestWait) {
-        bestWait = forecast.predictedWaitMinutes;
-        bestSlotMin = slotMin;
-      }
-    }
-
-    if (bestSlotMin === null) continue; // no available slot
-
-    const slotIso = buildIso(datePrefix, bestSlotMin);
-    const forecast = forecastFn(mustDoId, slotIso);
-    const waitMin = forecast.predictedWaitMinutes;
-    const fullDurationMin = waitMin + attraction.durationMinutes + STAGING_MINUTES;
-    const endMin = bestSlotMin + fullDurationMin;
-
-    markRange(bestSlotMin, fullDurationMin);
-
-    placedItems.push({
-      id: makePlanItemId(mustDoId, slotIso),
-      type: 'attraction',
-      refId: mustDoId,
-      name: attraction.name,
-      startTime: slotIso,
-      endTime: buildIso(datePrefix, endMin),
-      waitMinutes: waitMin,
-    });
-    placedIds.add(mustDoId);
-  }
-
-  // ─── Phase 2: Greedy fill remaining slots ───────────────────────────────
-
-  // Sort remaining attractions by ID for deterministic tie-breaking.
-  const remaining = filteredAttractions
-    .filter((a) => !placedIds.has(a.id))
-    .sort((a, b) => a.id.localeCompare(b.id));
+  // Sort candidates by ID for deterministic tie-breaking.
+  const remaining = [...filteredAttractions].sort((a, b) => a.id.localeCompare(b.id));
 
   let cursorMin = openMin;
   let lastNodeId = startNodeId;
@@ -229,6 +192,7 @@ export function constructDay(input: ConstructDayInput): PlanItem[] {
         predictedWaitMinutes: forecast.predictedWaitMinutes,
         walkSeconds: walkSec,
         confidence: forecast.confidence,
+        isMustDo: mustDoSet.has(a.id),
       });
 
       // Tie-break: higher score wins. On equal score, earlier index wins
@@ -274,6 +238,57 @@ export function constructDay(input: ConstructDayInput): PlanItem[] {
     remaining.splice(bestIdx, 1);
     lastNodeId = chosen.id;
     cursorMin = Math.ceil(endMin / SLOT_GRANULARITY) * SLOT_GRANULARITY; // snap to next slot boundary
+  }
+
+  // ─── Phase 2: Rescue pass for unplaced must-dos ─────────────────────────
+  // The scoring-based greedy can legitimately skip a must-do if every slot
+  // is dominated by other rides. Walk back through and force-insert at the
+  // best remaining slot per must-do ID. Emits a warning note if the wait
+  // exceeds MUST_DO_WARN_WAIT_MIN.
+
+  for (const mustDoId of mustDoAttractionIds) {
+    if (placedIds.has(mustDoId)) continue;
+    const attraction = attractionMap.get(mustDoId);
+    if (!attraction) continue; // not in filtered set (height, etc.)
+
+    let bestSlotMin: number | null = null;
+    let bestWait = Infinity;
+    const durationNoWaitMin = attraction.durationMinutes + STAGING_MINUTES;
+
+    for (const slotMin of slotMinutes) {
+      const slotIso = buildIso(datePrefix, slotMin);
+      const forecast = forecastFn(mustDoId, slotIso);
+      const totalMin = forecast.predictedWaitMinutes + durationNoWaitMin;
+      if (slotMin + totalMin > closeMin) continue;
+      if (isRangeOccupied(slotMin, totalMin)) continue;
+
+      if (forecast.predictedWaitMinutes < bestWait) {
+        bestWait = forecast.predictedWaitMinutes;
+        bestSlotMin = slotMin;
+      }
+    }
+
+    if (bestSlotMin === null) continue; // nothing fits — solver output will be missing this must-do
+
+    const slotIso = buildIso(datePrefix, bestSlotMin);
+    const waitMin = bestWait;
+    const endMin = bestSlotMin + waitMin + durationNoWaitMin;
+    markRange(bestSlotMin, endMin - bestSlotMin);
+
+    const item: PlanItem = {
+      id: makePlanItemId(mustDoId, slotIso),
+      type: 'attraction',
+      refId: mustDoId,
+      name: attraction.name,
+      startTime: slotIso,
+      endTime: buildIso(datePrefix, endMin),
+      waitMinutes: waitMin,
+    };
+    if (waitMin > MUST_DO_WARN_WAIT_MIN) {
+      item.notes = `Must-do rescued at high wait (${Math.round(waitMin)}min) — consider Lightning Lane.`;
+    }
+    placedItems.push(item);
+    placedIds.add(mustDoId);
   }
 
   // ─── Sort by startTime and return ───────────────────────────────────────

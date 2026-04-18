@@ -58,7 +58,9 @@ describe('RollupProcessor', () => {
 
   describe('onModuleInit', () => {
     it('calls upsertJobScheduler with cron pattern 30 * * * *', async () => {
+      process.env['ENABLE_INGESTION_WORKERS'] = 'true';
       await processor.onModuleInit();
+      delete process.env['ENABLE_INGESTION_WORKERS'];
 
       expect(mockRollupQueue.upsertJobScheduler).toHaveBeenCalledOnce();
       const [schedulerId, schedule, jobConfig] = mockRollupQueue.upsertJobScheduler.mock

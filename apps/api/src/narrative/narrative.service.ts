@@ -1,4 +1,6 @@
+import { createHash } from 'node:crypto';
 import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
+import { sql } from 'drizzle-orm';
 import { ANTHROPIC_CLIENT_TOKEN, type AnthropicLike } from './anthropic.client.js';
 import { buildCachedPrefix, buildDynamicPrompt, buildMessagesPayload } from './prompt.js';
 import {
@@ -197,6 +199,26 @@ export class NarrativeService {
     model: string = SONNET_MODEL_ID,
     costContext?: CostContext,
   ): Promise<GenerateResult> {
+    // ─── Cross-trip day-cache lookup ──────────────────────────────
+    // sha256(parkId|date|sortedItemIds|budgetTier) per day. If *every*
+    // day in the trip has a cached narrative, skip the LLM entirely.
+    // Any miss falls through to the full Anthropic call below, which
+    // then upserts every day back into the cache.
+    const dayKeys = input.days.map((d) => this.dayCacheKey(d, input.budgetTier));
+    const cacheHits = await this.lookupDayCache(dayKeys);
+    if (cacheHits && cacheHits.size === input.days.length) {
+      this.logger.log(
+        `Narrative cache full-hit: ${cacheHits.size}/${input.days.length} days served from narrative_day_cache`,
+      );
+      const narrative = this.synthesizeNarrativeFromCache(input, cacheHits);
+      await this.bumpCacheHits(dayKeys);
+      return {
+        narrative,
+        narrativeAvailable: true,
+        usage: zeroUsage(),
+      };
+    }
+
     // ─── Budget check before first Anthropic call ─────────────────
     let effectiveModel = model;
 
@@ -261,6 +283,7 @@ export class NarrativeService {
 
     const firstResult = this.parseAndValidate(response, solverPlanItemIds);
     if (firstResult.ok) {
+      await this.upsertDayCache(input, firstResult.data, effectiveModel);
       return {
         narrative: firstResult.data,
         narrativeAvailable: true,
@@ -291,6 +314,7 @@ export class NarrativeService {
 
     const secondResult = this.parseAndValidate(retryResponse, solverPlanItemIds);
     if (secondResult.ok) {
+      await this.upsertDayCache(input, secondResult.data, effectiveModel);
       return {
         narrative: secondResult.data,
         narrativeAvailable: true,
@@ -439,5 +463,132 @@ export class NarrativeService {
       throw new Error('Anthropic response has no text content block');
     }
     return textBlock.text;
+  }
+
+  // ─── narrative_day_cache helpers ────────────────────────────────────
+
+  /**
+   * Build the cross-trip cache key for a single day's narrative. Two trips
+   * with the same park/date/item-set/budget get the same narrative text.
+   */
+  private dayCacheKey(day: NarrativeInputDay, budgetTier: NarrativeInput['budgetTier']): string {
+    const sortedRefs = day.items
+      .map((it) => it.attractionId)
+      .filter((id) => id.length > 0)
+      .sort()
+      .join(',');
+    const payload = `${day.park}|${day.date}|${sortedRefs}|${budgetTier}`;
+    return createHash('sha256').update(payload).digest('hex');
+  }
+
+  /**
+   * Bulk-lookup day cache rows. Returns a map keyed by cache_key.
+   * Returns null if the DB isn't wired (happens in unit tests).
+   */
+  private async lookupDayCache(
+    keys: string[],
+  ): Promise<Map<string, { intro: string; tips: Record<string, string> }> | null> {
+    if (!this.db || keys.length === 0) return null;
+    try {
+      const rows = (await this.db.execute(
+        sql`SELECT cache_key, narrative_intro, tips
+            FROM narrative_day_cache
+            WHERE cache_key = ANY(${keys}::text[])`,
+      )) as Array<{
+        cache_key: string;
+        narrative_intro: string;
+        tips: Record<string, string> | string | null;
+      }>;
+      const normalized = Array.isArray(rows) ? rows : ((rows as { rows?: typeof rows }).rows ?? []);
+      const map = new Map<string, { intro: string; tips: Record<string, string> }>();
+      for (const row of normalized) {
+        const tips =
+          typeof row.tips === 'string'
+            ? (JSON.parse(row.tips) as Record<string, string>)
+            : (row.tips ?? {});
+        map.set(row.cache_key, { intro: row.narrative_intro, tips });
+      }
+      return map;
+    } catch (err) {
+      this.logger.error('narrative_day_cache lookup failed (non-fatal)', err);
+      return null;
+    }
+  }
+
+  /**
+   * On a cache full-hit, assemble a NarrativeResponse from cached rows so
+   * the caller sees the same shape as a live LLM generation.
+   */
+  private synthesizeNarrativeFromCache(
+    input: NarrativeInput,
+    hits: Map<string, { intro: string; tips: Record<string, string> }>,
+  ): NarrativeResponse {
+    const days = input.days.map((day) => {
+      const key = this.dayCacheKey(day, input.budgetTier);
+      const hit = hits.get(key);
+      const tips = hit?.tips ?? {};
+      return {
+        dayIndex: day.dayIndex,
+        intro: hit?.intro ?? '',
+        items: day.items.map((item) => ({
+          planItemId: item.planItemId,
+          tip: tips[item.attractionId] ?? '',
+        })),
+      };
+    });
+    return {
+      days,
+      packingDelta: [],
+      budgetHacks: [],
+    } as NarrativeResponse;
+  }
+
+  /**
+   * Upsert cache rows for every day in a freshly-generated narrative.
+   * Best-effort: errors are logged and swallowed — cache is not critical.
+   */
+  private async upsertDayCache(
+    input: NarrativeInput,
+    narrative: NarrativeResponse,
+    model: string,
+  ): Promise<void> {
+    if (!this.db) return;
+    try {
+      for (const day of input.days) {
+        const narrativeDay = narrative.days?.find((d) => d.dayIndex === day.dayIndex);
+        if (!narrativeDay) continue;
+        const key = this.dayCacheKey(day, input.budgetTier);
+        // attractionId → tip mapping for this day
+        const tips: Record<string, string> = {};
+        for (const item of day.items) {
+          const narrativeItem = narrativeDay.items?.find((ni) => ni.planItemId === item.planItemId);
+          if (narrativeItem?.tip) tips[item.attractionId] = narrativeItem.tip;
+        }
+        const tipsJson = JSON.stringify(tips);
+        await this.db.execute(sql`
+          INSERT INTO narrative_day_cache (cache_key, narrative_intro, tips, model)
+          VALUES (${key}, ${narrativeDay.intro ?? ''}, ${tipsJson}::jsonb, ${model})
+          ON CONFLICT (cache_key) DO NOTHING
+        `);
+      }
+    } catch (err) {
+      this.logger.error('narrative_day_cache upsert failed (non-fatal)', err);
+    }
+  }
+
+  /**
+   * Increment hit_count + last_hit_at on a cache full-hit. Best-effort.
+   */
+  private async bumpCacheHits(keys: string[]): Promise<void> {
+    if (!this.db || keys.length === 0) return;
+    try {
+      await this.db.execute(sql`
+        UPDATE narrative_day_cache
+        SET hit_count = hit_count + 1, last_hit_at = NOW()
+        WHERE cache_key = ANY(${keys}::text[])
+      `);
+    } catch (err) {
+      this.logger.error('narrative_day_cache bump failed (non-fatal)', err);
+    }
   }
 }

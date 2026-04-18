@@ -51,7 +51,9 @@ describe('QueueTimesProcessor', () => {
 
   describe('onModuleInit', () => {
     it('calls upsertJobScheduler with 5-minute interval', async () => {
+      process.env['ENABLE_INGESTION_WORKERS'] = 'true';
       await processor.onModuleInit();
+      delete process.env['ENABLE_INGESTION_WORKERS'];
 
       expect(mockWaitTimesQueue.upsertJobScheduler).toHaveBeenCalledOnce();
       const [schedulerId, schedule, jobConfig] = mockWaitTimesQueue.upsertJobScheduler.mock

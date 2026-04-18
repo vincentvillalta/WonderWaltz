@@ -42,7 +42,6 @@ export class PlanGenerationProcessor extends WorkerHost {
 
   async process(job: Job<PlanGenerationJobData>): Promise<{
     planId: string;
-    cached: boolean;
   }> {
     this.log.log(
       `Processing plan-generation job ${job.id}: ` +
@@ -51,10 +50,7 @@ export class PlanGenerationProcessor extends WorkerHost {
 
     const result = await this.planGenerationService.generate(job.data.tripId);
 
-    this.log.log(
-      `Plan-generation job ${job.id} complete: ` +
-        `planId=${result.planId} cached=${String(result.cached)}`,
-    );
+    this.log.log(`Plan-generation job ${job.id} complete: planId=${result.planId}`);
 
     return result;
   }

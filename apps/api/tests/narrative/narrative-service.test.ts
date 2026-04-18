@@ -121,6 +121,22 @@ function createMockDb() {
   return { execute: vi.fn().mockResolvedValue([]) };
 }
 
+/**
+ * Count the number of execute() calls whose SQL contains `needle`. The mock's
+ * execute() receives a drizzle sql template object; we flatten it to a string
+ * and look for the substring. Used to filter llm_costs / narrative_day_cache
+ * calls apart from each other.
+ */
+function countSqlMatches(mockDb: ReturnType<typeof createMockDb>, needle: string): number {
+  const calls = mockDb.execute.mock.calls as Array<[unknown]>;
+  let count = 0;
+  for (const [q] of calls) {
+    const text = JSON.stringify(q);
+    if (text.includes(needle)) count++;
+  }
+  return count;
+}
+
 describe('NarrativeService.generate — full pipeline', () => {
   let mock: AnthropicMock;
   let mockDb: ReturnType<typeof createMockDb>;
@@ -265,8 +281,8 @@ describe('NarrativeService cost tracking', () => {
       planId: 'plan-uuid-001',
     });
 
-    // One Anthropic call = one cost row
-    expect(mockDb.execute).toHaveBeenCalledTimes(1);
+    // One Anthropic call = one llm_costs row (narrative_day_cache DB traffic is separate).
+    expect(countSqlMatches(mockDb, 'llm_costs')).toBe(1);
   });
 
   it('writes two cost rows on retry (both attempts)', async () => {
@@ -286,8 +302,8 @@ describe('NarrativeService cost tracking', () => {
       planId: 'plan-uuid-001',
     });
 
-    // Two Anthropic calls = two cost rows
-    expect(mockDb.execute).toHaveBeenCalledTimes(2);
+    // Two Anthropic calls = two llm_costs rows (narrative_day_cache is separate).
+    expect(countSqlMatches(mockDb, 'llm_costs')).toBe(2);
   });
 
   it('writes cost row for rethink intro', async () => {

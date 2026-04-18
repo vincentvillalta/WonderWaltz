@@ -22,16 +22,18 @@ import { WeatherService } from '../weather/weather.service.js';
 /**
  * PlanGenerationService -- orchestrator for the full plan pipeline.
  *
- * Pipeline (PLAN-03):
+ * Pipeline (PLAN-03, revised 2026-04):
  *   1. Load trip + guests + preferences from DB
- *   2. Compute solverInputHash (BEFORE hydrating forecasts)
- *   3. Check cache: plans WHERE trip_id AND solver_input_hash
- *   4. Hydrate: catalog, walking graph, forecasts, weather, crowd
- *   5. solve(solverInput) -> DayPlan[]
- *   6. NarrativeService.generate(...)
- *   7. PersistPlanService.persist(...) -> planId
- *   8. Update trips.current_plan_id + trips.plan_status = 'ready'
- *   9. Return { planId, cached: false }
+ *   2. Hydrate: catalog, walking graph, forecasts, weather, crowd
+ *   3. solve(solverInput) -> DayPlan[]
+ *   4. NarrativeService.generate(...)    (per-day cache via narrative_day_cache)
+ *   5. PersistPlanService.persist(...) -> planId
+ *   6. Update trips.current_plan_id + trips.plan_status = 'ready'
+ *   7. Return { planId }
+ *
+ * The old solver_input_hash trip-level cache was removed: guest identity
+ * made every key unique, so cache hits were near-impossible. Cross-user
+ * LLM reuse now lives per-day in NarrativeService.
  *
  * On BudgetExhaustedError: update trips.plan_status = 'failed', wrap
  * in UnrecoverableError so BullMQ skips retries.
@@ -44,7 +46,6 @@ interface DbExecutable {
 
 export interface GeneratePlanResult {
   planId: string;
-  cached: boolean;
 }
 
 // ---- Mirror types from solver (ESM boundary -- structural duplicates) ----
@@ -105,10 +106,6 @@ interface PreferencesRow extends Record<string, unknown> {
   meal_preferences: string[];
 }
 
-interface PlanCacheRow extends Record<string, unknown> {
-  id: string;
-}
-
 interface AttractionRow extends Record<string, unknown> {
   id: string;
   park_id: string;
@@ -118,6 +115,7 @@ interface AttractionRow extends Record<string, unknown> {
   lightning_lane_type: string | null;
   is_headliner: boolean;
   height_req_cm: number | null;
+  popularity_score: number | null;
 }
 
 interface DiningRow extends Record<string, unknown> {
@@ -203,45 +201,7 @@ export class PlanGenerationService {
     // Load solver via ESM boundary
     const solverPkg = await this.solverLoader.load();
 
-    // Hash input skeleton (volatile fields excluded)
-    const hashInput = {
-      trip: {
-        id: trip.id,
-        userId: trip.user_id,
-        startDate: trip.start_date,
-        endDate: trip.end_date,
-        partySize: guestRows.length || 1,
-        budgetTier: solverBudgetTier,
-        hasDas: trip.has_das,
-        lodgingType: trip.lodging_type,
-      },
-      guests: solverGuests,
-      preferences: solverPreferences,
-      dateStart: trip.start_date,
-      dateEnd: trip.end_date,
-      catalog: { attractions: [], dining: [], shows: [], walkingGraph: { edges: [] } },
-      forecasts: { buckets: [] },
-      weather: { days: [] },
-      crowdCalendar: { entries: [] },
-    };
-
-    const solverInputHash = solverPkg.computeSolverInputHash(hashInput as never);
-
-    // ─── 3. Check cache ────────────────────────────────────────
-    const cacheRows = await this.queryRows<PlanCacheRow>(
-      sql`SELECT id FROM plans WHERE trip_id = ${tripId} AND solver_input_hash = ${solverInputHash} LIMIT 1`,
-    );
-
-    if (cacheRows.length > 0) {
-      const cachedPlanId = cacheRows[0]!.id;
-      await this.db.execute(
-        sql`UPDATE trips SET current_plan_id = ${cachedPlanId}, plan_status = 'ready', updated_at = NOW() WHERE id = ${tripId}`,
-      );
-      this.logger.log(`Cache hit for trip ${tripId}: plan ${cachedPlanId} (${Date.now() - t0}ms)`);
-      return { planId: cachedPlanId, cached: true };
-    }
-
-    // ─── 4. Hydrate full SolverInput ───────────────────────────
+    // ─── 2. Hydrate full SolverInput ───────────────────────────
     try {
       const solverInput = await this.hydrateSolverInput(trip, solverGuests, solverPreferences);
 
@@ -276,7 +236,6 @@ export class PlanGenerationService {
         narrative: narrativeResult.narrative ?? null,
         narrativeAvailable: narrativeResult.narrativeAvailable,
         usage: narrativeResult.usage,
-        solverInputHash,
         model: 'claude-sonnet-4-6',
       };
 
@@ -354,7 +313,7 @@ export class PlanGenerationService {
       this.logger.log(
         `Plan generation complete: trip=${tripId} plan=${planId} (${Date.now() - t0}ms)`,
       );
-      return { planId, cached: false };
+      return { planId };
     } catch (err) {
       if (err instanceof BudgetExhaustedError) {
         await this.db.execute(
@@ -390,7 +349,7 @@ export class PlanGenerationService {
     const [attractionRows, diningRows, showRows, walkingEdgeRows] = await Promise.all([
       // height_req_cm in DB; convert to inches (1 inch = 2.54 cm). No duration_minutes column — default at mapping.
       this.queryRows<AttractionRow>(
-        sql`SELECT id, park_id, name, tags, baseline_wait_minutes, lightning_lane_type, is_headliner, height_req_cm FROM attractions WHERE is_active = true`,
+        sql`SELECT id, park_id, name, tags, baseline_wait_minutes, lightning_lane_type, is_headliner, height_req_cm, popularity_score FROM attractions WHERE is_active = true`,
       ),
       // dining has no table_service or duration_minutes columns; derive from dining_type.
       this.queryRows<DiningRow>(
@@ -412,6 +371,7 @@ export class PlanGenerationService {
         baselineWaitMinutes: Number(a.baseline_wait_minutes) || 30,
         lightningLaneType: a.lightning_lane_type,
         isHeadliner: a.is_headliner ?? false,
+        popularityScore: a.popularity_score != null ? Number(a.popularity_score) : 5,
         ...(a.height_req_cm != null
           ? { heightRequirementInches: Math.round(Number(a.height_req_cm) / 2.54) }
           : {}),

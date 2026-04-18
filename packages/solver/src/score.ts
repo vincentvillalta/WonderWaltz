@@ -1,9 +1,20 @@
 /**
- * SOLV-03: Scoring function for the greedy construction pass.
+ * SOLV-03 (revised 2026-04): Scoring function for the greedy construction pass.
  *
- * Formula: score = enjoyment_weight / (time_cost + wait_cost + walk_cost)
- * All cost multipliers = 1.0 (equal weights baseline; tunable later via
- * snapshot fixture outcomes).
+ * Formula:
+ *   base  = enjoymentWeight / (timeCost + waitCost + walkCost)
+ *   score = base
+ *         × (isMustDo       ? MUST_DO_BOOST : 1)
+ *         × (popularityScore / POPULARITY_PIVOT)
+ *
+ * Must-do replaces the old hard-pinning loop in construct.ts: it now boosts
+ * the score so a must-do gets picked in almost every comparison, but a truly
+ * awful slot (e.g. forecast says 180min wait at 10am vs 30min at 7pm) will
+ * still defer to the better slot instead of blocking the morning.
+ *
+ * Popularity (1-10, default 5) is a static per-attraction weight. Headliners
+ * already bump enjoymentWeight; popularity stacks on top so two headliners
+ * with the same wait can still be ranked apart (Avatar FoP > Everest).
  *
  * Pure — no randomness, no side effects, no I/O.
  */
@@ -24,6 +35,20 @@ const HEADLINER_ENJOYMENT = 85;
 /** Enjoyment weight for non-headliner attractions. */
 const DEFAULT_ENJOYMENT = 50;
 
+/**
+ * Multiplier applied to must-do attractions. Strong enough to dominate score
+ * comparisons in all but pathological slots — still loses to a 30-min wait
+ * vs a 180-min wait at the same time.
+ */
+const MUST_DO_BOOST = 5;
+
+/** Popularity is scaled as `popularity / POPULARITY_PIVOT`, so pivot == neutral. */
+const POPULARITY_PIVOT = 5;
+
+/** Clamp bounds for popularity multiplier (defensive, should never trip). */
+const POPULARITY_MIN = 1;
+const POPULARITY_MAX = 10;
+
 // ─── Input type ─────────────────────────────────────────────────────────────
 
 export type ScoreInput = {
@@ -34,6 +59,8 @@ export type ScoreInput = {
   walkSeconds: number;
   /** Forecast confidence label. */
   confidence: ForecastConfidence;
+  /** True when this attraction is in the trip's mustDoAttractionIds. */
+  isMustDo?: boolean;
 };
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -51,23 +78,33 @@ export function deriveEnjoymentWeight(attraction: CatalogAttraction): number {
   return attraction.isHeadliner ? HEADLINER_ENJOYMENT : DEFAULT_ENJOYMENT;
 }
 
+/** Clamp popularity to [MIN, MAX] and default missing values to pivot. */
+function resolvePopularity(attraction: CatalogAttraction): number {
+  const raw = attraction.popularityScore ?? POPULARITY_PIVOT;
+  if (raw < POPULARITY_MIN) return POPULARITY_MIN;
+  if (raw > POPULARITY_MAX) return POPULARITY_MAX;
+  return raw;
+}
+
 // ─── Score function ─────────────────────────────────────────────────────────
 
 /**
  * Computes a deterministic score for placing an attraction at a given point
  * in the day.
  *
- * score = enjoyment_weight / (time_cost + wait_cost + walk_cost)
+ *   base  = enjoymentWeight / (timeCost + waitCost + walkCost)
+ *   score = base × mustDoMultiplier × popularityMultiplier
  *
- * - `time_cost = durationMinutes + 5` (staging buffer)
- * - `wait_cost = predictedWaitMinutes * penalty` (1.2x when confidence='low')
- * - `walk_cost = walkSeconds / 60` (converted to minutes)
+ * - `timeCost       = durationMinutes + 5`
+ * - `waitCost       = predictedWaitMinutes × (low-conf ? 1.2 : 1.0)`
+ * - `walkCost       = walkSeconds / 60`
+ * - `mustDo mult    = 5 when isMustDo, else 1`
+ * - `popularity mult = clamp(popularityScore, 1, 10) / 5`
  *
- * Returns a finite number for any valid input (denominator >= STAGING_MINUTES
- * = 5 when all costs are zero except the staging buffer).
+ * Returns a finite number; denominator floor is STAGING_MINUTES (=5).
  */
 export function score(input: ScoreInput): number {
-  const { attraction, predictedWaitMinutes, walkSeconds, confidence } = input;
+  const { attraction, predictedWaitMinutes, walkSeconds, confidence, isMustDo } = input;
 
   const enjoymentWeight = deriveEnjoymentWeight(attraction);
 
@@ -78,5 +115,10 @@ export function score(input: ScoreInput): number {
 
   const walkCost = walkSeconds / 60;
 
-  return enjoymentWeight / (timeCost + waitCost + walkCost);
+  const base = enjoymentWeight / (timeCost + waitCost + walkCost);
+
+  const mustDoMultiplier = isMustDo ? MUST_DO_BOOST : 1;
+  const popularityMultiplier = resolvePopularity(attraction) / POPULARITY_PIVOT;
+
+  return base * mustDoMultiplier * popularityMultiplier;
 }

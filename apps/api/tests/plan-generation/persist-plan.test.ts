@@ -68,7 +68,6 @@ const BASE_INPUT: PersistInput = {
     cache_creation_input_tokens: 0,
     cache_read_input_tokens: 800,
   },
-  solverInputHash: 'hash-abc123',
   model: 'claude-sonnet-4-6',
 };
 

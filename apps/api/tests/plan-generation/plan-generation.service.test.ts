@@ -223,22 +223,20 @@ describe('PlanGenerationService', () => {
     vi.clearAllMocks();
   });
 
-  describe('happy path (cache miss)', () => {
-    it('orchestrates full pipeline and returns { planId, cached: false }', async () => {
+  describe('happy path', () => {
+    it('orchestrates full pipeline and returns { planId }', async () => {
       const { service, narrativeService, persistPlanService } = buildService();
 
       const result = await service.generate(TRIP_ID);
 
-      expect(result).toEqual({ planId: PLAN_ID, cached: false });
+      expect(result).toEqual({ planId: PLAN_ID });
       expect(narrativeService.generate).toHaveBeenCalledTimes(1);
       expect(persistPlanService.persist).toHaveBeenCalledTimes(1);
 
-      // Verify persist input shape
+      // Verify persist input shape — solver_input_hash was removed in migration 0006.
       const persistArg = persistPlanService.persist.mock.calls[0]?.[0] as Record<string, unknown>;
       expect(persistArg).toHaveProperty('tripId', TRIP_ID);
-      expect(persistArg).toHaveProperty('solverInputHash');
-      expect(typeof persistArg['solverInputHash']).toBe('string');
-      expect((persistArg['solverInputHash'] as string).length).toBeGreaterThan(0);
+      expect(persistArg).not.toHaveProperty('solverInputHash');
       expect(persistArg).toHaveProperty('narrativeAvailable', true);
     });
 
@@ -251,38 +249,16 @@ describe('PlanGenerationService', () => {
     });
   });
 
-  describe('cache hit', () => {
-    it('returns cached plan without calling solver or narrative', async () => {
-      const { service, narrativeService, persistPlanService } = buildService({
-        cacheHit: true,
-      });
-
-      const result = await service.generate(TRIP_ID);
-
-      expect(result).toEqual({ planId: CACHED_PLAN_ID, cached: true });
-      expect(narrativeService.generate).not.toHaveBeenCalled();
-      expect(persistPlanService.persist).not.toHaveBeenCalled();
-    });
-
-    it('updates trips.current_plan_id on cache hit', async () => {
-      const { service, db } = buildService({ cacheHit: true });
-
-      await service.generate(TRIP_ID);
-
-      // The 5th DB call on cache-hit path is the UPDATE trips
-      expect(db.execute).toHaveBeenCalledTimes(5);
-    });
-  });
-
   describe('BudgetExhaustedError', () => {
     it('wraps in UnrecoverableError and sets trip status to failed', async () => {
       const { service, db } = buildService({ throwBudgetExhausted: true });
 
       await expect(service.generate(TRIP_ID)).rejects.toThrow(UnrecoverableError);
 
-      // UPDATE trips SET plan_status = 'failed' was called
-      // After: 3 parallel loads + cache check + 4 catalog loads + UPDATE = 9 calls
-      expect(db.execute.mock.calls.length).toBeGreaterThanOrEqual(9);
+      // UPDATE trips SET plan_status = 'failed' was called.
+      // After 0006 migration dropped the cache check: 3 parallel loads +
+      // 4 catalog loads + UPDATE = 8 db.execute calls minimum.
+      expect(db.execute.mock.calls.length).toBeGreaterThanOrEqual(8);
     });
   });
 

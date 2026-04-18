@@ -23,7 +23,6 @@ interface PlanRow extends Record<string, unknown> {
   trip_id: string;
   version: number;
   status: string;
-  solver_input_hash: string;
   created_at: string;
   warnings: string;
 }
@@ -105,7 +104,7 @@ export class PlansService {
   async getPlan(planId: string): Promise<PlanDto | null> {
     // 1. Load plan row
     const planRows = await this.queryRows<PlanRow>(
-      sql`SELECT id, trip_id, version, status, solver_input_hash, created_at, COALESCE(warnings, '[]') as warnings FROM plans WHERE id = ${planId}`,
+      sql`SELECT id, trip_id, version, status, created_at, COALESCE(warnings, '[]') as warnings FROM plans WHERE id = ${planId}`,
     );
     const plan = planRows[0];
     if (!plan) return null;

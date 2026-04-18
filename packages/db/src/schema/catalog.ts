@@ -3,6 +3,7 @@ import {
   uuid,
   text,
   integer,
+  smallint,
   boolean,
   timestamp,
   doublePrecision,
@@ -46,6 +47,8 @@ export const attractions = pgTable('attractions', {
   lightningLaneType: text('lightning_lane_type').notNull().default('none'),
   // isHeadliner: top-tier ride per park; drives LL allocation priority.
   isHeadliner: boolean('is_headliner').notNull().default(false),
+  // popularityScore: 1-10, drives greedy scoring (0006 migration). Default 5.
+  popularityScore: smallint('popularity_score').notNull().default(5),
   isActive: boolean('is_active').notNull().default(true),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });

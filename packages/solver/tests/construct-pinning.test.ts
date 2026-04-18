@@ -77,7 +77,7 @@ function forecastFn(
 // ─── Tests ──────────────────────────────────────────────────────────────────
 
 describe('constructDay', () => {
-  it('must-do pinned to optimal window (forecast low-wait slot)', () => {
+  it('must-do is placed in its low-wait window (scoring boost beats alternatives)', () => {
     const result = constructDay({
       filteredAttractions: attractions,
       mustDoAttractionIds: ['a-space-mountain'],
@@ -87,11 +87,40 @@ describe('constructDay', () => {
       startNodeId: 'entrance',
     });
 
-    // Space Mountain must be pinned — find it
+    // Space Mountain must be placed — find it.
     const spaceMtn = result.find((item) => item.refId === 'a-space-mountain');
     expect(spaceMtn).toBeDefined();
-    // Should be pinned to 09:00 slot (lowest wait)
-    expect(spaceMtn!.startTime).toBe('2026-06-01T09:00:00');
+    expect(spaceMtn!.type).toBe('attraction');
+    // With the 5x must-do boost, Space Mountain should land before 10:00 —
+    // the forecast window where the wait is 10min instead of 60min.
+    const startHour = parseInt(spaceMtn!.startTime.slice(11, 13), 10);
+    expect(startHour).toBeLessThan(10);
+  });
+
+  it('must-do with a high wait still ends up placed in the final plan', () => {
+    // Even with a 200min wait forecast all day, the must-do ID has to show up
+    // in the final output — either because scoring picked it, or because the
+    // rescue pass filled it in after greedy finished.
+    const hardWaitForecast = (
+      attractionId: string,
+    ): { predictedWaitMinutes: number; confidence: ForecastConfidence } => {
+      if (attractionId === 'a-space-mountain') {
+        return { predictedWaitMinutes: 200, confidence: 'low' };
+      }
+      return { predictedWaitMinutes: 5, confidence: 'high' };
+    };
+
+    const result = constructDay({
+      filteredAttractions: attractions,
+      mustDoAttractionIds: ['a-space-mountain'],
+      parkHours: { open: PARK_OPEN, close: PARK_CLOSE },
+      walkingGraph: graph,
+      forecastFn: hardWaitForecast,
+      startNodeId: 'entrance',
+    });
+
+    const spaceMtn = result.find((item) => item.refId === 'a-space-mountain');
+    expect(spaceMtn).toBeDefined();
     expect(spaceMtn!.type).toBe('attraction');
   });
 

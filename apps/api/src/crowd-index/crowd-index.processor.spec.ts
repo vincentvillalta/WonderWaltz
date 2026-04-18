@@ -47,7 +47,9 @@ describe('CrowdIndexProcessor', () => {
 
   describe('onModuleInit', () => {
     it('calls upsertJobScheduler with hourly cron pattern', async () => {
+      process.env['ENABLE_INGESTION_WORKERS'] = 'true';
       await processor.onModuleInit();
+      delete process.env['ENABLE_INGESTION_WORKERS'];
 
       expect(mockCrowdIndexQueue.upsertJobScheduler).toHaveBeenCalledOnce();
       const [schedulerId, schedule, jobConfig] = mockCrowdIndexQueue.upsertJobScheduler.mock

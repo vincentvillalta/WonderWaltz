@@ -78,6 +78,11 @@ export type CatalogAttraction = {
   isHeadliner: boolean;
   heightRequirementInches?: number;
   durationMinutes: number;
+  /**
+   * Ride popularity on a 1-10 scale. Feeds the greedy scoring multiplier so
+   * popular rides rank above filler. Defaults to 5 when absent.
+   */
+  popularityScore?: number;
   /** Optional geo coords for walking-graph resolution. */
   lat?: number;
   lng?: number;
