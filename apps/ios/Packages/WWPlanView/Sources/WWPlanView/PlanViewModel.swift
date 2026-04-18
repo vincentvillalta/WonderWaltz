@@ -260,7 +260,7 @@ public final class PlanViewModel {
 
         do {
             let data = try await apiClient.getPlan(id: planId)
-            let decoded = try JSONDecoder().decode(PlanData.self, from: data)
+            let decoded = try Self.decodeServerPlan(from: data)
             plan = decoded
             isOffline = false
 
@@ -277,7 +277,7 @@ public final class PlanViewModel {
             isOffline = true
             do {
                 if let cachedData = try await offlineStore.getCachedPlan(planId: planId) {
-                    let decoded = try JSONDecoder().decode(PlanData.self, from: cachedData)
+                    let decoded = try Self.decodeServerPlan(from: cachedData)
                     plan = decoded
                     isLoading = false
 
@@ -359,7 +359,7 @@ public final class PlanViewModel {
 
         do {
             let data = try await apiClient.rethinkToday(tripId: plan.tripId)
-            let decoded = try JSONDecoder().decode(PlanData.self, from: data)
+            let decoded = try Self.decodeServerPlan(from: data)
             self.plan = decoded
             completedItemIds.removeAll()
             skippedItems.removeAll()
@@ -407,5 +407,81 @@ public final class PlanViewModel {
                 "error": error.localizedDescription
             ])
         }
+    }
+
+    // MARK: - Server Plan Decoder
+
+    /// Translate the server's GET /v1/plans/:id envelope + discriminated-union
+    /// day shape into our local PlanData. The server response looks like:
+    /// { data: { id, trip_id, status, days: [ { type:"full", ...} | { type:"locked", ...} ], packing_list: [...] }, meta: {} }
+    static func decodeServerPlan(from data: Data) throws -> PlanData {
+        let obj = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        // Unwrap envelope if present.
+        let payload = (obj?["data"] as? [String: Any]) ?? obj ?? [:]
+
+        guard let id = payload["id"] as? String else {
+            throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "Plan missing id"))
+        }
+        let tripId = (payload["trip_id"] as? String) ?? ""
+        let status = (payload["status"] as? String) ?? "ready"
+        let daysRaw = payload["days"] as? [[String: Any]] ?? []
+
+        let days: [PlanDayData] = daysRaw.enumerated().map { (idx, raw) in
+            let type = raw["type"] as? String ?? "full"
+            if type == "locked" {
+                let dayIndex = raw["dayIndex"] as? Int ?? idx
+                let park = raw["park"] as? String ?? "Locked Day"
+                return PlanDayData(
+                    dayNumber: dayIndex,
+                    date: "",
+                    parkName: park,
+                    parkAbbreviation: park,
+                    narrativeIntro: raw["headline"] as? String,
+                    items: [],
+                    isLocked: true
+                )
+            }
+            // "full" day
+            let dayIndex = raw["day_index"] as? Int ?? raw["dayIndex"] as? Int ?? idx
+            let date = raw["date"] as? String ?? ""
+            let parkName = raw["park_name"] as? String ?? raw["park"] as? String ?? (raw["park_id"] as? String ?? "")
+            let narrativeIntro = raw["narrative_intro"] as? String
+
+            let itemsRaw = raw["items"] as? [[String: Any]] ?? []
+            let items: [PlanItemData] = itemsRaw.enumerated().map { (itemIdx, i) in
+                let itemId = i["id"] as? String ?? "\(dayIndex)-\(itemIdx)"
+                let typeStr = (i["type"] ?? i["item_type"]) as? String ?? "attraction"
+                let type = PlanItemType(rawValue: typeStr)
+                    ?? PlanItemType(rawValue: typeStr == "dining" ? "meal" : "attraction")
+                    ?? .attraction
+                let name = i["name"] as? String ?? ""
+                let start = i["start_time"] as? String ?? ""
+                let end = i["end_time"] as? String
+                return PlanItemData(
+                    id: itemId,
+                    type: type,
+                    name: name,
+                    startTime: start,
+                    endTime: end,
+                    sortOrder: i["sort_index"] as? Int ?? itemIdx,
+                    narrativeTip: i["narrative_tip"] as? String ?? i["notes"] as? String,
+                    walkTimeMinutes: i["walk_minutes"] as? Int,
+                    waitTimeMinutes: i["wait_minutes"] as? Int,
+                    isLightningLane: (i["lightning_lane_type"] as? String).map { !$0.isEmpty } ?? false
+                )
+            }
+
+            return PlanDayData(
+                dayNumber: dayIndex,
+                date: date,
+                parkName: parkName,
+                parkAbbreviation: parkName,
+                narrativeIntro: narrativeIntro,
+                items: items,
+                isLocked: false
+            )
+        }
+
+        return PlanData(id: id, tripId: tripId, days: days, status: status)
     }
 }

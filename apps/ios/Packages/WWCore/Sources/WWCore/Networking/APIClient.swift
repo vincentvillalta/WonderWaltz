@@ -187,25 +187,25 @@ public final class APIClient: APIClientProtocol, @unchecked Sendable {
     }
 
     public func getPlan(id: String) async throws -> Data {
-        WWLogger.networking.trace("GET /v1/plans/\(id, privacy: .public)")
-        do {
-            let response = try await client.PlansController_getPlan(
-                path: .init(id: id)
-            )
-            switch response {
-            case .ok(let output):
-                switch output.body {
-                case .json(let payload):
-                    return try encoder.encode(payload)
-                }
-            default:
-                WWLogger.networking.error("getPlan: unexpected status for id=\(id, privacy: .public)")
-                throw APIClientError.unexpectedResponse
-            }
-        } catch {
-            WWLogger.networking.error("getPlan failed: \(error.localizedDescription, privacy: .public)")
-            throw error
+        // Bypass the generated OpenAPI client — its PlanDto decodes
+        // packing_list as a dictionary, but the server returns an array.
+        // Raw URLSession sidesteps the type mismatch so the PlanViewModel's
+        // own PlanData decoder (tolerant of both shapes) can handle it.
+        WWLogger.networking.trace("GET /v1/plans/\(id, privacy: .public) (raw)")
+        let url = serverURL.appendingPathComponent("v1/plans/\(id)")
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        if let token = tokenProvider() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            let status = (response as? HTTPURLResponse)?.statusCode ?? -1
+            WWLogger.networking.error("getPlan: HTTP \(status, privacy: .public) for id=\(id, privacy: .public)")
+            throw APIClientError.unexpectedResponse
+        }
+        return data
     }
 
     public func rethinkToday(tripId: String) async throws -> Data {
