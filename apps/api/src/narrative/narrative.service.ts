@@ -147,6 +147,18 @@ function zeroUsage(): AnthropicUsage {
   };
 }
 
+/**
+ * Claude often wraps JSON output in a Markdown code fence (```json … ```)
+ * even when the prompt forbids it. Strip the fence (if present) before
+ * JSON.parse. Also trims whitespace around the content.
+ */
+function stripCodeFence(text: string): string {
+  const trimmed = text.trim();
+  const fenceMatch = trimmed.match(/^```(?:json)?\s*\n?([\s\S]*?)\n?```$/);
+  if (fenceMatch?.[1]) return fenceMatch[1].trim();
+  return trimmed;
+}
+
 /** Minimal Drizzle-compatible interface for raw SQL execution */
 interface DbExecutable {
   execute(query: unknown): Promise<unknown>;
@@ -377,7 +389,7 @@ export class NarrativeService {
 
     await this.writeCostRow(HAIKU_MODEL_ID, responseUsage, costContext);
 
-    const text = this.extractText(response);
+    const text = stripCodeFence(this.extractText(response));
     const parsed = JSON.parse(text) as unknown;
     const validated = RethinkIntroSchema.parse(parsed);
 
@@ -394,15 +406,16 @@ export class NarrativeService {
     solverPlanItemIds: Set<string>,
   ): ValidationResult {
     const text = this.extractText(response);
+    const cleaned = stripCodeFence(text);
 
     let parsed: unknown;
     try {
-      parsed = JSON.parse(text);
-    } catch {
+      parsed = JSON.parse(cleaned);
+    } catch (err) {
       return {
         ok: false,
         error: 'parse_error',
-        details: 'Response is not valid JSON',
+        details: `Response is not valid JSON: ${(err as Error).message}`,
       };
     }
 
