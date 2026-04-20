@@ -20,14 +20,142 @@
  *   ANTHROPIC_API_KEY              — unless --skip-narrative
  *   REDIS_URL                      — BullMQ boot (even if we bypass the queue)
  */
+import { readFileSync, existsSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+
+// Seed process.env from .env.local *before* anything reads env at runtime.
+// ES-module imports are hoisted, but they only declare classes — env isn't
+// read until NestFactory bootstraps in main(). So a top-level call here is
+// enough.
+loadEnv();
+
 import { createClient } from '@supabase/supabase-js';
 
 type SupabaseClient = ReturnType<typeof createClient>;
 import { NestFactory } from '@nestjs/core';
-import type { Logger } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { BullModule } from '@nestjs/bullmq';
+import Redis, { type RedisOptions } from 'ioredis';
+import { createClient as createSupabase } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
-import { WorkerModule } from '../src/worker.module.js';
+import { createRequire } from 'node:module';
+import { resolve as resolvePath, dirname as dirnamePath } from 'node:path';
+import { buildBullRedisConfig } from '../src/common/redis-config.js';
+import { PlanGenerationModule } from '../src/plan-generation/plan-generation.module.js';
 import { PlanGenerationService } from '../src/plan-generation/plan-generation.service.js';
+import { REDIS_CLIENT_TOKEN } from '../src/alerting/slack-alerter.service.js';
+import { DB_TOKEN } from '../src/ingestion/queue-times.service.js';
+import { SUPABASE_ADMIN_TOKEN } from '../src/shared-infra.module.js';
+
+/**
+ * Minimal @Global infra module for the E2E script. Providers resolve
+ * synchronously so Nest doesn't have to wait on an async DB factory —
+ * we pre-import the DB module at top-level and wrap it in a
+ * `useFactory` that's already a resolved value by the time Nest asks.
+ */
+async function buildDb(): Promise<unknown> {
+  const databaseUrl = process.env['DATABASE_URL'];
+  if (!databaseUrl) throw new Error('DATABASE_URL is required for plan:live');
+  const require = createRequire(__filename);
+  const dbPkgJson = require.resolve('@wonderwaltz/db/package.json');
+  const dbIndexPath = resolvePath(dirnamePath(dbPkgJson), 'dist/src/index.js');
+  const dbPkg = (await import(dbIndexPath)) as { createDb: (url: string) => unknown };
+  return dbPkg.createDb(databaseUrl);
+}
+
+function buildRedis(): Redis {
+  const redisUrl = process.env['REDIS_URL'] ?? '';
+  let host = 'localhost';
+  let port = 6379;
+  let password: string | undefined;
+  if (redisUrl) {
+    const parsed = new URL(redisUrl);
+    host = parsed.hostname;
+    port = parsed.port ? Number(parsed.port) : 6380;
+    password = parsed.password || undefined;
+  }
+  const useTls = redisUrl.startsWith('rediss://');
+  const opts: RedisOptions = {
+    host,
+    port,
+    password,
+    ...(useTls ? { tls: {} } : {}),
+    maxRetriesPerRequest: null,
+    enableReadyCheck: false,
+  };
+  return new Redis(opts);
+}
+
+// Pre-resolve infra so the @Global() providers are already values.
+const DB_INSTANCE_PROMISE = buildDb();
+const REDIS_INSTANCE = buildRedis();
+const SUPABASE_INSTANCE = (() => {
+  const url = process.env['SUPABASE_URL'] ?? process.env['NEXT_PUBLIC_SUPABASE_URL'];
+  const key = process.env['SUPABASE_SERVICE_ROLE_KEY'];
+  if (!url || !key) throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY required');
+  return createSupabase(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
+})();
+
+@Global()
+@Module({
+  providers: [
+    { provide: DB_TOKEN, useFactory: () => DB_INSTANCE_PROMISE },
+    { provide: REDIS_CLIENT_TOKEN, useValue: REDIS_INSTANCE },
+    { provide: SUPABASE_ADMIN_TOKEN, useValue: SUPABASE_INSTANCE },
+  ],
+  exports: [DB_TOKEN, REDIS_CLIENT_TOKEN, SUPABASE_ADMIN_TOKEN],
+})
+class ScriptInfraModule {}
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env.local', '.env'] }),
+    BullModule.forRoot({ connection: buildBullRedisConfig() }),
+    BullModule.registerQueue({ name: 'plan-generation' }),
+    ScriptInfraModule,
+    PlanGenerationModule,
+  ],
+})
+class ScriptModule {}
+
+function loadEnv(): void {
+  // __filename is provided by tsx/node in both ESM and CJS contexts for scripts.
+  const here = dirname(__filename);
+  // Candidates (first match wins):
+  //   apps/api/.env.local                             — when running tsx against src/
+  //   apps/api/dist/.env.local                        — rare
+  //   <repo>/.env.local                               — via tsx (here = apps/api/scripts)
+  //   <repo>/.env.local                               — via compiled (here = apps/api/dist/scripts)
+  const candidates = [
+    resolve(here, '..', '.env.local'),
+    resolve(here, '..', '..', '.env.local'),
+    resolve(here, '..', '..', '..', '.env.local'),
+    resolve(here, '..', '..', '..', '..', '.env.local'),
+  ];
+  for (const path of candidates) {
+    if (!existsSync(path)) continue;
+    const raw = readFileSync(path, 'utf8');
+    for (const line of raw.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eq = trimmed.indexOf('=');
+      if (eq <= 0) continue;
+      const key = trimmed.slice(0, eq).trim();
+      let val = trimmed.slice(eq + 1).trim();
+      if (
+        (val.startsWith('"') && val.endsWith('"')) ||
+        (val.startsWith("'") && val.endsWith("'"))
+      ) {
+        val = val.slice(1, -1);
+      }
+      // Do not override vars that are already set by the caller.
+      if (process.env[key] === undefined) process.env[key] = val;
+    }
+    console.log(`  env loaded from ${path}`);
+    return;
+  }
+}
 
 // ─── CLI flags ───────────────────────────────────────────────────────────
 function flag(name: string): boolean {
@@ -67,7 +195,16 @@ async function createSyntheticTrip(sb: SupabaseClient): Promise<SyntheticTrip> {
   const startDate = new Date(today.getTime() + 14 * 86400_000).toISOString().slice(0, 10);
   const endDate = new Date(today.getTime() + 17 * 86400_000).toISOString().slice(0, 10);
 
-  const { error: uErr } = await sb.from('users').insert({
+  // Supabase JS client has generic typing that requires generated types to
+  // know column shapes. We don't have those in this repo, so the any-typed
+  // insert escape hatch is used for this admin script.
+  const asUntyped = sb as unknown as {
+    from: (t: string) => {
+      insert: (row: Record<string, unknown>) => Promise<{ error: { message: string } | null }>;
+    };
+  };
+
+  const { error: uErr } = await asUntyped.from('users').insert({
     id: userId,
     email: `e2e+${userId.slice(0, 8)}@wonderwaltz.test`,
     display_name: 'E2E Test User',
@@ -75,7 +212,7 @@ async function createSyntheticTrip(sb: SupabaseClient): Promise<SyntheticTrip> {
   });
   if (uErr) throw new Error(`users insert failed: ${uErr.message}`);
 
-  const { error: tErr } = await sb.from('trips').insert({
+  const { error: tErr } = await asUntyped.from('trips').insert({
     id: tripId,
     user_id: userId,
     name: 'E2E Smoke Test Trip',
@@ -91,7 +228,7 @@ async function createSyntheticTrip(sb: SupabaseClient): Promise<SyntheticTrip> {
   });
   if (tErr) throw new Error(`trips insert failed: ${tErr.message}`);
 
-  const { error: gErr } = await sb.from('guests').insert({
+  const { error: gErr } = await asUntyped.from('guests').insert({
     trip_id: tripId,
     name: 'Test Guest',
     age_bracket: '18+',
@@ -102,7 +239,7 @@ async function createSyntheticTrip(sb: SupabaseClient): Promise<SyntheticTrip> {
   });
   if (gErr) throw new Error(`guests insert failed: ${gErr.message}`);
 
-  const { error: pErr } = await sb.from('trip_preferences').insert({
+  const { error: pErr } = await asUntyped.from('trip_preferences').insert({
     trip_id: tripId,
     must_do_attraction_ids: [],
     avoid_attraction_ids: [],
@@ -114,7 +251,7 @@ async function createSyntheticTrip(sb: SupabaseClient): Promise<SyntheticTrip> {
 }
 
 async function cleanupTrip(sb: SupabaseClient, trip: SyntheticTrip): Promise<void> {
-  // Order matters due to FKs: items/days before plans, prefs/guests before trip, trip before user.
+  // Order matters due to FKs: children before parents.
   const { data: planIds } = await sb.from('plans').select('id').eq('trip_id', trip.tripId);
   const planIdList = (planIds ?? []).map((p: { id: string }) => p.id);
   if (planIdList.length > 0) {
@@ -125,6 +262,10 @@ async function cleanupTrip(sb: SupabaseClient, trip: SyntheticTrip): Promise<voi
       await sb.from('plan_days').delete().in('plan_id', planIdList);
     }
     await sb.from('packing_list_items').delete().in('plan_id', planIdList);
+  }
+  // llm_costs references trip_id — must be cleared before deleting the trip.
+  await sb.from('llm_costs').delete().eq('trip_id', trip.tripId);
+  if (planIdList.length > 0) {
     await sb.from('plans').delete().eq('trip_id', trip.tripId);
   }
   await sb.from('trip_preferences').delete().eq('trip_id', trip.tripId);
@@ -282,12 +423,20 @@ async function main(): Promise<void> {
   }
 
   console.log('  Booting NestJS application context…');
-  const app = await NestFactory.createApplicationContext(WorkerModule, {
+  if (OPTS.verbose) {
+    const mask = (v: string | undefined) =>
+      v ? `✓ (${v.length} chars)` : '\x1b[31mMISSING\x1b[0m';
+    console.log(`    DATABASE_URL: ${mask(process.env['DATABASE_URL'])}`);
+    console.log(`    REDIS_URL: ${mask(process.env['REDIS_URL'])}`);
+    console.log(`    ANTHROPIC_API_KEY: ${mask(process.env['ANTHROPIC_API_KEY'])}`);
+    console.log(`    SUPABASE_URL: ${mask(process.env['SUPABASE_URL'])}`);
+    console.log(`    NEXT_PUBLIC_SUPABASE_URL: ${mask(process.env['NEXT_PUBLIC_SUPABASE_URL'])}`);
+    console.log(`    SUPABASE_SERVICE_ROLE_KEY: ${mask(process.env['SUPABASE_SERVICE_ROLE_KEY'])}`);
+  }
+  const app = await NestFactory.createApplicationContext(ScriptModule, {
     logger: OPTS.verbose ? ['log', 'error', 'warn'] : ['error', 'warn'],
   });
   const service = app.get(PlanGenerationService);
-  const logger = app.get<Logger>('Logger', { strict: false }) as unknown as Logger | undefined;
-  if (logger) logger.log?.('E2E script: running PlanGenerationService.generate');
 
   console.log('  Running plan generation (this may take 30-180 s)…');
   const genStart = Date.now();

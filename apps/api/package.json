@@ -10,7 +10,7 @@
     "test": "vitest run",
     "start": "node dist/main.js",
     "start:dev": "ts-node --esm src/main.ts",
-    "plan:live": "tsx scripts/generate-plan-live.ts"
+    "plan:live": "pnpm build && node dist/scripts/generate-plan-live.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.65.0",

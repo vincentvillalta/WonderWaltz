@@ -1,6 +1,7 @@
 import { Module, Global } from '@nestjs/common';
 import Redis, { type RedisOptions } from 'ioredis';
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { createRequire } from 'module';
 import { createClient } from '@supabase/supabase-js';
 import { REDIS_CLIENT_TOKEN } from './alerting/slack-alerter.service.js';
 import { DB_TOKEN } from './ingestion/queue-times.service.js';
@@ -77,11 +78,15 @@ export const SUPABASE_ADMIN_TOKEN = 'SUPABASE_ADMIN_TOKEN';
           return { execute: () => Promise.resolve({ rows: [] }) };
         }
         // Work around @wonderwaltz/db dist-path mismatch (exports: ./dist/index.js
-        // but build output is at dist/src/index.js — see 02-02 SUMMARY)
-        // __dirname at runtime is apps/api/dist/src/ (tsc rootDir "." preserves src/ in output)
-        // 4 levels up: dist/src → dist → apps/api → apps → repo-root
-        const monorepoRoot = resolve(__dirname, '../../../..');
-        const dbIndexPath = resolve(monorepoRoot, 'packages/db/dist/src/index.js');
+        // but build output is at dist/src/index.js — see 02-02 SUMMARY).
+        // Resolve relative to the DB package, not __dirname, so the lookup
+        // works regardless of where this module is loaded from (compiled
+        // NestJS bundle vs. tsx live execution).
+        const anchor =
+          typeof __filename !== 'undefined' ? __filename : `${process.cwd()}/package.json`;
+        const require = createRequire(anchor);
+        const dbPkgJson = require.resolve('@wonderwaltz/db/package.json');
+        const dbIndexPath = resolve(dirname(dbPkgJson), 'dist/src/index.js');
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const dbPkg: { createDb: (url: string) => unknown } = await import(dbIndexPath);
         return dbPkg.createDb(databaseUrl);
