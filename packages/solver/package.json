@@ -17,7 +17,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vitest",
-    "test:run": "vitest --run"
+    "test:run": "vitest --run",
+    "sanity": "tsx scripts/solver-sanity.ts"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
