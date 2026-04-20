@@ -202,6 +202,9 @@ function buildService(opts: { cacheHit?: boolean; throwBudgetExhausted?: boolean
   const narrativeService = buildNarrativeService(opts);
   const solverLoader = buildSolverLoader();
   const persistPlanService = buildPersistPlanService();
+  // WaitBaselinesService: stub that never has data — hydrator falls
+  // through to the solver's internal hash-based default, same as before.
+  const waitBaselines = { has: () => false, lookup: () => null };
 
   const service = new PlanGenerationService(
     db as never,
@@ -210,6 +213,7 @@ function buildService(opts: { cacheHit?: boolean; throwBudgetExhausted?: boolean
     calendarService as never,
     narrativeService as never,
     solverLoader as never,
+    waitBaselines as never,
     persistPlanService as never,
   );
 
@@ -265,6 +269,7 @@ describe('PlanGenerationService', () => {
   describe('trip not found', () => {
     it('throws when trip does not exist', async () => {
       const db = { execute: vi.fn().mockResolvedValue([]) };
+      const waitBaselines = { has: () => false, lookup: () => null };
       const service = new PlanGenerationService(
         db as never,
         buildWalkingGraphLoader() as never,
@@ -272,6 +277,7 @@ describe('PlanGenerationService', () => {
         buildCalendarService() as never,
         buildNarrativeService() as never,
         buildSolverLoader() as never,
+        waitBaselines as never,
         buildPersistPlanService() as never,
       );
 

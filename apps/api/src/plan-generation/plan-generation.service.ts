@@ -12,6 +12,7 @@ import type {
   NarrativeInputDay,
   NarrativeInputItem,
 } from '../narrative/narrative.service.js';
+import { WaitBaselinesService } from '../forecast/wait-baselines.service.js';
 import { PersistPlanService } from './persist-plan.service.js';
 import type { PersistInput } from './persist-plan.service.js';
 import { SolverLoader } from './solver.loader.js';
@@ -108,6 +109,7 @@ interface PreferencesRow extends Record<string, unknown> {
 
 interface AttractionRow extends Record<string, unknown> {
   id: string;
+  external_id: string;
   park_id: string;
   name: string;
   tags: string[];
@@ -150,6 +152,7 @@ export class PlanGenerationService {
     private readonly calendarService: CalendarService,
     private readonly narrativeService: NarrativeService,
     private readonly solverLoader: SolverLoader,
+    private readonly waitBaselines: WaitBaselinesService,
     @Optional() private readonly persistPlanService?: PersistPlanService,
     @Optional() private readonly packingListService?: PackingListService,
     @Optional() private readonly weatherService?: WeatherService,
@@ -357,7 +360,7 @@ export class PlanGenerationService {
     const [attractionRows, diningRows, showRows, walkingEdgeRows] = await Promise.all([
       // height_req_cm in DB; convert to inches (1 inch = 2.54 cm). No duration_minutes column — default at mapping.
       this.queryRows<AttractionRow>(
-        sql`SELECT id, park_id, name, tags, baseline_wait_minutes, lightning_lane_type, is_headliner, height_req_cm, popularity_score FROM attractions WHERE is_active = true`,
+        sql`SELECT id, external_id, park_id, name, tags, baseline_wait_minutes, lightning_lane_type, is_headliner, height_req_cm, popularity_score FROM attractions WHERE is_active = true`,
       ),
       // dining has no table_service or duration_minutes columns; derive from dining_type.
       this.queryRows<DiningRow>(
@@ -417,49 +420,40 @@ export class PlanGenerationService {
     };
 
     // ─── Forecast hydration (FC-01..FC-05) ─────────────────────
-    // Field names must match the solver's buildForecastFn contract:
-    // attractionId / bucketStart / predictedWaitMinutes.
+    // Source: static JSON at packages/content/wdw/wait-baselines.json.
+    // For attractions with curated data (headliners), we pre-compute
+    // per-slot forecasts the solver can index directly. Attractions not
+    // in the file get the solver's internal hash-based fallback.
     //
-    // With no historical data seeded yet, every predictWait() call round-trips
-    // to the DB and returns "low-confidence fallback" anyway. Skipping the
-    // loop entirely saves ~6 min per plan generation (51 × 4 × 4 = 816 DB
-    // calls). Re-enable once historical wait data is ingested.
+    // This replaces the earlier DB-backed loop which took ~6 min per
+    // plan (51 × N days × 4 hours = hundreds of round-trips) and
+    // returned low-confidence baseline anyway. When real historical
+    // ingestion lands, re-enable ForecastService.predictWait here.
     const forecastBuckets: Array<{
       attractionId: string;
       bucketStart: string;
       predictedWaitMinutes: number;
       confidence: string;
     }> = [];
-    const FORECAST_ENABLED = process.env['ENABLE_FORECAST_HYDRATION'] === 'true';
-    try {
-      if (!FORECAST_ENABLED) {
-        this.logger.log(
-          'Forecast hydration skipped (ENABLE_FORECAST_HYDRATION!=true) — solver uses baseline',
-        );
-      } else
-        for (const attraction of attractionRows) {
-          const start = new Date(trip.start_date + 'T00:00:00Z');
-          const end = new Date(trip.end_date + 'T00:00:00Z');
-          for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
-            for (const hour of [9, 12, 15, 18]) {
-              const targetTs = new Date(d);
-              targetTs.setUTCHours(hour, 0, 0, 0);
-              try {
-                const result = await this.forecastService.predictWait(attraction.id, targetTs);
-                forecastBuckets.push({
-                  attractionId: attraction.id,
-                  bucketStart: targetTs.toISOString(),
-                  predictedWaitMinutes: result.minutes,
-                  confidence: result.confidence,
-                });
-              } catch {
-                // Forecast failure is non-fatal — solver uses baseline
-              }
-            }
-          }
+    const SLOT_HOURS = [9, 12, 15, 18];
+    const start = new Date(trip.start_date + 'T00:00:00Z');
+    const end = new Date(trip.end_date + 'T00:00:00Z');
+    for (const attraction of attractionRows) {
+      if (!this.waitBaselines.has(attraction.external_id)) continue;
+      for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+        for (const hour of SLOT_HOURS) {
+          const baseline = this.waitBaselines.lookup(attraction.external_id, hour);
+          if (baseline === null) continue;
+          const targetTs = new Date(d);
+          targetTs.setUTCHours(hour, 0, 0, 0);
+          forecastBuckets.push({
+            attractionId: attraction.id,
+            bucketStart: targetTs.toISOString(),
+            predictedWaitMinutes: baseline.minutes,
+            confidence: baseline.confidence,
+          });
         }
-    } catch {
-      this.logger.warn('Forecast hydration failed (non-fatal) — solver uses baseline');
+      }
     }
 
     // ─── Weather hydration ─────────────────────────────────────

@@ -1,0 +1,105 @@
+{
+  "$schema": "./schema/wait-baselines.schema.json",
+  "_doc": [
+    "Static per-attraction wait-time baselines for 12 WDW headliners.",
+    "",
+    "Keyed by attraction external_id (human-readable, stable). The API",
+    "loader resolves these to attraction UUIDs at hydration time.",
+    "",
+    "Each entry has four time-of-day buckets with an average standby",
+    "wait in minutes and a confidence label. Values are hand-calibrated",
+    "from publicly observable ride-wait patterns (Touring Plans averages",
+    "and firsthand rope-drop / evening patterns). Not gospel — good",
+    "enough for v1 scoring; refine when real historical ingestion lands.",
+    "",
+    "Buckets:",
+    "  open      park open → 11:00    (rope drop, low-to-rising)",
+    "  midday    11:00 → 14:00        (peak crowds)",
+    "  afternoon 14:00 → 18:00        (plateau, slight drop)",
+    "  evening   18:00 → close        (tails down unless fireworks pull)",
+    "",
+    "Any attraction not listed here uses the solver's baseline fallback.",
+    "Edit with intent — these numbers steer which rides the solver slots",
+    "in the morning vs. afternoon."
+  ],
+  "buckets": {
+    "open": { "startHour": 9, "endHour": 11 },
+    "midday": { "startHour": 11, "endHour": 14 },
+    "afternoon": { "startHour": 14, "endHour": 18 },
+    "evening": { "startHour": 18, "endHour": 22 }
+  },
+  "attractions": {
+    "wdw-ak-avatar-flight": {
+      "open": { "minutes": 50, "confidence": "high" },
+      "midday": { "minutes": 110, "confidence": "high" },
+      "afternoon": { "minutes": 90, "confidence": "medium" },
+      "evening": { "minutes": 60, "confidence": "medium" }
+    },
+    "wdw-hs-rise-resistance": {
+      "open": { "minutes": 35, "confidence": "high" },
+      "midday": { "minutes": 100, "confidence": "high" },
+      "afternoon": { "minutes": 90, "confidence": "medium" },
+      "evening": { "minutes": 65, "confidence": "medium" }
+    },
+    "wdw-ep-guardians": {
+      "open": { "minutes": 30, "confidence": "high" },
+      "midday": { "minutes": 80, "confidence": "high" },
+      "afternoon": { "minutes": 75, "confidence": "medium" },
+      "evening": { "minutes": 55, "confidence": "medium" }
+    },
+    "wdw-mk-seven-dwarfs": {
+      "open": { "minutes": 40, "confidence": "high" },
+      "midday": { "minutes": 90, "confidence": "high" },
+      "afternoon": { "minutes": 75, "confidence": "medium" },
+      "evening": { "minutes": 60, "confidence": "medium" }
+    },
+    "wdw-mk-tron": {
+      "open": { "minutes": 35, "confidence": "high" },
+      "midday": { "minutes": 80, "confidence": "high" },
+      "afternoon": { "minutes": 70, "confidence": "medium" },
+      "evening": { "minutes": 55, "confidence": "medium" }
+    },
+    "wdw-ep-remy": {
+      "open": { "minutes": 25, "confidence": "high" },
+      "midday": { "minutes": 70, "confidence": "high" },
+      "afternoon": { "minutes": 65, "confidence": "medium" },
+      "evening": { "minutes": 45, "confidence": "medium" }
+    },
+    "wdw-ep-test-track": {
+      "open": { "minutes": 25, "confidence": "high" },
+      "midday": { "minutes": 70, "confidence": "high" },
+      "afternoon": { "minutes": 60, "confidence": "medium" },
+      "evening": { "minutes": 40, "confidence": "medium" }
+    },
+    "wdw-hs-slinky-dog": {
+      "open": { "minutes": 30, "confidence": "high" },
+      "midday": { "minutes": 75, "confidence": "high" },
+      "afternoon": { "minutes": 65, "confidence": "medium" },
+      "evening": { "minutes": 45, "confidence": "medium" }
+    },
+    "wdw-hs-tower-terror": {
+      "open": { "minutes": 25, "confidence": "high" },
+      "midday": { "minutes": 60, "confidence": "high" },
+      "afternoon": { "minutes": 50, "confidence": "medium" },
+      "evening": { "minutes": 35, "confidence": "medium" }
+    },
+    "wdw-mk-space-mountain": {
+      "open": { "minutes": 25, "confidence": "high" },
+      "midday": { "minutes": 60, "confidence": "high" },
+      "afternoon": { "minutes": 55, "confidence": "medium" },
+      "evening": { "minutes": 40, "confidence": "medium" }
+    },
+    "wdw-ak-expedition-everest": {
+      "open": { "minutes": 15, "confidence": "high" },
+      "midday": { "minutes": 45, "confidence": "high" },
+      "afternoon": { "minutes": 40, "confidence": "medium" },
+      "evening": { "minutes": 25, "confidence": "medium" }
+    },
+    "wdw-ak-kilimanjaro": {
+      "open": { "minutes": 20, "confidence": "high" },
+      "midday": { "minutes": 50, "confidence": "high" },
+      "afternoon": { "minutes": 45, "confidence": "medium" },
+      "evening": { "minutes": 30, "confidence": "low" }
+    }
+  }
+}
