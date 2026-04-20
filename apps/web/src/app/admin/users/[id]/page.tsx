@@ -27,59 +27,87 @@ export default async function UserDetailPage(props: { params: Promise<{ id: stri
   const email = typeof user['email'] === 'string' ? user['email'] : null;
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <header className="flex items-baseline justify-between">
+    <div>
+      <header
+        className="admin-page-head"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: 20,
+        }}
+      >
         <div>
-          <h1 className="text-2xl font-semibold">User {email ?? id.slice(0, 8) + '…'}</h1>
-          <p className="text-xs text-neutral-500 mt-1 font-mono">{id}</p>
+          <h1>User {email ?? id.slice(0, 8) + '…'}</h1>
+          <p className="admin-mono">{id}</p>
         </div>
-        <Link href="/admin/users" className="text-blue-700 text-sm hover:underline">
+        <Link href="/admin/users" className="admin-back-link">
           ← all users
         </Link>
       </header>
 
-      <section className="rounded border border-neutral-200 bg-white p-4">
-        <h2 className="text-sm font-medium mb-2">Profile</h2>
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
-          {Object.entries(user).map(([k, v]) => (
-            <div key={k} className="contents">
-              <dt className="text-neutral-500">{k}</dt>
-              <dd className="font-mono break-all">{str(v)}</dd>
-            </div>
-          ))}
-        </dl>
+      <section className="admin-card">
+        <div className="admin-card__head">Profile</div>
+        <div className="admin-card__body">
+          <dl className="admin-kv">
+            {Object.entries(user).map(([k, v]) => (
+              <div key={k} style={{ display: 'contents' }}>
+                <dt>{k}</dt>
+                <dd>{str(v)}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </section>
 
-      <section className="rounded border border-neutral-200 bg-white">
-        <h2 className="border-b border-neutral-200 bg-neutral-50 px-4 py-2 text-sm font-medium">
-          Trips ({trips?.length ?? 0})
-        </h2>
-        {trips && trips.length > 0 ? (
-          <ul className="divide-y divide-neutral-100">
-            {trips.map((t) => {
-              const tid = str(t['id']);
-              const name = str(t['name']) || 'Untitled';
-              return (
-                <li key={tid} className="px-4 py-2 text-sm">
-                  <Link href={`/admin/trips/${tid}`} className="text-blue-700 hover:underline">
-                    {name}
-                  </Link>
-                  <span className="ml-2 text-xs text-neutral-500">
-                    {str(t['start_date'])} → {str(t['end_date'])} · {str(t['plan_status'])}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p className="p-4 text-sm text-neutral-500">No trips.</p>
-        )}
+      <section className="admin-card">
+        <div className="admin-card__head">Trips ({trips?.length ?? 0})</div>
+        <div>
+          {trips && trips.length > 0 ? (
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+              {trips.map((t) => {
+                const tid = str(t['id']);
+                const name = str(t['name']) || 'Untitled';
+                return (
+                  <li
+                    key={tid}
+                    style={{
+                      padding: '8px 16px',
+                      borderBottom: '1px solid #f1f1f2',
+                      fontSize: 13,
+                    }}
+                  >
+                    <Link href={`/admin/trips/${tid}`} className="admin-cell-uuid--link">
+                      {name}
+                    </Link>
+                    <span style={{ marginLeft: 8, fontSize: 12, color: '#71717a' }}>
+                      {str(t['start_date'])} → {str(t['end_date'])} · {str(t['plan_status'])}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="admin-empty">No trips.</p>
+          )}
+        </div>
       </section>
 
       {entitlements && entitlements.length > 0 && (
-        <section className="rounded border border-neutral-200 bg-white p-4">
-          <h2 className="text-sm font-medium mb-2">Entitlements ({entitlements.length})</h2>
-          <pre className="text-xs overflow-x-auto">{JSON.stringify(entitlements, null, 2)}</pre>
+        <section className="admin-card">
+          <div className="admin-card__head">Entitlements ({entitlements.length})</div>
+          <div className="admin-card__body">
+            <pre
+              style={{
+                fontSize: 11,
+                fontFamily: 'ui-monospace, monospace',
+                overflowX: 'auto',
+                margin: 0,
+              }}
+            >
+              {JSON.stringify(entitlements, null, 2)}
+            </pre>
+          </div>
         </section>
       )}
     </div>

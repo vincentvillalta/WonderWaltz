@@ -69,59 +69,58 @@ export default async function TableBrowserPage(props: {
 
   if (rows.length === 0 && fetchError) {
     return (
-      <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">{table}</h1>
-        <p className="text-red-600 text-sm">Query failed: {fetchError}</p>
+      <div>
+        <header className="admin-page-head" style={{ marginBottom: 16 }}>
+          <h1>{table}</h1>
+        </header>
+        <p className="admin-error-text">Query failed: {fetchError}</p>
       </div>
     );
   }
 
   const columns = rows.length > 0 ? orderColumns(Object.keys(rows[0] as object)) : [];
-
   const totalPages = count != null ? Math.max(1, Math.ceil(count / PAGE_SIZE)) : 1;
 
   return (
-    <div className="space-y-4">
-      <header className="flex items-baseline justify-between">
+    <div>
+      <header
+        className="admin-page-head"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: 16,
+        }}
+      >
         <div>
-          <h1 className="text-2xl font-semibold">{table}</h1>
-          <p className="text-xs text-neutral-500 mt-1">
+          <h1>{table}</h1>
+          <p>
             {count != null ? `${count.toLocaleString()} rows` : 'unknown row count'}
             {usedOrder ? ` · ordered by ${usedOrder} desc` : ''}
           </p>
         </div>
-        <Link href="/admin" className="text-blue-700 text-sm hover:underline">
+        <Link href="/admin" className="admin-back-link">
           ← all tables
         </Link>
       </header>
 
       {rows.length === 0 ? (
-        <div className="rounded border border-neutral-200 bg-white p-6 text-sm text-neutral-600">
-          Table is empty.
-        </div>
+        <div className="admin-empty">Table is empty.</div>
       ) : (
-        <div className="overflow-x-auto rounded border border-neutral-200 bg-white">
-          <table className="min-w-full text-xs">
-            <thead className="bg-neutral-100 text-left">
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
               <tr>
                 {columns.map((c) => (
-                  <th
-                    key={c}
-                    className="px-3 py-2 font-medium text-neutral-700 whitespace-nowrap border-b border-neutral-200"
-                  >
-                    {c}
-                  </th>
+                  <th key={c}>{c}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {rows.map((row, i) => (
-                <tr key={i} className="even:bg-neutral-50 hover:bg-blue-50/40">
+                <tr key={i}>
                   {columns.map((c) => (
-                    <td
-                      key={c}
-                      className="px-3 py-1.5 align-top whitespace-nowrap border-b border-neutral-100"
-                    >
+                    <td key={c}>
                       <RowCell
                         columnName={c}
                         value={row[c]}
@@ -137,24 +136,18 @@ export default async function TableBrowserPage(props: {
         </div>
       )}
 
-      <nav className="flex items-center justify-between text-xs">
-        <div className="text-neutral-500">
+      <nav className="admin-pager" style={{ marginTop: 10 }}>
+        <div>
           Page {page} of {totalPages} · {rows.length} shown
         </div>
-        <div className="flex gap-2">
+        <div>
           {page > 1 && (
-            <Link
-              href={`/admin/${table}?page=${page - 1}`}
-              className="rounded border border-neutral-300 px-3 py-1 hover:bg-neutral-100"
-            >
+            <Link href={`/admin/${table}?page=${page - 1}`} className="admin-pager__btn">
               ← prev
             </Link>
           )}
           {page < totalPages && (
-            <Link
-              href={`/admin/${table}?page=${page + 1}`}
-              className="rounded border border-neutral-300 px-3 py-1 hover:bg-neutral-100"
-            >
+            <Link href={`/admin/${table}?page=${page + 1}`} className="admin-pager__btn">
               next →
             </Link>
           )}

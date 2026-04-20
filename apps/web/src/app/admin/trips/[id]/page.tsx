@@ -30,13 +30,21 @@ export default async function TripDetailPage(props: { params: Promise<{ id: stri
   if (!trip) notFound();
 
   return (
-    <div className="space-y-6 max-w-6xl">
-      <header className="flex items-baseline justify-between">
+    <div>
+      <header
+        className="admin-page-head"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: 20,
+        }}
+      >
         <div>
-          <h1 className="text-2xl font-semibold">Trip {id.slice(0, 8)}…</h1>
-          <p className="text-xs text-neutral-500 mt-1 font-mono">{id}</p>
+          <h1>Trip {id.slice(0, 8)}…</h1>
+          <p className="admin-mono">{id}</p>
         </div>
-        <Link href="/admin/trips" className="text-blue-700 text-sm hover:underline">
+        <Link href="/admin/trips" className="admin-back-link">
           ← all trips
         </Link>
       </header>
@@ -49,29 +57,30 @@ export default async function TripDetailPage(props: { params: Promise<{ id: stri
         {guests && guests.length > 0 ? (
           <SimpleTable rows={guests} />
         ) : (
-          <p className="text-sm text-neutral-500">No guests.</p>
+          <p className="admin-empty">No guests.</p>
         )}
       </Section>
 
       <Section title="Preferences">
-        {prefs ? <KeyValueGrid obj={prefs} /> : <p className="text-sm text-neutral-500">None.</p>}
+        {prefs ? <KeyValueGrid obj={prefs} /> : <p className="admin-empty">None.</p>}
       </Section>
 
       <Section title={`Plans (${plans?.length ?? 0})`}>
         {plans && plans.length > 0 ? (
-          <ul className="space-y-1 text-sm">
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: 13 }}>
             {plans.map((p) => {
               const pid = str(p['id']);
               const when = str(p['generated_at'] ?? p['created_at'] ?? '');
               return (
-                <li key={pid}>
+                <li key={pid} style={{ padding: '4px 0' }}>
                   <Link
                     href={`/admin/plans/${pid}`}
-                    className="text-blue-700 hover:underline font-mono"
+                    className="admin-cell-uuid--link"
+                    style={{ fontFamily: 'ui-monospace, monospace', fontSize: 13 }}
                   >
                     v{str(p['version'])} · {str(p['status'])} · {pid.slice(0, 8)}…
                   </Link>
-                  <span className="text-neutral-500 text-xs ml-2">
+                  <span style={{ color: '#71717a', fontSize: 12, marginLeft: 8 }}>
                     {when.slice(0, 19).replace('T', ' ')}
                   </span>
                 </li>
@@ -79,7 +88,7 @@ export default async function TripDetailPage(props: { params: Promise<{ id: stri
             })}
           </ul>
         ) : (
-          <p className="text-sm text-neutral-500">No plans yet.</p>
+          <p className="admin-empty">No plans yet.</p>
         )}
       </Section>
     </div>
@@ -88,22 +97,20 @@ export default async function TripDetailPage(props: { params: Promise<{ id: stri
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded border border-neutral-200 bg-white">
-      <h2 className="border-b border-neutral-200 bg-neutral-50 px-4 py-2 text-sm font-medium">
-        {title}
-      </h2>
-      <div className="p-4">{children}</div>
+    <section className="admin-card">
+      <div className="admin-card__head">{title}</div>
+      <div className="admin-card__body">{children}</div>
     </section>
   );
 }
 
 function KeyValueGrid({ obj }: { obj: Record<string, unknown> }) {
   return (
-    <dl className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
+    <dl className="admin-kv">
       {Object.entries(obj).map(([k, v]) => (
-        <div key={k} className="contents">
-          <dt className="text-neutral-500">{k}</dt>
-          <dd className="font-mono break-all">{renderVal(v)}</dd>
+        <div key={k} style={{ display: 'contents' }}>
+          <dt>{k}</dt>
+          <dd>{renderVal(v)}</dd>
         </div>
       ))}
     </dl>
@@ -113,22 +120,20 @@ function KeyValueGrid({ obj }: { obj: Record<string, unknown> }) {
 function SimpleTable({ rows }: { rows: Record<string, unknown>[] }) {
   const columns = Object.keys(rows[0] ?? {});
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full text-xs">
-        <thead className="bg-neutral-100 text-left">
+    <div style={{ overflowX: 'auto' }}>
+      <table className="admin-table">
+        <thead>
           <tr>
             {columns.map((c) => (
-              <th key={c} className="px-2 py-1 font-medium whitespace-nowrap">
-                {c}
-              </th>
+              <th key={c}>{c}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={i} className="even:bg-neutral-50">
+            <tr key={i}>
               {columns.map((c) => (
-                <td key={c} className="px-2 py-1 whitespace-nowrap font-mono">
+                <td key={c} style={{ fontFamily: 'ui-monospace, monospace' }}>
                   {renderVal(row[c])}
                 </td>
               ))}

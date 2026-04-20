@@ -64,105 +64,86 @@ export default async function PlanDetailPage(props: { params: Promise<{ id: stri
   const planRow = plan;
   const warnings = parseWarnings(planRow['warnings']);
 
-  // Item-type → color for the timeline pills.
-  const typeColors: Record<string, string> = {
-    attraction: 'bg-blue-100 text-blue-800',
-    dining: 'bg-amber-100 text-amber-800',
-    meal: 'bg-amber-100 text-amber-800',
-    show: 'bg-purple-100 text-purple-800',
-    break: 'bg-neutral-200 text-neutral-700',
-    rest: 'bg-neutral-200 text-neutral-700',
-    ll_reminder: 'bg-green-100 text-green-800',
-    walk: 'bg-neutral-100 text-neutral-500',
-  };
-
   return (
-    <div className="space-y-6 max-w-6xl">
-      <header className="flex items-baseline justify-between">
+    <div>
+      <header
+        className="admin-page-head"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: 20,
+        }}
+      >
         <div>
-          <h1 className="text-2xl font-semibold">
+          <h1>
             Plan v{String(planRow['version'])} · {String(planRow['status'])}
           </h1>
-          <p className="text-xs text-neutral-500 mt-1 font-mono">{id}</p>
+          <p className="admin-mono">{id}</p>
           {typeof planRow['trip_id'] === 'string' && (
-            <p className="text-xs text-neutral-600 mt-0.5">
+            <p style={{ fontSize: 12, color: '#52525b', marginTop: 4 }}>
               trip:{' '}
               <Link
                 href={`/admin/trips/${planRow['trip_id']}`}
-                className="text-blue-700 hover:underline font-mono"
+                className="admin-cell-uuid--link"
+                style={{ fontFamily: 'ui-monospace, monospace' }}
               >
                 {planRow['trip_id'].slice(0, 8)}…
               </Link>
             </p>
           )}
         </div>
-        <Link href="/admin/plans" className="text-blue-700 text-sm hover:underline">
+        <Link href="/admin/plans" className="admin-back-link">
           ← all plans
         </Link>
       </header>
 
       {warnings.length > 0 && (
-        <section className="rounded border border-amber-300 bg-amber-50 p-3 text-sm">
-          <h2 className="font-medium text-amber-900">Warnings ({warnings.length})</h2>
-          <ul className="mt-1 list-disc list-inside text-amber-800">
+        <div className="admin-warn" style={{ marginBottom: 16 }}>
+          <h2>Warnings ({warnings.length})</h2>
+          <ul>
             {warnings.map((w, i) => (
               <li key={i}>{w}</li>
             ))}
           </ul>
-        </section>
+        </div>
       )}
 
       {days?.map((day) => {
         const dayItems = itemsByDay.get(day.id) ?? [];
         return (
-          <section key={day.id} className="rounded border border-neutral-200 bg-white">
-            <header className="border-b border-neutral-200 bg-neutral-50 px-4 py-2 flex items-baseline justify-between">
-              <h2 className="text-sm font-medium">
+          <section key={day.id} className="admin-day">
+            <header className="admin-day__head">
+              <h2 style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>
                 Day {day.day_index} · {day.date} · {parkName.get(day.park_id) ?? day.park_id}
               </h2>
-              <span className="text-xs text-neutral-500">{dayItems.length} items</span>
+              <span style={{ fontSize: 12, color: '#71717a' }}>{dayItems.length} items</span>
             </header>
-            {day.narrative_intro && (
-              <p className="px-4 py-3 text-sm text-neutral-700 italic border-b border-neutral-100">
-                {day.narrative_intro}
-              </p>
-            )}
-            <ol className="divide-y divide-neutral-100">
+            {day.narrative_intro && <p className="admin-day__intro">{day.narrative_intro}</p>}
+            <ol className="admin-day__items">
               {dayItems.length === 0 ? (
-                <li className="px-4 py-3 text-sm text-neutral-500">No items.</li>
+                <li className="admin-empty">No items.</li>
               ) : (
                 dayItems.map((it) => (
-                  <li key={it.id} className="px-4 py-2 flex items-start gap-3 text-sm">
-                    <div className="w-20 shrink-0 font-mono text-xs text-neutral-600">
+                  <li key={it.id}>
+                    <div className="admin-day__time">
                       {it.start_time}–{it.end_time}
                     </div>
-                    <span
-                      className={`inline-block rounded px-1.5 py-0.5 text-[10px] font-medium uppercase shrink-0 ${
-                        typeColors[it.item_type] ?? 'bg-neutral-100 text-neutral-700'
-                      }`}
-                    >
+                    <span className={`admin-day__pill admin-pill--${it.item_type || 'default'}`}>
                       {it.item_type}
                     </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-medium truncate">{it.name}</span>
+                    <div className="admin-day__body">
+                      <div className="admin-day__row1">
+                        <span className="admin-day__name">{it.name}</span>
                         {it.wait_minutes !== null && (
-                          <span className="text-xs text-neutral-500 tabular-nums">
-                            wait {it.wait_minutes}m
-                          </span>
+                          <span className="admin-day__wait">wait {it.wait_minutes}m</span>
                         )}
                         {it.lightning_lane_type && (
-                          <span className="text-xs text-green-700">
-                            LL · {it.lightning_lane_type}
-                          </span>
+                          <span className="admin-day__ll">LL · {it.lightning_lane_type}</span>
                         )}
                       </div>
-                      {it.notes && <div className="text-xs text-amber-700 mt-0.5">{it.notes}</div>}
-                      {it.narrative_tip && (
-                        <div className="text-xs text-neutral-600 mt-0.5 italic">
-                          {it.narrative_tip}
-                        </div>
-                      )}
+                      {it.notes && <div className="admin-day__note">{it.notes}</div>}
+                      {it.narrative_tip && <div className="admin-day__tip">{it.narrative_tip}</div>}
                     </div>
                   </li>
                 ))

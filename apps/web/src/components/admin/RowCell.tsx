@@ -1,6 +1,5 @@
 import Link from 'next/link';
 
-/** UUID shape, used to auto-link to drill-down pages for known tables. */
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const LINKABLE_COLUMNS: Record<string, string> = {
@@ -24,22 +23,22 @@ export function RowCell({
   isIdColumn: boolean;
 }) {
   if (value === null || value === undefined) {
-    return <span className="text-neutral-400">∅</span>;
+    return <span className="admin-cell-null">∅</span>;
   }
   if (typeof value === 'boolean') {
-    return <span className={value ? 'text-green-700' : 'text-neutral-500'}>{String(value)}</span>;
+    return <span className={value ? 'admin-cell-true' : 'admin-cell-false'}>{String(value)}</span>;
   }
   if (typeof value === 'number') {
-    return <span className="tabular-nums">{value.toLocaleString()}</span>;
+    return <span className="admin-cell-num">{value.toLocaleString()}</span>;
   }
   if (Array.isArray(value)) {
-    if (value.length === 0) return <span className="text-neutral-400">[]</span>;
+    if (value.length === 0) return <span className="admin-cell-null">[]</span>;
     return (
-      <span className="text-xs text-neutral-700">
+      <span className="admin-cell-array">
         [{value.length}]{' '}
         {value
           .slice(0, 3)
-          .map((v) => String(v))
+          .map((v) => (typeof v === 'string' ? v : JSON.stringify(v)))
           .join(', ')}
         {value.length > 3 ? '…' : ''}
       </span>
@@ -48,34 +47,29 @@ export function RowCell({
   if (typeof value === 'object') {
     const json = JSON.stringify(value);
     return (
-      <span className="text-xs text-neutral-700" title={JSON.stringify(value, null, 2)}>
+      <span className="admin-cell-json" title={JSON.stringify(value, null, 2)}>
         {json.length > 80 ? json.slice(0, 77) + '…' : json}
       </span>
     );
   }
   const str = typeof value === 'string' ? value : JSON.stringify(value);
-  // UUID: link to the matching table if we know one
   if (UUID_RE.test(str)) {
     const linkTable = isIdColumn ? tableName : (LINKABLE_COLUMNS[columnName] ?? null);
     if (linkTable) {
       return (
-        <Link
-          href={`/admin/${linkTable}/${str}`}
-          className="text-blue-700 hover:underline font-mono text-xs"
-        >
+        <Link href={`/admin/${linkTable}/${str}`} className="admin-cell-uuid admin-cell-uuid--link">
           {str.slice(0, 8)}…
         </Link>
       );
     }
-    return <span className="font-mono text-xs text-neutral-600">{str.slice(0, 8)}…</span>;
+    return <span className="admin-cell-uuid">{str.slice(0, 8)}…</span>;
   }
-  // ISO date-time
   if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(str)) {
-    return <span className="text-xs text-neutral-700">{str.slice(0, 19).replace('T', ' ')}</span>;
+    return <span className="admin-cell-time">{str.slice(0, 19).replace('T', ' ')}</span>;
   }
   if (str.length > 80) {
     return (
-      <span title={str} className="text-xs">
+      <span title={str} className="admin-cell-trunc">
         {str.slice(0, 77)}…
       </span>
     );
