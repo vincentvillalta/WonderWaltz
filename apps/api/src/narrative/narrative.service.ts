@@ -490,10 +490,16 @@ export class NarrativeService {
   ): Promise<Map<string, { intro: string; tips: Record<string, string> }> | null> {
     if (!this.db || keys.length === 0) return null;
     try {
+      // postgres-js serializes a JS array as a composite ROW, which can't
+      // be cast to text[]. Use a jsonb array literal and unnest via
+      // jsonb_array_elements_text, which is driver-agnostic.
+      const keysJson = JSON.stringify(keys);
       const rows = (await this.db.execute(
         sql`SELECT cache_key, narrative_intro, tips
             FROM narrative_day_cache
-            WHERE cache_key = ANY(${keys}::text[])`,
+            WHERE cache_key IN (
+              SELECT jsonb_array_elements_text(${keysJson}::jsonb)
+            )`,
       )) as Array<{
         cache_key: string;
         narrative_intro: string;
@@ -582,10 +588,13 @@ export class NarrativeService {
   private async bumpCacheHits(keys: string[]): Promise<void> {
     if (!this.db || keys.length === 0) return;
     try {
+      const keysJson = JSON.stringify(keys);
       await this.db.execute(sql`
         UPDATE narrative_day_cache
         SET hit_count = hit_count + 1, last_hit_at = NOW()
-        WHERE cache_key = ANY(${keys}::text[])
+        WHERE cache_key IN (
+          SELECT jsonb_array_elements_text(${keysJson}::jsonb)
+        )
       `);
     } catch (err) {
       this.logger.error('narrative_day_cache bump failed (non-fatal)', err);

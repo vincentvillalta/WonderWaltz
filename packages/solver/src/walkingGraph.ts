@@ -94,13 +94,28 @@ export function buildWalkingGraph(edges: readonly Edge[]): WalkingGraph {
 }
 
 /**
+ * Default walk time when an endpoint is missing from the graph. 300 s (5 min)
+ * is roughly "walking across a typical park section." Prevents the solver
+ * from locking out every attraction the moment a node ID drifts from the
+ * catalog — a common failure mode when walking_graph seeds use mixed
+ * conventions (UUIDs, 'attraction:<external-id>', 'entrance', etc.).
+ */
+const DEFAULT_WALK_SECONDS = 300;
+
+/**
  * O(1) shortest-path lookup. Returns walking seconds between `fromId` and
- * `toId`. Same node → 0. Unknown node or unreachable pair → Infinity.
+ * `toId`.
+ *
+ *  - Same node → 0.
+ *  - Either endpoint unknown to the graph → DEFAULT_WALK_SECONDS (best-effort
+ *    fallback; the solver never stalls).
+ *  - Both endpoints known but pair unreachable → Infinity (real data signal).
  */
 export function shortestPath(graph: WalkingGraph, fromId: string, toId: string): number {
   if (fromId === toId) return 0;
   const row = graph.distances.get(fromId);
-  if (!row) return Infinity;
+  if (!row) return DEFAULT_WALK_SECONDS;
   const d = row.get(toId);
-  return d === undefined ? Infinity : d;
+  if (d === undefined) return DEFAULT_WALK_SECONDS;
+  return d;
 }

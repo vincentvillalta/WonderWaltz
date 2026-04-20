@@ -74,10 +74,14 @@ describe('buildWalkingGraph', () => {
     expect(shortestPath(g, 'B', 'B')).toBe(0);
   });
 
-  it('returns Infinity for nodes not in the graph', () => {
+  it('returns a default walk time for nodes not in the graph (best-effort fallback)', () => {
     const g = buildWalkingGraph([{ fromNodeId: 'A', toNodeId: 'B', seconds: 30 }]);
-    expect(shortestPath(g, 'X', 'A')).toBe(Infinity);
-    expect(shortestPath(g, 'A', 'X')).toBe(Infinity);
+    // Source unknown, destination known.
+    expect(shortestPath(g, 'X', 'A')).toBe(300);
+    // Source known, destination unknown.
+    expect(shortestPath(g, 'A', 'X')).toBe(300);
+    // Both unknown.
+    expect(shortestPath(g, 'X', 'Y')).toBe(300);
   });
 
   it('is deterministic: same edge list → byte-identical distance map', () => {
