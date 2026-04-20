@@ -198,6 +198,8 @@ export class PlansService {
       id: day.id,
       date: day.date,
       park_id: day.park_id,
+      park_name: day.park_name,
+      day_index: day.day_index,
       items: items.map((item) => this.mapItem(item)),
     };
   }

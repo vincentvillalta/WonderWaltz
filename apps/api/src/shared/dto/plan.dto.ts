@@ -134,6 +134,18 @@ export class FullDayPlanDto {
   park_id!: string;
 
   @ApiProperty({
+    description: 'Park display name (e.g. "Magic Kingdom").',
+    example: 'Magic Kingdom',
+  })
+  park_name!: string;
+
+  @ApiProperty({
+    description: 'Zero-based day index within the trip (0 = day 1).',
+    example: 0,
+  })
+  day_index!: number;
+
+  @ApiProperty({
     description: 'Ordered list of itinerary items for the day',
     type: [PlanItemDto],
   })
