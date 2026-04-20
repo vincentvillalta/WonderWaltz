@@ -139,7 +139,10 @@ describe('WeatherService', () => {
     mockRedis = makeRedisClient();
     mockConfig = { get: vi.fn().mockReturnValue('test-api-key') };
 
-    service = new WeatherService(mockConfig as never, mockRedis as never);
+    // Stub climatology that always returns null — keeps prior test
+    // semantics (null for beyond-horizon / API-error cases) intact.
+    const mockClimatology = { lookup: vi.fn().mockReturnValue(null) };
+    service = new WeatherService(mockConfig as never, mockRedis as never, mockClimatology as never);
 
     // Spy on globalThis.fetch
     fetchSpy = vi.fn();

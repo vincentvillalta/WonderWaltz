@@ -1,0 +1,106 @@
+{
+  "_doc": [
+    "Monthly climate averages for Orlando, FL (KORL — the airport station)",
+    "used when a trip is beyond Open-Meteo's 10-day forecast horizon.",
+    "",
+    "Sourced from NOAA climate normals (1991–2020). Values are rounded for",
+    "readability; see https://www.ncei.noaa.gov/products/climate-normals.",
+    "",
+    "Fields:",
+    "  highF                  average daily high in °F",
+    "  lowF                   average daily low in °F",
+    "  precipitationProbability  fraction of days (0..1) with measurable rain",
+    "  uvIndex                median peak UV index for the month",
+    "  condition              single descriptive word the packing list + LLM can lean on",
+    "",
+    "Confidence is 'climatology' — distinct from the 'high/medium/low'",
+    "labels used for live forecasts, so downstream code can flag 'this is",
+    "a long-term average, not a real forecast'."
+  ],
+  "monthlyByMonth": {
+    "1": {
+      "highF": 72,
+      "lowF": 50,
+      "precipitationProbability": 0.2,
+      "uvIndex": 5,
+      "condition": "Mild and dry"
+    },
+    "2": {
+      "highF": 74,
+      "lowF": 52,
+      "precipitationProbability": 0.2,
+      "uvIndex": 6,
+      "condition": "Mild and dry"
+    },
+    "3": {
+      "highF": 79,
+      "lowF": 57,
+      "precipitationProbability": 0.25,
+      "uvIndex": 8,
+      "condition": "Warm spring"
+    },
+    "4": {
+      "highF": 84,
+      "lowF": 61,
+      "precipitationProbability": 0.2,
+      "uvIndex": 9,
+      "condition": "Warm and clear"
+    },
+    "5": {
+      "highF": 89,
+      "lowF": 67,
+      "precipitationProbability": 0.28,
+      "uvIndex": 10,
+      "condition": "Hot and humid"
+    },
+    "6": {
+      "highF": 92,
+      "lowF": 72,
+      "precipitationProbability": 0.47,
+      "uvIndex": 11,
+      "condition": "Hot with afternoon storms"
+    },
+    "7": {
+      "highF": 93,
+      "lowF": 74,
+      "precipitationProbability": 0.55,
+      "uvIndex": 11,
+      "condition": "Hot with afternoon storms"
+    },
+    "8": {
+      "highF": 93,
+      "lowF": 74,
+      "precipitationProbability": 0.57,
+      "uvIndex": 10,
+      "condition": "Hot with afternoon storms"
+    },
+    "9": {
+      "highF": 90,
+      "lowF": 72,
+      "precipitationProbability": 0.5,
+      "uvIndex": 9,
+      "condition": "Warm and humid"
+    },
+    "10": {
+      "highF": 85,
+      "lowF": 65,
+      "precipitationProbability": 0.28,
+      "uvIndex": 7,
+      "condition": "Warm and pleasant"
+    },
+    "11": {
+      "highF": 78,
+      "lowF": 57,
+      "precipitationProbability": 0.18,
+      "uvIndex": 6,
+      "condition": "Cool and dry"
+    },
+    "12": {
+      "highF": 73,
+      "lowF": 52,
+      "precipitationProbability": 0.2,
+      "uvIndex": 5,
+      "condition": "Cool and dry"
+    }
+  }
+}

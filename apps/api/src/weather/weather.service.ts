@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Inject } from '@nestjs/common';
 import type Redis from 'ioredis';
 import { REDIS_CLIENT_TOKEN } from '../alerting/slack-alerter.service.js';
+import { ClimatologyService } from './climatology.service.js';
 
 /** Shape of the weather forecast returned to API clients */
 export interface WeatherDto {
@@ -53,6 +54,7 @@ export class WeatherService {
   constructor(
     private readonly config: ConfigService,
     @Inject(REDIS_CLIENT_TOKEN) private readonly redis: Redis,
+    private readonly climatology: ClimatologyService,
   ) {}
 
   /**
@@ -85,7 +87,10 @@ export class WeatherService {
    */
   async getForecast(dateStr: string): Promise<WeatherDto | null> {
     if (!this.isWithinHorizon(dateStr)) {
-      return null;
+      // Beyond the live forecast window — fall back to monthly climatology
+      // so packing list and plan surfaces get a reasonable signal. The
+      // climatology DTO is shape-compatible with the live one.
+      return this.climatology.lookup(dateStr);
     }
 
     try {
@@ -96,7 +101,10 @@ export class WeatherService {
 
       return await this.fetchAndCacheAll(dateStr);
     } catch {
-      return null;
+      // Live fetch failed — try climatology as a secondary fallback so
+      // the caller never gets null for past-today dates that a flaky
+      // upstream API would otherwise drop.
+      return this.climatology.lookup(dateStr);
     }
   }
 
