@@ -208,7 +208,15 @@ export class PlanGenerationService {
       // ─── 5. solve() ───────────────────────────────────────────
       const rawOutput = solverPkg.solve(solverInput as never);
       const solverOutput = rawOutput as unknown as SolverDayPlan[];
-      this.logger.log(`Solver completed: ${solverOutput.length} days (${Date.now() - t0}ms)`);
+      const perDay = solverOutput
+        .map(
+          (d) =>
+            `d${d.dayIndex}:${d.items.filter((i) => i.type === 'attraction').length}a/${d.items.length}t`,
+        )
+        .join(' ');
+      this.logger.log(
+        `Solver completed: ${solverOutput.length} days [${perDay}] (${Date.now() - t0}ms)`,
+      );
 
       // ─── 6. Narrative ─────────────────────────────────────────
       const narrativeInput = this.buildNarrativeInput(
@@ -411,34 +419,45 @@ export class PlanGenerationService {
     // ─── Forecast hydration (FC-01..FC-05) ─────────────────────
     // Field names must match the solver's buildForecastFn contract:
     // attractionId / bucketStart / predictedWaitMinutes.
+    //
+    // With no historical data seeded yet, every predictWait() call round-trips
+    // to the DB and returns "low-confidence fallback" anyway. Skipping the
+    // loop entirely saves ~6 min per plan generation (51 × 4 × 4 = 816 DB
+    // calls). Re-enable once historical wait data is ingested.
     const forecastBuckets: Array<{
       attractionId: string;
       bucketStart: string;
       predictedWaitMinutes: number;
       confidence: string;
     }> = [];
+    const FORECAST_ENABLED = process.env['ENABLE_FORECAST_HYDRATION'] === 'true';
     try {
-      for (const attraction of attractionRows) {
-        const start = new Date(trip.start_date + 'T00:00:00Z');
-        const end = new Date(trip.end_date + 'T00:00:00Z');
-        for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
-          for (const hour of [9, 12, 15, 18]) {
-            const targetTs = new Date(d);
-            targetTs.setUTCHours(hour, 0, 0, 0);
-            try {
-              const result = await this.forecastService.predictWait(attraction.id, targetTs);
-              forecastBuckets.push({
-                attractionId: attraction.id,
-                bucketStart: targetTs.toISOString(),
-                predictedWaitMinutes: result.minutes,
-                confidence: result.confidence,
-              });
-            } catch {
-              // Forecast failure is non-fatal — solver uses baseline
+      if (!FORECAST_ENABLED) {
+        this.logger.log(
+          'Forecast hydration skipped (ENABLE_FORECAST_HYDRATION!=true) — solver uses baseline',
+        );
+      } else
+        for (const attraction of attractionRows) {
+          const start = new Date(trip.start_date + 'T00:00:00Z');
+          const end = new Date(trip.end_date + 'T00:00:00Z');
+          for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+            for (const hour of [9, 12, 15, 18]) {
+              const targetTs = new Date(d);
+              targetTs.setUTCHours(hour, 0, 0, 0);
+              try {
+                const result = await this.forecastService.predictWait(attraction.id, targetTs);
+                forecastBuckets.push({
+                  attractionId: attraction.id,
+                  bucketStart: targetTs.toISOString(),
+                  predictedWaitMinutes: result.minutes,
+                  confidence: result.confidence,
+                });
+              } catch {
+                // Forecast failure is non-fatal — solver uses baseline
+              }
             }
           }
         }
-      }
     } catch {
       this.logger.warn('Forecast hydration failed (non-fatal) — solver uses baseline');
     }

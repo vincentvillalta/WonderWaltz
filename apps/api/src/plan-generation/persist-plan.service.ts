@@ -125,9 +125,14 @@ export class PersistPlanService {
         const startTime = this.extractTime(item.startTime);
         const endTime = this.extractTime(item.endTime);
 
+        // wait_minutes is `integer` in Postgres but the solver sometimes
+        // emits sub-minute precision (e.g. 18.5 from forecast averaging).
+        // Round before insert to avoid "invalid input syntax for type integer".
+        const waitMinutes = item.waitMinutes != null ? Math.round(item.waitMinutes) : null;
+
         await this.db.execute(sql`
           INSERT INTO plan_items (plan_day_id, item_type, ref_id, name, start_time, end_time, wait_minutes, sort_index, lightning_lane_type, notes, narrative_tip, metadata)
-          VALUES (${planDayId}, ${item.type}, ${item.refId ?? null}, ${item.name}, ${startTime}, ${endTime}, ${item.waitMinutes ?? null}, ${sortIndex}, ${item.lightningLaneType ?? null}, ${item.notes ?? null}, ${itemNarrative}, '{}'::jsonb)
+          VALUES (${planDayId}, ${item.type}, ${item.refId ?? null}, ${item.name}, ${startTime}, ${endTime}, ${waitMinutes}, ${sortIndex}, ${item.lightningLaneType ?? null}, ${item.notes ?? null}, ${itemNarrative}, '{}'::jsonb)
         `);
       }
     }
