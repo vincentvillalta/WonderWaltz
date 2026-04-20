@@ -37,6 +37,7 @@ import { allocateLL } from './lightningLane.js';
 import { insertRestBlocks } from './fatigue.js';
 import { resolveParkHours } from './parkHours.js';
 import type { LodgingType } from './parkHours.js';
+import { assignParksToDays as computeParkAssignment } from './parkAssignment.js';
 // score.js re-exported via barrel; used by constructDay internally
 
 // ─── Date helpers (timezone-naive) ─────────────────────────────────────────
@@ -57,27 +58,6 @@ function generateDateRange(startDate: string, endDate: string): string[] {
     dates.push(`${yyyy}-${mm}-${dd}`);
   }
   return dates;
-}
-
-/** Deterministic park assignment: round-robin across unique parkIds in catalog order. */
-function assignParksToDays(dates: string[], attractions: CatalogAttraction[]): Map<string, string> {
-  // Collect unique park IDs in stable order (first occurrence in sorted attractions)
-  const seen = new Set<string>();
-  const parks: string[] = [];
-  const sorted = [...attractions].sort((a, b) => a.parkId.localeCompare(b.parkId));
-  for (const a of sorted) {
-    if (!seen.has(a.parkId)) {
-      seen.add(a.parkId);
-      parks.push(a.parkId);
-    }
-  }
-  if (parks.length === 0) return new Map();
-
-  const map = new Map<string, string>();
-  for (let i = 0; i < dates.length; i++) {
-    map.set(dates[i]!, parks[i % parks.length]!);
-  }
-  return map;
 }
 
 /** Build a ForecastFn from the input's forecast buckets, with baseline fallback. */
@@ -180,8 +160,13 @@ export function solve(input: SolverInput): DayPlan[] {
   // Build forecast function
   const forecastFn = buildForecastFn(input, attractionMap);
 
-  // Assign parks to days deterministically
-  const parkAssignment = assignParksToDays(dates, input.catalog.attractions);
+  // Assign parks to days — must-do-dominant with intensity balancing.
+  const parkAssignment = computeParkAssignment({
+    dates,
+    attractions: input.catalog.attractions,
+    mustDoAttractionIds: input.preferences.mustDoAttractionIds,
+    lodgingType: input.trip.lodgingType,
+  });
 
   // Determine lodging type
   const lodgingType: LodgingType = (input.trip.lodgingType as LodgingType) || 'off_property';
