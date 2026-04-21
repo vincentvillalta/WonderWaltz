@@ -1,0 +1,39 @@
+# Vercel ignores files matching this pattern list when bundling a CLI
+# deploy. Git integration doesn't need it (only the CLI).
+#
+# The iOS tree alone is ~hundreds of MB once Derived/ and *.Package.resolved
+# land, and Vercel caps CLI uploads at 10 MB.
+
+# ── iOS / mobile
+apps/ios/
+apps/android/
+
+# ── Build output everywhere
+**/dist/
+**/build/
+**/.next/
+**/.turbo/
+
+# ── Node modules (Vercel re-installs with pnpm)
+**/node_modules/
+
+# ── IDE + OS cruft
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# ── Logs
+**/*.log
+
+# ── Claude tooling
+.claude/
+.mcp.json
+
+# ── Planning docs (not needed for build)
+.planning/
+
+# ── Local secrets (Vercel has its own env store)
+.env.local
+**/.env.local
+**/.env
