@@ -2,5 +2,6 @@
   "framework": "nextjs",
   "buildCommand": "cd ../.. && turbo run build --filter=@wonderwaltz/web...",
   "installCommand": "pnpm install",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "ignoreCommand": "exit 1"
 }
