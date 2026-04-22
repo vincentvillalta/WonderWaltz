@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { UnrecoverableError } from 'bullmq';
 import { PlanGenerationService } from '../../src/plan-generation/plan-generation.service.js';
 import { BudgetExhaustedError } from '../../src/narrative/narrative.service.js';
 
@@ -254,10 +253,10 @@ describe('PlanGenerationService', () => {
   });
 
   describe('BudgetExhaustedError', () => {
-    it('wraps in UnrecoverableError and sets trip status to failed', async () => {
+    it('rethrows BudgetExhaustedError and sets trip status to failed', async () => {
       const { service, db } = buildService({ throwBudgetExhausted: true });
 
-      await expect(service.generate(TRIP_ID)).rejects.toThrow(UnrecoverableError);
+      await expect(service.generate(TRIP_ID)).rejects.toThrow(BudgetExhaustedError);
 
       // UPDATE trips SET plan_status = 'failed' was called.
       // After 0006 migration dropped the cache check: 3 parallel loads +

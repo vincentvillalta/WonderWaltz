@@ -5,17 +5,16 @@ import {
   HttpCode,
   HttpException,
   Inject,
+  Logger,
   NotFoundException,
   Param,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { sql } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
-import type { Queue } from 'bullmq';
 import { ApiEnvelopedResponse } from '../common/decorators/api-enveloped-response.decorator.js';
 import { rowsOf } from '../common/drizzle-rows.js';
 import { AnonymousTripLimitGuard } from '../auth/anonymous-trip-limit.guard.js';
@@ -23,6 +22,7 @@ import { SupabaseAuthGuard } from '../auth/auth.guard.js';
 import type { RequestUser } from '../auth/auth.guard.js';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
 import { CircuitBreakerService } from '../plan-generation/circuit-breaker.service.js';
+import { PlanGenerationService } from '../plan-generation/plan-generation.service.js';
 import { RateLimitGuard, RateLimit } from '../plan-generation/rate-limit.guard.js';
 import { PlanBudgetExhaustedDto } from '../shared/dto/plan-budget-exhausted.dto.js';
 import { RethinkRequestDto } from '../shared/dto/rethink.dto.js';
@@ -47,11 +47,33 @@ interface PlanItemRow extends Record<string, unknown> {
 @Controller('trips')
 @UseGuards(SupabaseAuthGuard)
 export class TripsController {
+  private readonly logger = new Logger(TripsController.name);
+
   constructor(
-    @InjectQueue('plan-generation') private readonly queue: Queue,
+    private readonly planGeneration: PlanGenerationService,
     private readonly circuitBreaker: CircuitBreakerService,
     @Inject(DB_TOKEN) private readonly db: DbExecutable,
   ) {}
+
+  /**
+   * Fire-and-forget plan generation. Runs in the background after the
+   * HTTP response returns so the client sees immediate 200s and then
+   * polls `GET /v1/trips/:id` for `plan_status` transitions.
+   *
+   * We intentionally don't `await` this; callers treat plan-generation
+   * as asynchronous from their perspective. Errors flip the trip's
+   * `plan_status` to 'failed' inside PlanGenerationService, so all
+   * observable state lives in Postgres.
+   */
+  private runPlanGenerationInBackground(tripId: string): void {
+    // Don't await — intentionally fire-and-forget.
+    void this.planGeneration.generate(tripId).catch((err: unknown) => {
+      this.logger.error(
+        `Inline plan generation failed for trip ${tripId}`,
+        err instanceof Error ? err.stack : String(err),
+      );
+    });
+  }
 
   /**
    * POST /v1/trips
@@ -109,6 +131,10 @@ export class TripsController {
           )
           ON CONFLICT (trip_id) DO UPDATE SET must_do_attraction_ids = EXCLUDED.must_do_attraction_ids`,
     );
+
+    // Kick off plan generation immediately; Android relies on trip polling
+    // (GET /v1/trips/:id) rather than an explicit /generate-plan call.
+    this.runPlanGenerationInBackground(tripId);
 
     return this.fetchTripDto(tripId);
   }
@@ -231,14 +257,13 @@ export class TripsController {
       throw new HttpException(body, 402);
     }
 
-    // Enqueue plan generation job
-    const job = await this.queue.add(
-      'generate',
-      { tripId: id, kind: 'initial' },
-      { attempts: 5, backoff: { type: 'fixed', delay: 30_000 } },
-    );
+    // Run plan generation inline (fire-and-forget). The client polls
+    // GET /v1/trips/:id for plan_status transitions; there is no longer
+    // a BullMQ job_id — we return the tripId as the correlation handle
+    // to preserve the response shape for existing clients (iOS).
+    this.runPlanGenerationInBackground(id);
 
-    return { job_id: job.id ?? '' };
+    return { job_id: id };
   }
 
   /**
@@ -324,23 +349,16 @@ export class TripsController {
       returnWindowEnd: booking.return_window_end,
     }));
 
-    // Enqueue rethink job
-    const job = await this.queue.add(
-      'generate',
-      {
-        tripId: id,
-        kind: 'rethink',
-        rethinkInput: {
-          currentTime: body.current_time,
-          completedItemIds: body.completed_item_ids,
-          pinnedItemIds,
-          hardPins,
-        },
-      },
-      { attempts: 5, backoff: { type: 'fixed', delay: 30_000 } },
-    );
+    // Rethink today runs the same pipeline as initial generation.
+    // The rethinkInput payload (pinnedItemIds, hardPins, completedItemIds)
+    // is not yet consumed by PlanGenerationService.generate — tracked
+    // separately; this preserves prior behaviour where the BullMQ job
+    // also dropped that payload.
+    void pinnedItemIds;
+    void hardPins;
+    this.runPlanGenerationInBackground(id);
 
-    return { job_id: job.id ?? '' };
+    return { job_id: id };
   }
 
   // ─── Private helpers ───────────────────────────────────────────

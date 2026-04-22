@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { TripsController } from '../../src/trips/trips.controller.js';
 import { PlansService } from '../../src/plans/plans.service.js';
 import type { CircuitBreakerService } from '../../src/plan-generation/circuit-breaker.service.js';
+import type { PlanGenerationService } from '../../src/plan-generation/plan-generation.service.js';
 import type { PlanDto, FullDayPlanDto, LockedDayPlanDto } from '../../src/shared/dto/plan.dto.js';
 
 /**
@@ -20,10 +21,10 @@ import type { PlanDto, FullDayPlanDto, LockedDayPlanDto } from '../../src/shared
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 
-function createMockQueue() {
+function createMockPlanGeneration(): PlanGenerationService {
   return {
-    add: vi.fn().mockResolvedValue({ id: 'roundtrip-job-001' }),
-  };
+    generate: vi.fn().mockResolvedValue({ planId: 'plan-rt-1' }),
+  } as unknown as PlanGenerationService;
 }
 
 function createMockCircuitBreaker(): CircuitBreakerService {
@@ -215,23 +216,23 @@ function createRoundtripDb(entitlementState: 'free' | 'unlocked') {
 // ─── Tests ───────────────────────────────────────────────────────────
 
 describe('E2E roundtrip: POST generate-plan -> GET plans/:id', () => {
-  let queue: ReturnType<typeof createMockQueue>;
+  let planGeneration: PlanGenerationService;
   let circuitBreaker: CircuitBreakerService;
 
   beforeEach(() => {
-    queue = createMockQueue();
+    planGeneration = createMockPlanGeneration();
     circuitBreaker = createMockCircuitBreaker();
   });
 
-  it('full flow: POST returns 202 + job_id, then GET returns structured PlanDto', async () => {
+  it('full flow: POST returns 200 + job_id, then GET returns structured PlanDto', async () => {
     const t0 = Date.now();
 
     const db = createRoundtripDb('unlocked');
 
-    // Step 1: POST /v1/trips/:id/generate-plan -> 202
-    const controller = new TripsController(queue as never, circuitBreaker, db as never);
+    // Step 1: POST /v1/trips/:id/generate-plan -> 200
+    const controller = new TripsController(planGeneration, circuitBreaker, db as never);
     const postResult = await controller.generatePlan('trip-rt-1');
-    expect(postResult).toEqual({ job_id: 'roundtrip-job-001' });
+    expect(postResult).toEqual({ job_id: 'trip-rt-1' });
 
     // Step 2: Simulate job completion — switch DB to serve PlansService queries
     db.switchToServiceContext();

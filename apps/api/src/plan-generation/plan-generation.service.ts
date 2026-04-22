@@ -1,11 +1,10 @@
 import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
-import { UnrecoverableError } from 'bullmq';
 import { DB_TOKEN } from '../ingestion/queue-times.service.js';
 import { WalkingGraphLoader } from './walking-graph.loader.js';
 import { ForecastService } from '../forecast/forecast.service.js';
 import { CalendarService } from '../forecast/calendar.service.js';
-import { NarrativeService, BudgetExhaustedError } from '../narrative/narrative.service.js';
+import { NarrativeService } from '../narrative/narrative.service.js';
 import type {
   CostContext,
   NarrativeInput,
@@ -326,14 +325,13 @@ export class PlanGenerationService {
       );
       return { planId };
     } catch (err) {
-      if (err instanceof BudgetExhaustedError) {
-        await this.db.execute(
-          sql`UPDATE trips SET plan_status = 'failed', updated_at = NOW() WHERE id = ${tripId}`,
-        );
-        throw new UnrecoverableError(
-          `Budget exhausted for trip ${tripId}: ${(err as Error).message}`,
-        );
-      }
+      // Always flip the trip's status to 'failed' so the client's polling
+      // loop can break out instead of waiting forever. Previously only the
+      // BudgetExhaustedError path did this, but the inline fire-and-forget
+      // invocation has no external retry machinery.
+      await this.db.execute(
+        sql`UPDATE trips SET plan_status = 'failed', updated_at = NOW() WHERE id = ${tripId}`,
+      );
       throw err;
     }
   }

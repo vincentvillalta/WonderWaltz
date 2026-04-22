@@ -1,14 +1,15 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import type { CircuitBreakerService } from '../../src/plan-generation/circuit-breaker.service.js';
 import { type BudgetCheck } from '../../src/plan-generation/circuit-breaker.service.js';
+import type { PlanGenerationService } from '../../src/plan-generation/plan-generation.service.js';
 import { TripsController } from '../../src/trips/trips.controller.js';
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 
-function createMockQueue() {
+function createMockPlanGeneration(): PlanGenerationService {
   return {
-    add: vi.fn().mockResolvedValue({ id: 'job-123' }),
-  };
+    generate: vi.fn().mockResolvedValue({ planId: 'plan-123' }),
+  } as unknown as PlanGenerationService;
 }
 
 function createMockCircuitBreaker(overrides: Partial<BudgetCheck> = {}): CircuitBreakerService {
@@ -47,29 +48,28 @@ function createMockDb(entitlementState = 'free') {
 
 describe('POST /v1/trips/:id/generate-plan', () => {
   let controller: TripsController;
-  let queue: ReturnType<typeof createMockQueue>;
+  let planGeneration: PlanGenerationService;
   let circuitBreaker: CircuitBreakerService;
   let db: ReturnType<typeof createMockDb>;
 
   beforeEach(() => {
-    queue = createMockQueue();
+    planGeneration = createMockPlanGeneration();
     circuitBreaker = createMockCircuitBreaker();
     db = createMockDb();
-    controller = new TripsController(queue as never, circuitBreaker, db as never);
+    controller = new TripsController(planGeneration, circuitBreaker, db as never);
   });
 
-  it('returns 202 with plan_job_id on valid request', async () => {
+  it('returns job_id equal to trip id on valid request', async () => {
     const result = await controller.generatePlan('trip-1');
-    expect(result).toEqual({ job_id: 'job-123' });
+    expect(result).toEqual({ job_id: 'trip-1' });
   });
 
-  it('enqueues BullMQ job with correct data', async () => {
+  it('invokes PlanGenerationService.generate with the trip id', async () => {
     await controller.generatePlan('trip-1');
-    expect(queue.add).toHaveBeenCalledWith(
-      'generate',
-      expect.objectContaining({ tripId: 'trip-1', kind: 'initial' }),
-      expect.objectContaining({ attempts: 5 }),
-    );
+    // Fire-and-forget: wait one microtask for the catch handler to wire up
+    await Promise.resolve();
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(planGeneration.generate).toHaveBeenCalledWith('trip-1');
   });
 
   it('returns 402 when budget exhausted', async () => {
@@ -79,7 +79,7 @@ describe('POST /v1/trips/:id/generate-plan', () => {
       budgetCents: 50,
       reason: 'trip_budget_exhausted',
     });
-    controller = new TripsController(queue as never, circuitBreaker, db as never);
+    controller = new TripsController(planGeneration, circuitBreaker, db as never);
 
     try {
       await controller.generatePlan('trip-1');
@@ -96,7 +96,7 @@ describe('POST /v1/trips/:id/generate-plan', () => {
       spentCents: 55,
       budgetCents: 50,
     });
-    controller = new TripsController(queue as never, circuitBreaker, db as never);
+    controller = new TripsController(planGeneration, circuitBreaker, db as never);
 
     try {
       await controller.generatePlan('trip-1');

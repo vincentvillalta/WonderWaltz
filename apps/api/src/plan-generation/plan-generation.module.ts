@@ -9,21 +9,15 @@ import { CircuitBreakerService } from './circuit-breaker.service.js';
 import { RateLimitService } from './rate-limit.service.js';
 import { PlanGenerationService } from './plan-generation.service.js';
 import { PersistPlanService } from './persist-plan.service.js';
-import { PlanGenerationProcessor } from './plan-generation.processor.js';
 import { SolverLoader } from './solver.loader.js';
 
 /**
  * PlanGenerationModule -- umbrella for the solver-driven plan pipeline.
  *
- * Plan 03-05: WalkingGraphLoader (SOLV-13 preload).
- * Plan 03-14: CircuitBreakerService (LLM-07 budget enforcement).
- * Plan 03-15: RateLimitService (LLM-08 rethink caps).
- * Plan 03-16: PlanGenerationService (orchestrator) +
- *             PersistPlanService (multi-table insert) +
- *             PlanGenerationProcessor (BullMQ processor).
- *
- * Import once in AppModule (HTTP) AND WorkerModule (worker)
- * so both processes keep an in-memory precomputed walking graph.
+ * Plan generation is invoked inline (fire-and-forget) from
+ * TripsController; see runPlanGenerationInBackground. There is no
+ * BullMQ processor here anymore — the old queue-based path was
+ * replaced to stop burning Redis requests on idle Worker polling.
  */
 @Module({
   imports: [AlertingModule, ForecastModule, NarrativeModule, PackingListModule, WeatherModule],
@@ -33,7 +27,6 @@ import { SolverLoader } from './solver.loader.js';
     RateLimitService,
     PlanGenerationService,
     PersistPlanService,
-    PlanGenerationProcessor,
     SolverLoader,
   ],
   exports: [
