@@ -24,9 +24,25 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'WonderWaltz — Walt Disney World trip planner',
+  metadataBase: new URL('https://wonderwaltz.app'),
+  title: {
+    default: 'WonderWaltz — Walt Disney World trip planner',
+    template: '%s — WonderWaltz',
+  },
   description:
     'Day-by-day Walt Disney World itineraries that flow with your trip, not against it. Personalized, accessibility-aware, offline-ready.',
+  openGraph: {
+    siteName: 'WonderWaltz',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+  other: {
+    // Unofficial fan app disclaimer picked up by Google as the site tagline.
+    'apple-mobile-web-app-title': 'WonderWaltz',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

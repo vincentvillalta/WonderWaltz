@@ -20,7 +20,9 @@
   --ww-cream-deep: #f4ecdc;
   --ww-white:      #ffffff;
   --ww-muted:      #e5ddd0;
-  --ww-muted-fg:   #6b7a9e;
+  /* --ww-muted-fg darkened from #6b7a9e to #56607a to hit WCAG 2.2 AA
+     (4.5:1 vs cream). Original missed at 3.97:1. */
+  --ww-muted-fg:   #56607a;
   --ww-destructive:#e63946;
 
   /* park accents */
