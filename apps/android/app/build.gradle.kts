@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -10,10 +13,16 @@ android {
 
     defaultConfig {
         applicationId = "com.wonderwaltz"
-        minSdk = 26 // Android 8.0 — as specified in FND-01 / AND-01
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "0.1.0"
+
+        buildConfigField(
+            "String",
+            "API_BASE_URL",
+            "\"https://wonderwaltz-production.up.railway.app\"",
+        )
     }
 
     buildTypes {
@@ -33,6 +42,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -43,21 +53,36 @@ kotlin {
 }
 
 dependencies {
-    // Compose BOM — aligns all Compose library versions to 2026.03.00
+    // Compose
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.navigation.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
 
     // AndroidX
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
+    implementation(libs.datastore.preferences)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.android.compiler)
+
+    // Ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.logging)
+
+    // Kotlinx
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.android)
 
     // Debug only
     debugImplementation(libs.compose.ui.tooling)
-
-    // Phase 5/7 dependencies are in libs.versions.toml but not wired yet
-    // Add them when Phase 7 implementation begins
 }
