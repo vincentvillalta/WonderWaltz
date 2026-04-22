@@ -192,7 +192,7 @@ export default function Landing() {
               gap: 40,
               flexWrap: 'wrap',
               alignItems: 'center',
-              opacity: 0.55,
+              opacity: 0.75,
             }}
           >
             {['The Chatty Planner', 'Parkside Post', 'TouringNerd', 'Family Trip Diaries'].map(
